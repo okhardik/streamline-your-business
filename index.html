@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smarter Automation | Grow Your Business</title>
+    <!-- Website Icon -->
     <link rel="icon" type="image/png" href="input_file_0.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,22 +45,12 @@
             align-items: center;
             padding: 5vh 5%;
         }
-        
-        /* --- STYLING FOR THE HERO IMAGE SECTION --- */
-        #intro-section {
-            background-image: url(input_file_0.png);
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0; /* Set by default for fade-in */
-            transform: translateY(30px); /* Set by default for fade-in */
-        }
-
         .text-content {
             text-align: center;
             max-width: 900px;
             width: 100%;
         }
+        h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: 900; line-height: 1.2; }
         h2 { font-size: clamp(2rem, 7vw, 3.5rem); font-weight: 900; line-height: 1.2; color: var(--text-dark); }
         p { font-size: clamp(1rem, 2.5vw, 1.1rem); color: var(--text-muted); margin-top: 15px; }
         #solution-cards {
@@ -103,9 +94,6 @@
         .gsap-fade-up { opacity: 0; transform: translateY(30px); }
 
         @media (max-width: 768px) {
-            #intro-section {
-                background-size: 95%; /* Make hero slightly smaller on mobile */
-            }
             .content-section {
                 padding: 10vh 20px;
                 min-height: 0;
@@ -128,8 +116,12 @@
         </label>
     </div>
 
-    <!-- The hero image is now the background of this section -->
-    <section class="content-section" id="intro-section"></section>
+    <!-- Content is pre-filled with the new approved English text -->
+    <section class="content-section" id="intro-section">
+        <div class="text-content">
+            <h1 id="intro-title" class="gsap-fade-up">Stop juggling repetitive tasks. ⚙️ Let's automate your workflow & grow your business. 📈</h1>
+        </div>
+    </section>
     
     <section class="content-section" id="solution-section">
         <div class="text-content">
@@ -229,9 +221,6 @@
                 onLeaveBack: () => gsap.to("#main-canvas", { opacity: 1, duration: 0.5 })
             });
 
-            // Animate hero image on load
-            gsap.to("#intro-section", { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
-
             gsap.utils.toArray('.gsap-fade-up').forEach(element => {
                 gsap.to(element, {
                     opacity: 1,
@@ -248,14 +237,15 @@
 
             // --- 4. LANGUAGE TOGGLE LOGIC ---
             const textContent = {
-                en: { solutionTitle: "How We Boost Your Efficiency", cardTitle1: "💬 Automated Emails & WhatsApp", cardDesc1: "Never miss a customer interaction. We build automated messaging systems for WhatsApp and Email to handle follow-ups, inquiries, and client updates instantly.", cardTitle2: "📊 Smart Data Handling in Google Sheets", cardDesc2: "Turn your Google Sheets into powerful, automated tools. We design workflows to handle data entry, generate reports, and manage information without manual work.", cardTitle3: "🚀 Boosted Efficiency Through Automation", cardDesc3: "We analyze your unique workflow and build custom automated processes from the ground up. The result is less manual work and a major increase in your team's efficiency.", ctaButton: "Start Saving Time Today" },
-                hi: { solutionTitle: "हम आपकी कार्यक्षमता कैसे बढ़ाते हैं", cardTitle1: "💬 स्वचालित ईमेल और व्हाट्सएप", cardDesc1: "ग्राहकों के साथ कोई भी बातचीत न चूकें। हम व्हाट्सएप और ईमेल के लिए स्वचालित मैसेजिंग सिस्टम बनाते हैं जो तुरंत फॉलो-अप, पूछताछ और ग्राहक अपडेट को संभालते हैं।", cardTitle2: "📊 गूगल शीट्स में स्मार्ट डेटा हैंडलिंग", cardDesc2: "अपनी गूगल शीट्स को शक्तिशाली, स्वचालित टूल में बदलें। हम डेटा एंट्री, रिपोर्ट तैयार करने और बिना किसी मैन्युअल काम के जानकारी प्रबंधित करने के लिए वर्कफ़्लो डिज़ाइन करते हैं।", cardTitle3: "🚀 ऑटोमेशन के माध्यम से बढ़ी हुई कार्यक्षमता", cardDesc3: "हम आपके अनूठे वर्कफ़्लो का विश्लेषण करते हैं और शुरू से कस्टम स्वचालित प्रक्रियाएं बनाते हैं। इसका परिणाम है कम मैन्युअल काम और आपकी टीम की कार्यक्षमता में एक बड़ी वृद्धि।", ctaButton: "आज ही समय बचाना शुरू करें" }
+                en: { introTitle: "Stop juggling repetitive tasks. ⚙️ Let's automate your workflow & grow your business. 📈", solutionTitle: "How We Boost Your Efficiency", cardTitle1: "💬 Automated Emails & WhatsApp", cardDesc1: "Never miss a customer interaction. We build automated messaging systems for WhatsApp and Email to handle follow-ups, inquiries, and client updates instantly.", cardTitle2: "📊 Smart Data Handling in Google Sheets", cardDesc2: "Turn your Google Sheets into powerful, automated tools. We design workflows to handle data entry, generate reports, and manage information without manual work.", cardTitle3: "🚀 Boosted Efficiency Through Automation", cardDesc3: "We analyze your unique workflow and build custom automated processes from the ground up. The result is less manual work and a major increase in your team's efficiency.", ctaButton: "Start Saving Time Today" },
+                hi: { introTitle: "दोहराए जाने वाले कामों में उलझे रहना बंद करें। ⚙️ आइए आपके वर्कफ़्लो को ऑटोमेट करें और आपके व्यवसाय को बढ़ाएं। 📈", solutionTitle: "हम आपकी कार्यक्षमता कैसे बढ़ाते हैं", cardTitle1: "💬 स्वचालित ईमेल और व्हाट्सएप", cardDesc1: "ग्राहकों के साथ कोई भी बातचीत न चूकें। हम व्हाट्सएप और ईमेल के लिए स्वचालित मैसेजिंग सिस्टम बनाते हैं जो तुरंत फॉलो-अप, पूछताछ और ग्राहक अपडेट को संभालते हैं।", cardTitle2: "📊 गूगल शीट्स में स्मार्ट डेटा हैंडलिंग", cardDesc2: "अपनी गूगल शीट्स को शक्तिशाली, स्वचालित टूल में बदलें। हम डेटा एंट्री, रिपोर्ट तैयार करने और बिना किसी मैन्युअल काम के जानकारी प्रबंधित करने के लिए वर्कफ़्लो डिज़ाइन करते हैं।", cardTitle3: "🚀 ऑटोमेशन के माध्यम से बढ़ी हुई कार्यक्षमता", cardDesc3: "हम आपके अनूठे वर्कफ़्लो का विश्लेषण करते हैं और शुरू से कस्टम स्वचालित प्रक्रियाएं बनाते हैं। इसका परिणाम है कम मैन्युअल काम और आपकी टीम की कार्यक्षमता में एक बड़ी वृद्धि।", ctaButton: "आज ही समय बचाना शुरू करें" }
             };
 
             const langToggle = document.getElementById('lang-toggle');
             function updateTextContent(lang) {
                 const content = textContent[lang];
                 localStorage.setItem('language', lang);
+                document.getElementById('intro-title').innerHTML = content.introTitle;
                 document.getElementById('solution-title').innerHTML = content.solutionTitle;
                 document.getElementById('card-title-1').innerHTML = content.cardTitle1;
                 document.getElementById('card-desc-1').innerHTML = content.cardDesc1;
