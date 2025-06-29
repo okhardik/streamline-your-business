@@ -21,7 +21,7 @@
             font-family: 'Outfit', sans-serif;
             background-color: var(--dark-bg);
             color: var(--text-light);
-            overscroll-behavior: none; /* Prevents bounce */
+            overscroll-behavior: none;
             scrollbar-width: none; /* Firefox */
         }
         body::-webkit-scrollbar { display: none; } /* Chrome, Safari, Opera */
@@ -32,8 +32,7 @@
             z-index: 1; pointer-events: none;
         }
         .scroll-container {
-            position: relative;
-            z-index: 2; /* Sits above the canvas */
+            position: relative; z-index: 2;
         }
         .content-section {
             width: 100%; height: 100vh;
@@ -72,16 +71,36 @@
         
         /* Language Toggle */
         .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
-        .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); }
-        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
-        .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
-        .lang-en { color: var(--text-light); } .lang-hi { color: var(--text-muted); }
-        .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
-        #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
-        #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); }
-        .is-light .toggle-label { background-color: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.1); }
+        /* ... rest of the toggle css ... */
+        .toggle-label{display:flex;align-items:center;justify-content:space-between;width:80px;height:40px;background-color:rgba(20,25,40,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:0 12px;cursor:pointer;position:relative;transition:all 0.3s ease;backdrop-filter:blur(5px)}#lang-toggle{position:absolute;width:1px;height:1px;opacity:0}.lang-text{font-size:.9rem;font-weight:700;z-index:2;transition:color .3s ease}.lang-en{color:var(--text-light)}.lang-hi{color:var(--text-muted)}.toggle-thumb{position:absolute;top:3px;left:4px;width:32px;height:32px;background-color:var(--primary-color);border-radius:50%;z-index:1;transition:transform .3s cubic-bezier(.25,.46,.45,.94)}#lang-toggle:checked + .toggle-label .toggle-thumb{transform:translateX(38px)}#lang-toggle:checked + .toggle-label .lang-en{color:var(--text-muted)}#lang-toggle:checked + .toggle-label .lang-hi{color:var(--text-light)}.is-light .toggle-label{background-color:rgba(255,255,255,0.5);border-color:rgba(0,0,0,0.1)}
+
+        /* NEW: Scroll Hint */
+        #scroll-hint {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%); z-index: 100;
+            width: 24px; height: 40px; border: 2px solid #fff;
+            border-radius: 20px; opacity: 0.7;
+            transition: opacity 0.5s;
+        }
+        #scroll-hint::before {
+            content: ''; position: absolute; top: 8px; left: 50%;
+            transform: translateX(-50%); width: 4px; height: 8px;
+            background: #fff; border-radius: 4px;
+            animation: scroll-anim 2s infinite;
+        }
+        @keyframes scroll-anim {
+            0% { transform: translate(-50%, 0); opacity: 1; }
+            50% { transform: translate(-50%, 10px); opacity: 1; }
+            100% { transform: translate(-50%, 20px); opacity: 0; }
+        }
         
+        /* NEW: Shockwave Flash */
+        #flash-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #fff; z-index: 999;
+            pointer-events: none; opacity: 0;
+        }
+
         @media (max-width: 900px) {
             #solution-cards { grid-template-columns: 1fr; }
         }
@@ -89,14 +108,12 @@
 </head>
 <body>
     <canvas id="main-canvas"></canvas>
+    <div id="flash-overlay"></div>
+    <div id="scroll-hint"></div>
     
     <div class="language-toggle">
         <input type="checkbox" id="lang-toggle">
-        <label for="lang-toggle" class="toggle-label">
-            <span class="toggle-thumb"></span>
-            <span class="lang-text lang-en">EN</span>
-            <span class="lang-text lang-hi">HI</span>
-        </label>
+        <label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label>
     </div>
 
     <div class="scroll-container">
@@ -133,7 +150,7 @@
         </section>
     </div>
 
-    <!-- Animation & Smooth Scroll Libraries -->
+    <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
@@ -141,21 +158,19 @@
     <script>
         // 1. LENIS SMOOTH SCROLL
         const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, smoothWheel: true });
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
         gsap.ticker.lagSmoothing(0);
 
-        // 2. GSAP & SCROLLTRIGGER SETUP
+        // 2. GSAP & DOM REFERENCES
         gsap.registerPlugin(ScrollTrigger);
         const canvas = document.getElementById('main-canvas');
         const ctx = canvas.getContext('2d');
+        const scrollHint = document.getElementById('scroll-hint');
+        const flashOverlay = document.getElementById('flash-overlay');
         let particles = [];
-        let isLightMode = false;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -164,34 +179,43 @@
         }
         window.addEventListener('resize', resizeCanvas);
 
-        // 3. PARTICLE SYSTEM
+        // 3. QUANTUM FRAGMENT PARTICLE SYSTEM
         class Particle {
-            constructor() { this.respawn(); this.size = Math.random() * 2 + 1; }
+            constructor() {
+                this.respawn();
+                this.z = Math.random() * 2 + 1; // Depth for parallax
+                this.shape = Math.random() < 0.33 ? 'rect' : (Math.random() < 0.66 ? 'line' : 'circle');
+            }
             respawn() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * 1 - 0.5;
-                this.color = `rgba(0, 123, 255, ${Math.random() * 0.5 + 0.2})`;
-                this.blur = Math.random() * 3;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
             }
             update() {
                 if (!gsap.isTweening(this)) {
-                    this.x += this.speedX; this.y += this.speedY;
+                    this.x += this.speedX * this.z; // Parallax effect
+                    this.y += this.speedY * this.z;
                     if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) { this.respawn(); }
                 }
             }
             draw() {
                 ctx.fillStyle = this.color;
-                ctx.filter = `blur(${this.blur}px)`;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                if (this.shape === 'rect') {
+                    ctx.fillRect(this.x, this.y, this.z * 2, this.z * 2);
+                } else if (this.shape === 'line') {
+                    ctx.fillRect(this.x, this.y, this.z * 3, 1);
+                } else {
+                    ctx.arc(this.x, this.y, this.z, 0, Math.PI * 2);
+                }
                 ctx.fill();
             }
         }
         function initParticles() {
             particles = [];
-            let numberOfParticles = Math.min(200, (canvas.width * canvas.height) / 8000);
+            let numberOfParticles = Math.min(250, (canvas.width * canvas.height) / 8000);
             for (let i = 0; i < numberOfParticles; i++) { particles.push(new Particle()); }
         }
         initParticles();
@@ -203,30 +227,45 @@
         requestAnimationFrame(animateParticles);
 
         // 4. THE MAIN GSAP TIMELINE
+        // Hide scroll hint on first scroll
+        ScrollTrigger.create({
+            start: "top top",
+            end: 99999,
+            onUpdate: self => {
+                if(self.scroll() > 10) {
+                    gsap.to(scrollHint, { opacity: 0, duration: 0.5, ease: "power2.out" });
+                }
+            }
+        });
+
         const mainTimeline = gsap.timeline({
             scrollTrigger: {
                 trigger: ".scroll-container",
-                scrub: 1, pin: true, end: "130%" // Tighter scroll journey
+                scrub: 1, pin: true, end: "130%"
             }
         });
         
-        mainTimeline.to("#intro-section", { opacity: 0, duration: 0.5 }, 0.05)
+        mainTimeline.to("#intro-section", { opacity: 0, duration: 0.4 }, 0.1)
         .to(particles, {
             x: () => canvas.width / 2, y: () => canvas.height / 2,
             scale: 0, ease: "power3.in", duration: 1,
             stagger: { each: 0.005, from: "random" }
         }, 0)
-        .to("body", { 
-            backgroundColor: "#F8F9FA", color: "#1D2129", duration: 0.25,
+        .to(flashOverlay, {
+            opacity: 1, scale: 1.5, duration: 0.3, ease: "power2.out"
+        }, "<0.8")
+        .set("body", { 
+            backgroundColor: "#F8F9FA", color: "#1D2129",
             onStart: () => document.querySelector('.language-toggle').classList.add('is-light'),
             onReverseComplete: () => document.querySelector('.language-toggle').classList.remove('is-light')
-        }, "<0.5")
-        .set(particles, { opacity: 0 }, "<") // Hide particles during light mode
+        }, "<")
+        .to(flashOverlay, { opacity: 0, duration: 0.3 }, ">-0.1")
+        .set(particles, { opacity: 0 }, "<")
         .fromTo("#solution-section", { opacity: 0 }, { opacity: 1, duration: 0.1 }, "<")
         .from("#solution-title", { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" })
         .from(".service-card", {
-            y: (i) => (i + 1) * 30, // Cascading effect
-            scale: 0.8, opacity: 0, stagger: 0.15, duration: 0.8, ease: "back.out(1.7)"
+            y: (i) => (i + 1) * 20,
+            scale: 0.9, opacity: 0, stagger: 0.1, duration: 0.8, ease: "back.out(1.7)"
         }, "<0.2")
         .to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.6")
         .from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
@@ -246,6 +285,7 @@
                 if (element) element.innerHTML = content[key];
             });
         });
+
     </script>
 </body>
 </html>
