@@ -14,19 +14,25 @@
             --primary-color: #007BFF; --primary-glow: rgba(0, 123, 255, 0.5);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* 1. Smooth Scroll & Hide Scrollbar */
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--dark-bg);
             color: var(--text-light);
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
         }
-        .scroll-container {
-            width: 100%;
-            /* The 'magic' is handled by GSAP, not a fixed height */
-        }
+        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, and Opera */
+
         #main-canvas {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 1;
+            z-index: 1; pointer-events: none;
         }
         .content-section {
             position: relative; z-index: 10;
@@ -34,19 +40,9 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 0 5%;
         }
-        .text-content {
-            text-align: center;
-            max-width: 900px;
-        }
-        h1 {
-            font-size: clamp(2.5rem, 8vw, 6rem);
-            font-weight: 900; line-height: 1.1;
-        }
-        h2 {
-            font-size: clamp(2rem, 6vw, 4.5rem);
-            font-weight: 900; line-height: 1.1;
-            color: var(--text-dark);
-        }
+        .text-content { text-align: center; max-width: 900px; }
+        h1 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; }
+        h2 { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; color: var(--text-dark); }
         p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-muted); margin-top: 15px; }
 
         #solution-cards {
@@ -58,31 +54,24 @@
             border-radius: 16px; padding: 30px;
             text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
-        .service-card h3 {
-            font-size: 1.5rem; color: var(--primary-color);
-            font-weight: 700; margin-bottom: 10px;
-        }
-        .service-card p {
-            font-size: 1rem; color: #495057;
-            line-height: 1.6; margin-top: 0;
-        }
-        #cta-section {
-             background-color: var(--light-bg);
-        }
+        .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
+        .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
+        
+        #cta-section { background-color: var(--light-bg); }
+        .cta-container { display: flex; justify-content: center; align-items: center; } /* Fix for button breaking */
         #cta-button {
             background: var(--primary-color); color: #fff; text-decoration: none;
             font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 20px 50px;
             border-radius: 50px; font-weight: 700;
             box-shadow: 0 10px 30px var(--primary-glow);
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; white-space: nowrap; /* Prevents breaking */
         }
         #cta-button:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
         
-        /* Language Toggle */
-        .language-toggle {
-            position: fixed; top: 20px; right: 20px; z-index: 100;
-        }
+        /* Language Toggle - Bug Fix for checkbox */
+        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
         .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); }
+        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; } /* Properly hide checkbox */
         .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
         .lang-en { color: var(--text-light); } .lang-hi { color: var(--text-muted); }
         .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
@@ -91,7 +80,6 @@
         #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); }
         .is-light .toggle-label { background-color: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.1); }
         
-        /* Mobile Adjustments */
         @media (max-width: 900px) {
             #solution-cards { grid-template-columns: 1fr; }
         }
@@ -137,23 +125,31 @@
         </section>
 
         <section class="content-section" id="cta-section">
-             <div class="text-content">
+             <div class="text-content cta-container">
                  <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20orchestrate%20my%20flow." target="_blank" id="cta-button">Let's Compose Your Symphony</a>
              </div>
         </section>
     </div>
 
-    <!-- GSAP - The industry standard for high-performance animation -->
+    <!-- Animation & Smooth Scroll Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     
     <script>
-        gsap.registerPlugin(ScrollTrigger);
+        // 1. SMOOTH SCROLL INITIALIZATION
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
 
+        // 2. GSAP & SCROLLTRIGGER SETUP
+        gsap.registerPlugin(ScrollTrigger);
         const canvas = document.getElementById('main-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let isLightMode = false;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -162,24 +158,23 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // --- Particle System ---
+        // 3. PARTICLE SYSTEM
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 1;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.color = `rgba(0, 123, 255, ${Math.random() * 0.5 + 0.2})`;
-                // Store initial position for the "return" animation
-                this.initialX = this.x;
-                this.initialY = this.y;
+                this.size = Math.random() * 1.5 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
             }
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                if (!gsap.isTweening(this)) {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                }
             }
             draw() {
                 ctx.fillStyle = this.color;
@@ -188,126 +183,61 @@
                 ctx.fill();
             }
         }
-
         function initParticles() {
             particles = [];
-            let numberOfParticles = (canvas.width * canvas.height) / 10000;
-            for (let i = 0; i < numberOfParticles; i++) {
-                particles.push(new Particle());
-            }
+            let numberOfParticles = (canvas.width * canvas.height) / 12000;
+            for (let i = 0; i < numberOfParticles; i++) { particles.push(new Particle()); }
         }
         initParticles();
-
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                // Only update position if not being controlled by GSAP
-                if (!gsap.isTweening(p)) {
-                    p.update();
-                }
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateParticles);
         }
-        animateParticles();
+        requestAnimationFrame(animateParticles);
 
-        // --- GSAP SCROLL-DRIVEN ANIMATION ---
+        // 4. THE MAIN GSAP TIMELINE
         const mainTimeline = gsap.timeline({
             scrollTrigger: {
                 trigger: ".scroll-container",
-                scrub: 1.5,
+                scrub: 1.2, // Smoother scrub
                 pin: true,
                 end: "200%" 
             }
         });
 
-        // 1. Fade out the intro text
-        mainTimeline.to("#intro-section .text-content", { opacity: 0, duration: 0.5 }, 0);
-        
-        // 2. Converge particles to the center
-        mainTimeline.to(particles, {
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            ease: "power2.in",
-            duration: 1.5,
-            stagger: {
-                each: 0.01,
-                from: "random"
-            }
-        }, 0.2);
+        mainTimeline.to("#intro-section .text-content", { opacity: 0, duration: 0.5 }, 0)
+        .to(particles, {
+            x: () => canvas.width / 2, y: () => canvas.height / 2,
+            ease: "power2.in", duration: 1.5,
+            stagger: { each: 0.005, from: "random" }
+        }, 0.2)
+        .to("body", { 
+            backgroundColor: "#F8F9FA", color: "#1D2129", duration: 0.25,
+            onStart: () => document.querySelector('.language-toggle').classList.add('is-light'),
+            onReverseComplete: () => document.querySelector('.language-toggle').classList.remove('is-light')
+        }, ">-0.2")
+        .to(particles, { opacity: 0, duration: 0.1 }, "<")
+        .fromTo("#solution-section", { opacity: 0, y: 150 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "<")
+        .from(".service-card", { y: 50, opacity: 0, stagger: 0.2, duration: 0.8, ease: "power2.out" }, "<0.3")
+        .to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.8")
+        .from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
 
-        // 3. The "Flash" and background transition
-        mainTimeline.to("body", { 
-            backgroundColor: "#F8F9FA", 
-            color: "#1D2129",
-            duration: 0.2,
-            onStart: () => {
-                document.querySelector('.language-toggle').classList.add('is-light');
-            },
-            onReverseComplete: () => {
-                document.querySelector('.language-toggle').classList.remove('is-light');
-            }
-        }, ">-0.1");
-
-        // 4. Fade out particles and fade in the solution section
-        mainTimeline.to(particles, { opacity: 0, duration: 0.1 }, "<");
-        mainTimeline.fromTo("#solution-section", { opacity: 0, y: 100 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, ">-0.2");
-        
-        // Stagger in the cards
-        mainTimeline.from(".service-card", {
-            y: 50,
-            opacity: 0,
-            stagger: 0.2,
-            duration: 0.8,
-            ease: "power2.out"
-        }, "<0.3");
-
-        // 5. Move to the CTA section
-        mainTimeline.to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.5");
-        mainTimeline.from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
-
-
-        // --- LANGUAGE TOGGLE LOGIC ---
+        // 5. LANGUAGE TOGGLE LOGIC
         const textContent = {
-            en: {
-                introTitle: "Is your business in motion, or just moving?",
-                solutionTitle: "We orchestrate the flow.",
-                cardTitle1: "🚀 Message Automation",
-                cardDesc1: "Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.",
-                cardTitle2: "⚙️ Process Streamlining",
-                cardDesc2: "We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.",
-                cardTitle3: "🛠️ Bespoke Setup & Support",
-                cardDesc3: "A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.",
-                ctaButton: "Let's Compose Your Symphony"
-            },
-            hi: {
-                introTitle: "आपका बिज़नेस चल रहा है, या सिर्फ़ हिल रहा है?",
-                solutionTitle: "हम प्रवाह को व्यवस्थित करते हैं।",
-                cardTitle1: "🚀 मैसेज ऑटोमेशन",
-                cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।",
-                cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग",
-                cardDesc2: "हम Google Sheets जैसे टूल में आपके मैन्युअल कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।",
-                cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट",
-                cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे ऑटोमेटेड वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।",
-                ctaButton: "आइए आपकी सिम्फनी तैयार करें"
-            }
+            en: { introTitle: "Is your business in motion, or just moving?", solutionTitle: "We orchestrate the flow.", cardTitle1: "🚀 Message Automation", cardDesc1: "Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.", cardTitle2: "⚙️ Process Streamlining", cardDesc2: "We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.", cardTitle3: "🛠️ Bespoke Setup & Support", cardDesc3: "A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.", ctaButton: "Let's Compose Your Symphony" },
+            hi: { introTitle: "आपका बिज़नेस चल रहा है, या सिर्फ़ हिल रहा है?", solutionTitle: "हम प्रवाह को व्यवस्थित करते हैं।", cardTitle1: "🚀 मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।", cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम Google Sheets जैसे टूल में आपके मैन्युअल कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे ऑटोमेटेड वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "आइए आपकी सिम्फनी तैयार करें" }
         };
-
         const langToggle = document.getElementById('lang-toggle');
         langToggle.addEventListener('change', () => {
             const lang = langToggle.checked ? 'hi' : 'en';
             const content = textContent[lang];
-
-            document.getElementById('intro-title').innerHTML = content.introTitle;
-            document.getElementById('solution-title').innerHTML = content.solutionTitle;
-            document.getElementById('card-title-1').innerHTML = content.cardTitle1;
-            document.getElementById('card-desc-1').innerHTML = content.cardDesc1;
-            document.getElementById('card-title-2').innerHTML = content.cardTitle2;
-            document.getElementById('card-desc-2').innerHTML = content.cardDesc2;
-            document.getElementById('card-title-3').innerHTML = content.cardTitle3;
-            document.getElementById('card-desc-3').innerHTML = content.cardDesc3;
-            document.getElementById('cta-button').innerHTML = content.ctaButton;
+            Object.keys(content).forEach(key => {
+                const element = document.getElementById(key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`));
+                if (element) element.innerHTML = content[key];
+            });
         });
+
     </script>
 </body>
 </html>
