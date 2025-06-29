@@ -34,45 +34,57 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       overflow-x: hidden;
-      cursor: none; /* Hide the default cursor */
+      /* Cursor is handled by JS/CSS based on device */
     }
 
-    /* --- 1. Interactive Cursor Spotlight --- */
-    #cursor-glow {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(0, 170, 255, 0.08) 0%, rgba(0, 170, 255, 0) 60%);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 9999;
-      transition: background 0.2s ease;
+    /* --- DESKTOP: Interactive Cursor Spotlight --- */
+    #cursor-glow, #cursor-dot {
+        display: none; /* Hidden by default, enabled by JS for desktop */
     }
     
-    #cursor-dot {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 6px;
-      height: 6px;
-      background-color: var(--primary-color);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 10000;
-      transition: transform 0.1s ease-out;
+    @media (pointer: fine) { /* This media query targets devices with a mouse/trackpad */
+      body {
+        cursor: none;
+      }
+
+      #cursor-glow {
+        display: block;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(0, 170, 255, 0.08) 0%, rgba(0, 170, 255, 0) 60%);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9999;
+        transition: background 0.2s ease;
+      }
+      
+      #cursor-dot {
+        display: block;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 6px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 10000;
+        transition: transform 0.1s ease-out;
+      }
+
+      body:has(a:hover, button:hover, .service-card:hover) #cursor-dot {
+          transform: translate(-50%, -50%) scale(5);
+          background-color: rgba(0, 170, 255, 0.2);
+      }
     }
 
-    body:has(a:hover, button:hover, .service-card:hover) #cursor-dot {
-        transform: translate(-50%, -50%) scale(5);
-        background-color: rgba(0, 170, 255, 0.2);
-    }
 
-
-    /* --- 2. Dynamic Animated Background --- */
+    /* --- DESKTOP: Dynamic Animated Background --- */
     #background-canvas {
       position: fixed;
       top: 0;
@@ -82,7 +94,7 @@
       z-index: -1;
     }
 
-    /* --- 3. Header and Navigation --- */
+    /* --- Header and Navigation --- */
     header {
       position: fixed;
       top: 0;
@@ -106,7 +118,6 @@
       background: linear-gradient(90deg, #ffffff, #c0c0c0);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      cursor: pointer;
     }
 
     .language-toggle .lang-btn {
@@ -133,7 +144,7 @@
       padding: 0 5%;
     }
 
-    /* --- 4. Hero Section --- */
+    /* --- Hero Section --- */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -145,7 +156,7 @@
     }
 
     .hero h2 {
-      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-size: clamp(2.5rem, 8vw, 5rem);
       font-weight: 900;
       margin-bottom: 20px;
       max-width: 1000px;
@@ -160,13 +171,13 @@
     }
 
     .hero p {
-      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
       max-width: 750px;
       color: var(--text-muted);
       font-weight: 300;
       line-height: 1.6;
       animation: fadeInUp 1s ease-out 0.3s;
-      animation-fill-mode: backwards; /* Start hidden */
+      animation-fill-mode: backwards;
     }
     
     .section-title {
@@ -175,7 +186,7 @@
     }
 
     .section-title h3 {
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 700;
       margin-bottom: 10px;
       color: #f5f5f5;
@@ -188,7 +199,7 @@
       color: var(--text-muted);
     }
 
-    /* --- 5. Services Section with Grid Layout & Glassmorphism --- */
+    /* --- Services Section with Grid Layout & Glassmorphism --- */
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -226,7 +237,7 @@
       font-weight: 300;
     }
 
-    /* --- 6. Call to Action Button --- */
+    /* --- Call to Action Button --- */
     .cta {
       text-align: center;
       margin: 60px 0 120px;
@@ -251,7 +262,7 @@
       box-shadow: 0 0 35px var(--primary-glow);
     }
     
-    /* --- 7. Footer --- */
+    /* --- Footer --- */
     footer {
       text-align: center;
       padding: 40px 20px;
@@ -260,7 +271,7 @@
       border-top: 1px solid var(--card-border);
     }
     
-    /* --- 8. Scroll Animations --- */
+    /* --- Scroll Animations --- */
     .scroll-reveal {
       opacity: 0;
       transform: translateY(30px);
@@ -280,11 +291,68 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* --- MOBILE OPTIMIZATIONS --- */
+    @media (max-width: 768px) {
+      main {
+        padding: 0 5%;
+      }
+      
+      header {
+        padding: 15px 5%;
+      }
+
+      header h1 {
+        font-size: 1.2rem;
+      }
+      
+      .language-toggle .lang-btn {
+        padding: 6px 14px;
+        margin: 0 3px;
+      }
+
+      .hero {
+        min-height: 80vh;
+      }
+
+      .hero p {
+        font-size: clamp(1rem, 4vw, 1.1rem);
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr; /* Force single column */
+        gap: 20px;
+        padding: 60px 0;
+      }
+
+      .service-card:hover {
+        transform: translateY(0); /* Disable hover transform on mobile */
+      }
+      
+      /* Active state is more useful on mobile than hover */
+      .service-card:active {
+        transform: scale(0.98);
+      }
+
+      .cta {
+        margin: 40px 0 80px;
+      }
+      
+      .cta a {
+        padding: 18px 35px;
+        font-size: 1.1rem;
+      }
+      
+      #background-canvas {
+          display: none; /* Crucial for performance */
+      }
+    }
+
   </style>
 </head>
 <body>
 
-  <!-- Cursor Elements -->
+  <!-- Cursor Elements (will be controlled by CSS/JS) -->
   <div id="cursor-glow"></div>
   <div id="cursor-dot"></div>
   
@@ -340,97 +408,90 @@
   </footer>
 
   <script>
-    // --- 1. INTERACTIVE CURSOR SCRIPT ---
-    const cursorGlow = document.getElementById('cursor-glow');
-    const cursorDot = document.getElementById('cursor-dot');
-    window.addEventListener('mousemove', (e) => {
-      const { clientX, clientY } = e;
-      cursorGlow.style.left = `${clientX}px`;
-      cursorGlow.style.top = `${clientY}px`;
-      cursorDot.style.left = `${clientX}px`;
-      cursorDot.style.top = `${clientY}px`;
-    });
+    // --- SMART SCRIPT INITIALIZATION ---
+    // Check if the device is mobile based on screen width
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    // --- 2. DYNAMIC BACKGROUND SCRIPT ---
-    const canvas = document.getElementById('background-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    let particlesArray;
-
-    const mouse = {
-        x: null,
-        y: null,
-        radius: (canvas.height / 120) * (canvas.width / 120)
-    };
-
-    window.addEventListener('mousemove', function(event) {
-        mouse.x = event.x;
-        mouse.y = event.y;
-    });
-
-    class Particle {
-        constructor(x, y, directionX, directionY, size, color) {
-            this.x = x;
-            this.y = y;
-            this.directionX = directionX;
-            this.directionY = directionY;
-            this.size = size;
-            this.color = color;
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-            ctx.fillStyle = 'rgba(0, 170, 255, 0.1)';
-            ctx.fill();
-        }
-        update() {
-            if (this.x > canvas.width || this.x < 0) {
-                this.directionX = -this.directionX;
-            }
-            if (this.y > canvas.height || this.y < 0) {
-                this.directionY = -this.directionY;
-            }
-            this.x += this.directionX;
-            this.y += this.directionY;
-            this.draw();
-        }
+    // --- 1. DESKTOP-ONLY: INTERACTIVE CURSOR SCRIPT ---
+    if (!isMobile) {
+      const cursorGlow = document.getElementById('cursor-glow');
+      const cursorDot = document.getElementById('cursor-dot');
+      window.addEventListener('mousemove', (e) => {
+        const { clientX, clientY } = e;
+        cursorGlow.style.left = `${clientX}px`;
+        cursorGlow.style.top = `${clientY}px`;
+        cursorDot.style.left = `${clientX}px`;
+        cursorDot.style.top = `${clientY}px`;
+      });
     }
 
-    function init() {
-        particlesArray = [];
-        let numberOfParticles = (canvas.height * canvas.width) / 15000;
-        for (let i = 0; i < numberOfParticles; i++) {
-            let size = (Math.random() * 2) + 1;
-            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-            let directionX = (Math.random() * 0.4) - 0.2;
-            let directionY = (Math.random() * 0.4) - 0.2;
-            let color = 'rgba(0, 170, 255, 0.1)';
-            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-        }
+    // --- 2. DESKTOP-ONLY: DYNAMIC BACKGROUND SCRIPT ---
+    if (!isMobile) {
+      const canvas = document.getElementById('background-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particlesArray;
+
+      class Particle {
+          constructor(x, y, directionX, directionY, size, color) {
+              this.x = x;
+              this.y = y;
+              this.directionX = directionX;
+              this.directionY = directionY;
+              this.size = size;
+              this.color = color;
+          }
+          draw() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+              ctx.fillStyle = 'rgba(0, 170, 255, 0.1)';
+              ctx.fill();
+          }
+          update() {
+              if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+              if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+              this.x += this.directionX;
+              this.y += this.directionY;
+              this.draw();
+          }
+      }
+
+      function init() {
+          particlesArray = [];
+          let numberOfParticles = (canvas.height * canvas.width) / 15000;
+          for (let i = 0; i < numberOfParticles; i++) {
+              let size = (Math.random() * 2) + 1;
+              let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+              let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+              let directionX = (Math.random() * 0.4) - 0.2;
+              let directionY = (Math.random() * 0.4) - 0.2;
+              let color = 'rgba(0, 170, 255, 0.1)';
+              particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+          }
+      }
+
+      function animate() {
+          requestAnimationFrame(animate);
+          ctx.clearRect(0, 0, innerWidth, innerHeight);
+          for (let i = 0; i < particlesArray.length; i++) {
+              particlesArray[i].update();
+          }
+      }
+      
+      window.addEventListener('resize', function() {
+          canvas.width = innerWidth;
+          canvas.height = innerHeight;
+          init();
+      });
+
+      init();
+      animate();
     }
 
-    function animate() {
-        requestAnimationFrame(animate);
-        ctx.clearRect(0, 0, innerWidth, innerHeight);
-        for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-        }
-    }
-    
-    window.addEventListener('resize', function() {
-        canvas.width = innerWidth;
-        canvas.height = innerHeight;
-        mouse.radius = (canvas.height / 120) * (canvas.width / 120);
-        init();
-    });
 
-    init();
-    animate();
-
-    // --- 3. SCROLL REVEAL SCRIPT ---
+    // --- 3. SCROLL REVEAL SCRIPT (Works on all devices) ---
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -438,7 +499,7 @@
             }
         });
     }, {
-        threshold: 0.1 // Trigger when 10% of the element is visible
+        threshold: 0.1
     });
 
     const elementsToReveal = document.querySelectorAll('.scroll-reveal');
@@ -468,8 +529,6 @@
       document.getElementById('btn-' + lang).classList.add('active');
 
       if (lang === 'en') {
-        // A soft reload is better than manually resetting everything
-        // to preserve animations and initial state.
         location.reload(); 
         return;
       }
