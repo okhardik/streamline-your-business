@@ -9,191 +9,147 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #010206;
-            --text-color: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --primary-color: #00aaff;
-            --primary-glow: rgba(0, 170, 255, 0.5);
-            --card-bg: rgba(20, 25, 40, 0.6);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --bg-color: #010206; --text-color: #e0e0e0; --text-muted: #a0a0a0;
+            --primary-color: #00aaff; --primary-glow: rgba(0, 170, 255, 0.5);
+            --card-bg: rgba(20, 25, 40, 0.6); --card-border: rgba(255, 255, 255, 0.1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
-            width: 100%; height: 100%;
-            overflow: hidden; /* No scrolling! */
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            width: 100%; height: 100%; overflow: hidden; font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color); color: var(--text-color);
         }
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             background: linear-gradient(300deg, #010206, #060913, #02040a);
-            background-size: 180% 180%;
-            animation: gradient-flow 16s ease infinite;
+            background-size: 180% 180%; animation: gradient-flow 16s ease infinite;
         }
         @keyframes gradient-flow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        #background-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
+            0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
         }
 
-        /* --- Main Interactive Scene --- */
-        #interactive-scene {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
+        /* --- The Main Engine Container --- */
+        #workflow-engine {
+            position: relative; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* --- The Central CTA Core --- */
+        /* --- Scene 1: The Chaos --- */
+        #scene-chaos {
+            position: absolute; width: 100%; height: 100%; opacity: 1;
+            transition: opacity 0.5s ease 0.5s;
+        }
+        .problem-node {
+            position: absolute; background: var(--card-bg); border: 1px solid var(--card-border);
+            padding: 10px 20px; border-radius: 50px; font-weight: 500;
+            backdrop-filter: blur(2px); animation: drift 15s infinite alternate ease-in-out;
+            transition: transform 1s cubic-bezier(0.6, -0.28, 0.73, 0.04), opacity 0.5s ease;
+        }
+        @keyframes drift { to { transform: translate(var(--tx), var(--ty)) rotate(var(--r)); } }
+        /* Positioning problems for desktop */
+        .problem-node:nth-child(1) { top: 15%; left: 20%; --tx: -30px; --ty: 20px; --r: 10deg; }
+        .problem-node:nth-child(2) { top: 25%; left: 70%; --tx: 20px; --ty: -30px; --r: -8deg; animation-delay: -5s; }
+        .problem-node:nth-child(3) { top: 60%; left: 10%; --tx: 30px; --ty: 10px; --r: 5deg; animation-delay: -10s; }
+        .problem-node:nth-child(4) { top: 75%; left: 65%; --tx: -20px; --ty: 30px; --r: 15deg; animation-delay: -2s; }
+        .problem-node:nth-child(5) { top: 40%; left: 45%; --tx: -10px; --ty: -20px; --r: -5deg; animation-delay: -7s; }
+
+        .chaos-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; width: 90%;
+        }
+        .chaos-center h1 {
+            font-size: clamp(2rem, 6vw, 4rem); font-weight: 900; line-height: 1.2;
+            opacity: 0; animation: fadeIn 1s ease 0.2s forwards;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        #automate-btn {
+            background: var(--primary-color); color: white; border: none; font-size: 1.2rem;
+            padding: 20px 40px; border-radius: 50px; font-weight: 700; cursor: pointer;
+            margin-top: 30px; transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--primary-glow);
+            opacity: 0; animation: fadeIn 1s ease 0.5s forwards, pulse-btn 2.5s infinite 1.5s;
+        }
+        #automate-btn:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--primary-glow); }
+        @keyframes pulse-btn {
+            0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); }
+        }
+
+        /* --- The Transformation --- */
+        #workflow-engine.is-solved #scene-chaos { opacity: 0; pointer-events: none; }
+        #workflow-engine.is-solved .problem-node { opacity: 0; transform: scale(0); }
+        #workflow-engine.is-solved .problem-node:nth-child(1) { transition-delay: 0.1s; }
+        #workflow-engine.is-solved .problem-node:nth-child(2) { transition-delay: 0.2s; }
+        #workflow-engine.is-solved .problem-node:nth-child(3) { transition-delay: 0.3s; }
+        #workflow-engine.is-solved .problem-node:nth-child(4) { transition-delay: 0.4s; }
+        #workflow-engine.is-solved .problem-node:nth-child(5) { transition-delay: 0.5s; }
+        #workflow-engine.is-solved .chaos-center { transition: opacity 0.5s ease; opacity: 0; }
+        
+        /* --- Scene 2: The Solution --- */
+        #scene-solution {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease 1s; pointer-events: none;
+        }
+        #workflow-engine.is-solved #scene-solution { opacity: 1; pointer-events: all; }
+
+        .solution-center { position: absolute; text-align: center; transform: translateY(-25vh); transition: transform 1s ease; }
+        .solution-center h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--text-muted); font-weight: 500;}
+
         #cta-core {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: pulse 2.5s infinite;
+            position: relative; width: 120px; height: 120px; background: var(--primary-color);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            text-align: center; cursor: pointer; z-index: 10;
+            animation: pulse-core 2.5s infinite 1s; transform: scale(0);
+            transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        #cta-core:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 40px var(--primary-glow);
-            animation-play-state: paused;
-        }
-        #cta-core a {
-            text-decoration: none; color: white;
-            font-size: 1.5rem; font-weight: 700;
-        }
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 var(--primary-glow); }
-            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 170, 255, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 170, 255, 0); }
+        #workflow-engine.is-solved #cta-core { transform: scale(1); transition-delay: 0.8s; }
+        #cta-core:hover { transform: scale(1.1) !important; animation-play-state: paused; }
+        #cta-core a { text-decoration: none; color: white; font-size: 1.5rem; font-weight: 700; }
+        @keyframes pulse-core {
+            0%{box-shadow: 0 0 0 0 var(--primary-glow);} 70%{box-shadow: 0 0 0 20px rgba(0,170,255,0);} 100%{box-shadow:0 0 0 0 rgba(0,170,255,0);}
         }
 
-        /* --- Service Nodes --- */
         .service-node {
-            position: absolute;
-            width: 150px; height: 150px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            position: absolute; width: 150px; height: 150px; background: var(--card-bg);
+            border: 1px solid var(--card-border); border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; text-align: center; padding: 20px;
+            cursor: pointer; backdrop-filter: blur(5px);
+            opacity: 0; transform: scale(0); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .service-node:hover {
-            border-color: var(--primary-color);
-            transform: scale(1.05);
+        #workflow-engine.is-solved .service-node { opacity: 1; transform: scale(1); }
+        .service-node:hover { border-color: var(--primary-color); transform: scale(1.1) !important; }
+        .service-node h3 { font-size: 1.1rem; color: var(--text-color); }
+        
+        @media (min-width: 769px) { /* Desktop Orbit */
+            #workflow-engine.is-solved #node-1 { transform: rotate(0deg) translateX(280px) rotate(0deg); transition-delay: 1.2s; }
+            #workflow-engine.is-solved #node-2 { transform: rotate(120deg) translateX(280px) rotate(-120deg); transition-delay: 1.3s; }
+            #workflow-engine.is-solved #node-3 { transform: rotate(240deg) translateX(280px) rotate(-240deg); transition-delay: 1.4s; }
         }
-        .service-node h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-color);
+        @media (max-width: 768px) { /* Mobile Stack */
+            .problem-node { font-size: 0.8rem; padding: 8px 15px; }
+            .problem-node:nth-child(1) { top: 10%; left: 5%; } .problem-node:nth-child(2) { top: 20%; left: 60%; }
+            .problem-node:nth-child(3) { top: 70%; left: 10%; } .problem-node:nth-child(4) { top: 80%; left: 55%; }
+            .problem-node:nth-child(5) { display: none; } /* Fewer problems on mobile */
+            
+            #cta-core { width: 100px; height: 100px; }
+            .solution-center { transform: translateY(-28vh); }
+            #workflow-engine.is-solved #node-1 { transform: translateY(-130px); transition-delay: 1.2s; }
+            #workflow-engine.is-solved #node-2 { transform: translateY(0px); transition-delay: 1.3s; }
+            #workflow-engine.is-solved #node-3 { transform: translateY(130px); transition-delay: 1.4s; }
         }
 
-        /* --- Desktop & Tablet Orbit Layout --- */
-        @media (min-width: 769px) {
-            #node-1 { transform: rotate(0deg) translateX(280px) rotate(0deg); }
-            #node-2 { transform: rotate(120deg) translateX(280px) rotate(-120deg); }
-            #node-3 { transform: rotate(240deg) translateX(280px) rotate(-240deg); }
-        }
-        
-        /* --- Mobile Vertical Conduit Layout --- */
-        @media (max-width: 768px) {
-            #cta-core {
-                width: 100px; height: 100px;
-                transform: translateY(-200px);
-                animation: none; /* Simpler for mobile */
-            }
-            #cta-core a { font-size: 1.2rem; }
-            .service-node {
-                width: 130px; height: 130px;
-            }
-            .service-node h3 { font-size: 1rem; }
-            #node-1 { transform: translateY(-50px); }
-            #node-2 { transform: translateY(100px); }
-            #node-3 { transform: translateY(250px); }
-        }
-
-        /* --- Modal Overlay --- */
-        #modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(2, 4, 10, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-        #modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        #modal-content {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 90%;
-            max-width: 500px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 40px;
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        #modal-overlay.active #modal-content {
-            transform: translate(-50%, -50%) scale(1);
-        }
-        #modal-content h2 {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-        #modal-content p {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            color: var(--text-muted);
-        }
-        #close-modal {
-            position: absolute;
-            top: 20px; right: 20px;
-            font-size: 2rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
+        /* --- Modal (re-used from previous concept) --- */
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(2,4,10,0.7); backdrop-filter: blur(8px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        #modal-overlay.active { opacity: 1; pointer-events: all; }
+        #modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 500px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 40px; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        #modal-overlay.active #modal-content { transform: translate(-50%, -50%) scale(1); }
+        #modal-content h2 { font-size: 2rem; font-weight: 900; color: var(--primary-color); margin-bottom: 20px; }
+        #modal-content p { font-size: 1.1rem; line-height: 1.7; color: var(--text-muted); }
+        #close-modal { position: absolute; top: 20px; right: 20px; font-size: 2rem; color: var(--text-muted); cursor: pointer; transition: color 0.3s ease; }
         #close-modal:hover { color: var(--text-color); }
         
-        /* Language Toggle - Placed at corner */
-        .language-toggle {
-            position: fixed; top: 20px; right: 20px; z-index: 50;
-        }
-        /* (The rest of the toggle CSS is the same as before) */
+        /* --- Language Toggle --- */
+        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 50; }
         .language-toggle input[type="checkbox"] { display: none; }
         .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; }
         .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
@@ -202,25 +158,35 @@
         #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
         #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
         #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-color); }
-
     </style>
 </head>
 <body>
-    <canvas id="background-canvas"></canvas>
-
-    <div id="interactive-scene">
-        <div id="cta-core">
-            <a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20automating%20my%20workflow." target="_blank">🚀</a>
+    <div id="workflow-engine">
+        <!-- SCENE 1: THE CHAOS -->
+        <div id="scene-chaos">
+            <div class="problem-node">Manual Invoices</div>
+            <div class="problem-node">Missed Follow-ups</div>
+            <div class="problem-node">Data Entry Errors</div>
+            <div class="problem-node">Repetitive Tasks</div>
+            <div class="problem-node">Excel Juggling</div>
+            
+            <div class="chaos-center">
+                <h1 id="chaos-title">Your workflow is chaos.<br>Let's fix it.</h1>
+                <button id="automate-btn">Streamline This Workflow</button>
+            </div>
         </div>
 
-        <div class="service-node" id="node-1" data-service="1">
-            <h3 id="node-title-1">Message Automation</h3>
-        </div>
-        <div class="service-node" id="node-2" data-service="2">
-            <h3 id="node-title-2">Process Streamlining</h3>
-        </div>
-        <div class="service-node" id="node-3" data-service="3">
-            <h3 id="node-title-3">Custom Setup</h3>
+        <!-- SCENE 2: THE SOLUTION -->
+        <div id="scene-solution">
+            <div class="solution-center">
+                <h2 id="solution-title">Welcome to a Smarter Workflow.</h2>
+            </div>
+            <div id="cta-core">
+                <a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20automating%20my%20workflow." target="_blank">🚀</a>
+            </div>
+            <div class="service-node" id="node-1" data-service="1"><h3 id="node-title-1">Message Automation</h3></div>
+            <div class="service-node" id="node-2" data-service="2"><h3 id="node-title-2">Process Streamlining</h3></div>
+            <div class="service-node" id="node-3" data-service="3"><h3 id="node-title-3">Custom Setup</h3></div>
         </div>
     </div>
     
@@ -231,71 +197,32 @@
             <p id="modal-description">Service description goes here.</p>
         </div>
     </div>
-
     <div class="language-toggle">
         <input type="checkbox" id="lang-toggle" onchange="handleLanguageToggle()">
-        <label for="lang-toggle" class="toggle-label">
-            <span class="toggle-thumb"></span>
-            <span class="lang-text lang-en">EN</span>
-            <span class="lang-text lang-hi">HI</span>
-        </label>
+        <label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label>
     </div>
 
     <!-- Hidden content for modals -->
     <div id="service-content-en" style="display: none;">
-        <div data-service="1">
-            <h2 class="title">🚀 Message Automation</h2>
-            <p class="desc">Engage clients instantly. We set up automated WhatsApp, SMS, or email sequences for follow-ups, reminders, and notifications, so you never miss an opportunity.</p>
-        </div>
-        <div data-service="2">
-            <h2 class="title">⚙️ Process Streamlining</h2>
-            <p class="desc">Tired of copy-pasting and manual data entry? We analyze your workflow and build a streamlined system using tools like Google Sheets to eliminate grunt work.</p>
-        </div>
-        <div data-service="3">
-            <h2 class="title">🛠️ Custom Setup & Support</h2>
-            <p class="desc">From concept to full implementation, we handle the entire setup. We build your new automated system and ensure your team knows exactly how to use it.</p>
-        </div>
+        <div data-service="1"><h2 class="title">🚀 Message Automation</h2><p class="desc">Engage clients instantly. We set up automated WhatsApp, SMS, or email sequences for follow-ups, reminders, and notifications, so you never miss an opportunity.</p></div>
+        <div data-service="2"><h2 class="title">⚙️ Process Streamlining</h2><p class="desc">Tired of copy-pasting and manual data entry? We analyze your workflow and build a streamlined system using tools like Google Sheets to eliminate grunt work.</p></div>
+        <div data-service="3"><h2 class="title">🛠️ Custom Setup & Support</h2><p class="desc">From concept to full implementation, we handle the entire setup. We build your new automated system and ensure your team knows exactly how to use it.</p></div>
     </div>
     <div id="service-content-hi" style="display: none;">
-        <div data-service="1">
-            <h2 class="title">🚀 मैसेज ऑटोमेशन</h2>
-            <p class="desc">रिमाइंडर, फॉलो-अप और नोटिफिकेशन के लिए ऑटोमेटेड WhatsApp, SMS, या ईमेल भेजें, ताकि आप कोई मौका न चूकें।</p>
-        </div>
-        <div data-service="2">
-            <h2 class="title">⚙️ प्रोसेस स्ट्रीमलाइनिंग</h2>
-            <p class="desc">मैन्युअल डेटा एंट्री और कॉपी-पेस्ट से थक गए? हम आपके वर्कफ़्लो को समझकर Google Sheets जैसे टूल से एक स्मार्ट सिस्टम बनाते हैं जो आपका समय बचाता है।</p>
-        </div>
-        <div data-service="3">
-            <h2 class="title">🛠️ पूरा सेटअप और सपोर्ट</h2>
-            <p class="desc">हम सिर्फ़ सिस्टम बनाते नहीं, बल्कि उसे आपके लिए पूरी तरह से सेट अप करते हैं और आपकी टीम को इसका इस्तेमाल करना भी सिखाते हैं।</p>
-        </div>
+        <div data-service="1"><h2 class="title">🚀 मैसेज ऑटोमेशन</h2><p class="desc">रिमाइंडर, फॉलो-अप और नोटिफिकेशन के लिए ऑटोमेटेड WhatsApp, SMS, या ईमेल भेजें, ताकि आप कोई मौका न चूकें।</p></div>
+        <div data-service="2"><h2 class="title">⚙️ प्रोसेस स्ट्रीमलाइनिंग</h2><p class="desc">मैन्युअल डेटा एंट्री और कॉपी-पेस्ट से थक गए? हम आपके वर्कफ़्लो को समझकर Google Sheets जैसे टूल से एक स्मार्ट सिस्टम बनाते हैं जो आपका समय बचाता है।</p></div>
+        <div data-service="3"><h2 class="title">🛠️ पूरा सेटअप और सपोर्ट</h2><p class="desc">हम सिर्फ़ सिस्टम बनाते नहीं, बल्कि उसे आपके लिए पूरी तरह से सेट अप करते हैं और आपकी टीम को इसका इस्तेमाल करना भी सिखाते हैं।</p></div>
     </div>
 
     <script>
-        const isDesktop = window.matchMedia("(min-width: 769px)").matches;
-        
-        // --- Lightweight Particle Animation ---
-        if (isDesktop) {
-            const canvas = document.getElementById('background-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            let particlesArray;
-            class Particle {
-                constructor(x,y,dX,dY,s,c){this.x=x;this.y=y;this.directionX=dX;this.directionY=dY;this.size=s;this.color=c;}
-                draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);ctx.fillStyle=this.color;ctx.fill();}
-                update(){if(this.x>canvas.width||this.x<0){this.directionX=-this.directionX;}if(this.y>canvas.height||this.y<0){this.directionY=-this.directionY;}this.x+=this.directionX;this.y+=this.directionY;this.draw();}
-            }
-            function init(){particlesArray=[];let num=(canvas.height*canvas.width)/20000;for(let i=0;i<num;i++){let s=(Math.random()*2)+1;let x=(Math.random()*((innerWidth-s*2)-(s*2))+s*2);let y=(Math.random()*((innerHeight-s*2)-(s*2))+s*2);let dX=(Math.random()*0.4)-0.2;let dY=(Math.random()*0.4)-0.2;particlesArray.push(new Particle(x,y,dX,dY,s,'rgba(0,170,255,0.2)'));}}
-            function animate(){requestAnimationFrame(animate);ctx.clearRect(0,0,innerWidth,innerHeight);for(let i=0;i<particlesArray.length;i++){particlesArray[i].update();}}
-            window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;init();});
-            init();animate();
-        }
+        // --- The Main Engine Trigger ---
+        const workflowEngine = document.getElementById('workflow-engine');
+        document.getElementById('automate-btn').addEventListener('click', () => {
+            workflowEngine.classList.add('is-solved');
+        });
 
         // --- Modal Interaction Logic ---
         const modalOverlay = document.getElementById('modal-overlay');
-        const modalTitle = document.getElementById('modal-title');
-        const modalDesc = document.getElementById('modal-description');
         const serviceNodes = document.querySelectorAll('.service-node');
         
         serviceNodes.forEach(node => {
@@ -304,38 +231,32 @@
                 const lang = document.getElementById('lang-toggle').checked ? 'hi' : 'en';
                 const contentSource = document.querySelector(`#service-content-${lang} [data-service="${serviceId}"]`);
 
-                modalTitle.innerHTML = contentSource.querySelector('.title').innerHTML;
-                modalDesc.innerHTML = contentSource.querySelector('.desc').innerHTML;
+                document.getElementById('modal-title').innerHTML = contentSource.querySelector('.title').innerHTML;
+                document.getElementById('modal-description').innerHTML = contentSource.querySelector('.desc').innerHTML;
                 
                 modalOverlay.classList.add('active');
             });
         });
-        
-        document.getElementById('close-modal').addEventListener('click', () => {
-            modalOverlay.classList.remove('active');
-        });
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
-            }
-        });
+        document.getElementById('close-modal').addEventListener('click', () => modalOverlay.classList.remove('active'));
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
 
         // --- Language Toggle Logic ---
         function handleLanguageToggle() {
             const isHindi = document.getElementById('lang-toggle').checked;
             const lang = isHindi ? 'hi' : 'en';
             
-            // Simplified content source for node titles
             const titles = {
-                en: ["Message Automation", "Process Streamlining", "Custom Setup"],
-                hi: ["मैसेज ऑटोमेशन", "प्रोसेस स्ट्रीमलाइनिंग", "पूरा सेटअप"]
+                en: { chaos: "Your workflow is chaos.<br>Let's fix it.", solution: "Welcome to a Smarter Workflow.", nodes: ["Message Automation", "Process Streamlining", "Custom Setup"], btn: "Streamline This Workflow" },
+                hi: { chaos: "आपका वर्कफ़्लो chaos है।<br>आइए इसे ठीक करें।", solution: "एक स्मार्ट वर्कफ़्लो में आपका स्वागत है।", nodes: ["मैसेज ऑटोमेशन", "प्रोसेस स्ट्रीमलाइनिंग", "पूरा सेटअप"], btn: "इस वर्कफ़्लो को स्ट्रीमलाइन करें" }
             };
 
-            document.getElementById('node-title-1').innerText = titles[lang][0];
-            document.getElementById('node-title-2').innerText = titles[lang][1];
-            document.getElementById('node-title-3').innerText = titles[lang][2];
+            document.getElementById('chaos-title').innerHTML = titles[lang].chaos;
+            document.getElementById('solution-title').innerText = titles[lang].solution;
+            document.getElementById('node-title-1').innerText = titles[lang].nodes[0];
+            document.getElementById('node-title-2').innerText = titles[lang].nodes[1];
+            document.getElementById('node-title-3').innerText = titles[lang].nodes[2];
+            document.getElementById('automate-btn').innerText = titles[lang].btn;
         }
-        
     </script>
 </body>
 </html>
