@@ -3,109 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smarter Automation Solutions</title>
+  <title>Smarter Automation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap" rel="stylesheet">
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0d0d0d;
-      color: #f0f0f0;
+      font-family: 'Outfit', sans-serif;
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+      overflow-x: hidden;
     }
     header {
-      background-color: #161616;
-      padding: 30px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      padding: 40px 20px 20px;
       text-align: center;
     }
     header h1 {
-      font-size: 2.5rem;
-      color: #f2f2f2;
-      font-weight: 800;
-      letter-spacing: 1px;
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(to right, #ffffff, #888888);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .language-toggle {
-      text-align: center;
-      margin-top: 10px;
+      margin-top: 12px;
     }
     .lang-btn {
-      padding: 6px 16px;
-      background: #2c2c2c;
-      border: none;
-      border-radius: 20px;
-      color: #fff;
+      padding: 8px 18px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #ccc;
       margin: 0 6px;
-      font-weight: 600;
+      border-radius: 20px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: 0.3s;
     }
-    .lang-btn.active {
-      background: #4f4f4f;
+    .lang-btn.active, .lang-btn:hover {
+      background: #444;
+      color: #fff;
     }
     .hero {
+      padding: 80px 20px;
       text-align: center;
-      padding: 60px 20px;
-      background: radial-gradient(circle, #202020, #121212);
-      color: white;
+      background: radial-gradient(circle at center, #111, #000);
     }
     .hero h2 {
-      font-size: 3.2rem;
+      font-size: 3.4rem;
+      font-weight: 800;
       margin-bottom: 20px;
     }
     .hero p {
-      font-size: 1.3rem;
-      max-width: 640px;
+      font-size: 1.4rem;
+      max-width: 700px;
       margin: auto;
+      color: #aaa;
     }
     .section {
-      max-width: 1000px;
-      margin: 80px auto;
-      padding: 0 20px;
+      padding: 60px 20px;
+      text-align: center;
     }
     .section h3 {
-      font-size: 2rem;
-      color: #ffffff;
+      font-size: 2.2rem;
+      font-weight: 700;
       margin-bottom: 10px;
+      color: #f5f5f5;
     }
     .section p {
-      font-size: 1.1rem;
-      color: #ccc;
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.15rem;
+      color: #bbb;
     }
     .cta {
       text-align: center;
-      margin-top: 60px;
+      margin: 60px 0 40px;
     }
     .cta a {
-      background: #2c2c2c;
+      background: #1f1f1f;
       color: #fff;
-      padding: 16px 36px;
-      border-radius: 12px;
+      padding: 18px 40px;
+      font-size: 1.2rem;
       font-weight: 600;
-      font-size: 1.1rem;
+      border: 2px solid #444;
+      border-radius: 50px;
       text-decoration: none;
-      transition: background 0.3s ease;
-      display: inline-block;
+      transition: 0.3s ease;
     }
     .cta a:hover {
-      background: #4f4f4f;
+      background: #444;
     }
     footer {
       text-align: center;
       padding: 40px 20px;
       font-size: 0.9rem;
-      color: #888;
+      color: #666;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Smarter Automation Solutions</h1>
+    <h1>Smarter Automation</h1>
     <div class="language-toggle">
       <button class="lang-btn active" onclick="switchLang('en')" id="btn-en">English</button>
       <button class="lang-btn" onclick="switchLang('hi')" id="btn-hi">हिन्दी</button>
@@ -138,7 +140,7 @@
   </section>
 
   <div class="cta">
-    <a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20getting%20my%20business%20processes%20streamlined" target="_blank">🚀 Let's Automate Your Workflow</a>
+    <a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20getting%20my%20business%20processes%20streamlined" target="_blank">🚀 Let’s Automate Your Workflow</a>
   </div>
 
   <footer>
