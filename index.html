@@ -1,189 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smarter Automation | The Future of Workflow</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-color: #02040a;
-      --text-color: #e0e0e0;
-      --text-muted: #a0a0a0;
-      --primary-color: #00aaff;
-      --primary-glow: rgba(0, 170, 255, 0.5);
-      --card-bg: rgba(20, 25, 40, 0.4);
-      --card-border: rgba(255, 255, 255, 0.1);
-      --card-hover-border: rgba(0, 170, 255, 0.7);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Outfit', sans-serif; background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
-    #cursor-glow, #cursor-dot { display: none; }
-    @media (pointer: fine) {
-      body { cursor: none; }
-      #cursor-glow { display: block; position: fixed; left: 0; top: 0; width: 800px; height: 800px; background: radial-gradient(circle, rgba(0, 170, 255, 0.08) 0%, rgba(0, 170, 255, 0) 60%); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 9999; transition: background 0.2s ease; }
-      #cursor-dot { display: block; position: fixed; left: 0; top: 0; width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 10000; transition: transform 0.1s ease-out; }
-      body:has(a:hover, button:hover, .service-card:hover, .toggle-label:hover) #cursor-dot { transform: translate(-50%, -50%) scale(5); background-color: rgba(0, 170, 255, 0.2); }
-    }
-    #background-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-    header { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; z-index: 1000; background: rgba(2, 4, 10, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1); }
-    header.header-hidden { transform: translateY(-100%); }
-    header h1 { font-size: 1.5rem; font-weight: 700; background: linear-gradient(90deg, #ffffff, #c0c0c0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    main { padding: 0 5%; }
-    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 80px; }
-    .hero h2 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; margin-bottom: 20px; max-width: 1000px; line-height: 1.1; }
-    .hero h2 .line { display: block; overflow: hidden; }
-    .hero h2 .line-inner { display: block; animation: slideUpFadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; transform: translateY(110%); opacity: 0; }
-    .hero h2 .line:nth-child(1) .line-inner { animation-delay: 0.2s; }
-    .hero h2 .line:nth-child(2) .line-inner { animation-delay: 0.4s; }
-    .hero h2 .line:nth-child(3) .line-inner { animation-delay: 0.6s; }
-    @keyframes slideUpFadeIn { to { transform: translateY(0); opacity: 1; } }
-    .hero h2 span { background: linear-gradient(90deg, var(--primary-color), #33caff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { font-size: clamp(1.1rem, 2.5vw, 1.4rem); max-width: 750px; color: var(--text-muted); font-weight: 300; line-height: 1.6; opacity: 0; animation: fadeInUp 1s ease-out 1.2s forwards; }
-    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-    .section-title { text-align: center; margin-bottom: 50px; }
-    .section-title h3 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; margin-bottom: 10px; color: #f5f5f5; }
-    .section-title p { max-width: 800px; margin: 0 auto; font-size: 1.15rem; color: var(--text-muted); }
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 100px 0; }
-    .service-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 30px; text-align: left; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; backdrop-filter: blur(5px); position: relative; overflow: hidden; }
-    .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.1) 50%, transparent 80%); transform: translateX(-150%); transition: transform 0.6s ease; }
-    .service-card:hover { transform: translateY(-10px); border-color: var(--card-hover-border); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
-    .service-card:hover::before { transform: translateX(150%); }
-    .service-card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; color: #f5f5f5; }
-    .service-card p { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
-    .cta { text-align: center; margin: 60px 0 120px; }
-    .cta a { background: linear-gradient(90deg, var(--primary-color), #0077b3, var(--primary-color)); background-size: 200% auto; animation: gradient-flow 3s linear infinite; color: #fff; padding: 20px 50px; font-size: 1.2rem; font-weight: 700; border-radius: 50px; text-decoration: none; display: inline-block; box-shadow: 0 0 20px var(--primary-glow); border: none; transition: all 0.3s ease; }
-    @keyframes gradient-flow { to { background-position: 200% center; } }
-    .cta a:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 0 35px var(--primary-glow); }
-    footer { text-align: center; padding: 40px 20px; font-size: 0.9rem; color: #666; border-top: 1px solid var(--card-border); }
-    .scroll-reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
-    .language-toggle { position: relative; display: flex; align-items: center; }
-    .language-toggle input[type="checkbox"] { display: none; }
-    .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; }
-    .toggle-label:hover { border-color: var(--card-hover-border); }
-    .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
-    .lang-en { color: var(--text-color); }
-    .lang-hi { color: var(--text-muted); }
-    .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); box-shadow: 0 0 10px var(--primary-glow); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-    #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
-    #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
-    #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-color); }
-    @media (max-width: 768px) {
-      body { background: linear-gradient(300deg, #010206, #060913, #02040a); background-size: 180% 180%; animation: gradient-flow 16s ease infinite; }
-      #background-canvas { display: none; }
-      main { padding: 0 5%; }
-      header { padding: 15px 5%; }
-      header h1 { font-size: 1.2rem; }
-      .hero { min-height: 90vh; }
-      .hero p { font-size: clamp(1rem, 4vw, 1.1rem); }
-      .services-grid { grid-template-columns: 1fr; gap: 20px; padding: 60px 0; }
-      .service-card:hover { transform: translateY(0); }
-      .service-card:active { transform: scale(0.98); }
-      .cta { margin: 40px 0 80px; }
-      .cta a { padding: 18px 35px; font-size: 1.1rem; }
-      .toggle-label { width: 70px; height: 36px; padding: 0 10px; }
-      .toggle-thumb { width: 28px; height: 28px; }
-      #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(34px); }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smarter Automation | The Interactive Workflow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #010206;
+            --text-color: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --primary-color: #00aaff;
+            --primary-glow: rgba(0, 170, 255, 0.5);
+            --card-bg: rgba(20, 25, 40, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden; /* No scrolling! */
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(300deg, #010206, #060913, #02040a);
+            background-size: 180% 180%;
+            animation: gradient-flow 16s ease infinite;
+        }
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        #background-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        /* --- Main Interactive Scene --- */
+        #interactive-scene {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        /* --- The Central CTA Core --- */
+        #cta-core {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: pulse 2.5s infinite;
+        }
+        #cta-core:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px var(--primary-glow);
+            animation-play-state: paused;
+        }
+        #cta-core a {
+            text-decoration: none; color: white;
+            font-size: 1.5rem; font-weight: 700;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 var(--primary-glow); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 170, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 170, 255, 0); }
+        }
+
+        /* --- Service Nodes --- */
+        .service-node {
+            position: absolute;
+            width: 150px; height: 150px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .service-node:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        .service-node h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        /* --- Desktop & Tablet Orbit Layout --- */
+        @media (min-width: 769px) {
+            #node-1 { transform: rotate(0deg) translateX(280px) rotate(0deg); }
+            #node-2 { transform: rotate(120deg) translateX(280px) rotate(-120deg); }
+            #node-3 { transform: rotate(240deg) translateX(280px) rotate(-240deg); }
+        }
+        
+        /* --- Mobile Vertical Conduit Layout --- */
+        @media (max-width: 768px) {
+            #cta-core {
+                width: 100px; height: 100px;
+                transform: translateY(-200px);
+                animation: none; /* Simpler for mobile */
+            }
+            #cta-core a { font-size: 1.2rem; }
+            .service-node {
+                width: 130px; height: 130px;
+            }
+            .service-node h3 { font-size: 1rem; }
+            #node-1 { transform: translateY(-50px); }
+            #node-2 { transform: translateY(100px); }
+            #node-3 { transform: translateY(250px); }
+        }
+
+        /* --- Modal Overlay --- */
+        #modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(2, 4, 10, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        #modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        #modal-content {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 40px;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #modal-overlay.active #modal-content {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        #modal-content h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        #modal-content p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+        #close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            font-size: 2rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        #close-modal:hover { color: var(--text-color); }
+        
+        /* Language Toggle - Placed at corner */
+        .language-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 50;
+        }
+        /* (The rest of the toggle CSS is the same as before) */
+        .language-toggle input[type="checkbox"] { display: none; }
+        .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; }
+        .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
+        .lang-en { color: var(--text-color); } .lang-hi { color: var(--text-muted); }
+        .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); box-shadow: 0 0 10px var(--primary-glow); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
+        #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
+        #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-color); }
+
+    </style>
 </head>
 <body>
-  <div id="cursor-glow"></div>
-  <div id="cursor-dot"></div>
-  <canvas id="background-canvas"></canvas>
+    <canvas id="background-canvas"></canvas>
 
-  <header id="main-header">
-    <h1>Smarter Automation</h1>
+    <div id="interactive-scene">
+        <div id="cta-core">
+            <a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20automating%20my%20workflow." target="_blank">🚀</a>
+        </div>
+
+        <div class="service-node" id="node-1" data-service="1">
+            <h3 id="node-title-1">Message Automation</h3>
+        </div>
+        <div class="service-node" id="node-2" data-service="2">
+            <h3 id="node-title-2">Process Streamlining</h3>
+        </div>
+        <div class="service-node" id="node-3" data-service="3">
+            <h3 id="node-title-3">Custom Setup</h3>
+        </div>
+    </div>
+    
+    <div id="modal-overlay">
+        <div id="modal-content">
+            <span id="close-modal">×</span>
+            <h2 id="modal-title">Service Title</h2>
+            <p id="modal-description">Service description goes here.</p>
+        </div>
+    </div>
+
     <div class="language-toggle">
         <input type="checkbox" id="lang-toggle" onchange="handleLanguageToggle()">
         <label for="lang-toggle" class="toggle-label">
-            <span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span>
+            <span class="toggle-thumb"></span>
+            <span class="lang-text lang-en">EN</span>
+            <span class="lang-text lang-hi">HI</span>
         </label>
     </div>
-  </header>
 
-  <main>
-    <section class="hero">
-      <h2 id="heroTitle">
-          <span class="line"><span class="line-inner">Let <span>Automation</span></span></span>
-          <span class="line"><span class="line-inner">Do The Heavy</span></span>
-          <span class="line"><span class="line-inner">Lifting</span></span>
-      </h2>
-      <p id="heroSub">I help businesses like yours streamline operations using tools like Google Sheets, WhatsApp, and APIs — so you focus on growth, not grunt work.</p>
-    </section>
-
-    <section class="services-section">
-      <div class="section-title scroll-reveal">
-          <h3 id="ourServices">Our Core Services</h3>
-          <p>We focus on three key areas to give you back your time.</p>
-      </div>
-      <div class="services-grid">
-        <div class="service-card scroll-reveal">
-          <h3 id="service1">🚀 Message Automation</h3>
-          <p id="desc1">Engage clients instantly. We set up automated WhatsApp, SMS, or email sequences for follow-ups, reminders, and notifications, so you never miss an opportunity.</p>
+    <!-- Hidden content for modals -->
+    <div id="service-content-en" style="display: none;">
+        <div data-service="1">
+            <h2 class="title">🚀 Message Automation</h2>
+            <p class="desc">Engage clients instantly. We set up automated WhatsApp, SMS, or email sequences for follow-ups, reminders, and notifications, so you never miss an opportunity.</p>
         </div>
-        <div class="service-card scroll-reveal">
-          <h3 id="service2">⚙️ Process Streamlining</h3>
-          <p id="desc2">Tired of copy-pasting and manual data entry? We analyze your workflow and build a streamlined system using tools like Google Sheets to eliminate grunt work.</p>
+        <div data-service="2">
+            <h2 class="title">⚙️ Process Streamlining</h2>
+            <p class="desc">Tired of copy-pasting and manual data entry? We analyze your workflow and build a streamlined system using tools like Google Sheets to eliminate grunt work.</p>
         </div>
-        <div class="service-card scroll-reveal">
-          <h3 id="service3">🛠️ Custom Setup & Support</h3>
-          <p id="desc3">From concept to full implementation, we handle the entire setup. We build your new automated system and ensure your team knows exactly how to use it.</p>
+        <div data-service="3">
+            <h2 class="title">🛠️ Custom Setup & Support</h2>
+            <p class="desc">From concept to full implementation, we handle the entire setup. We build your new automated system and ensure your team knows exactly how to use it.</p>
         </div>
-      </div>
-    </section>
-
-    <div class="cta scroll-reveal">
-      <a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20getting%20my%20business%20processes%20streamlined" target="_blank">🚀 Let’s Automate Your Workflow</a>
     </div>
-  </main>
+    <div id="service-content-hi" style="display: none;">
+        <div data-service="1">
+            <h2 class="title">🚀 मैसेज ऑटोमेशन</h2>
+            <p class="desc">रिमाइंडर, फॉलो-अप और नोटिफिकेशन के लिए ऑटोमेटेड WhatsApp, SMS, या ईमेल भेजें, ताकि आप कोई मौका न चूकें।</p>
+        </div>
+        <div data-service="2">
+            <h2 class="title">⚙️ प्रोसेस स्ट्रीमलाइनिंग</h2>
+            <p class="desc">मैन्युअल डेटा एंट्री और कॉपी-पेस्ट से थक गए? हम आपके वर्कफ़्लो को समझकर Google Sheets जैसे टूल से एक स्मार्ट सिस्टम बनाते हैं जो आपका समय बचाता है।</p>
+        </div>
+        <div data-service="3">
+            <h2 class="title">🛠️ पूरा सेटअप और सपोर्ट</h2>
+            <p class="desc">हम सिर्फ़ सिस्टम बनाते नहीं, बल्कि उसे आपके लिए पूरी तरह से सेट अप करते हैं और आपकी टीम को इसका इस्तेमाल करना भी सिखाते हैं।</p>
+        </div>
+    </div>
 
-  <footer> © 2025 — Built for those who work smart. </footer>
+    <script>
+        const isDesktop = window.matchMedia("(min-width: 769px)").matches;
+        
+        // --- Lightweight Particle Animation ---
+        if (isDesktop) {
+            const canvas = document.getElementById('background-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let particlesArray;
+            class Particle {
+                constructor(x,y,dX,dY,s,c){this.x=x;this.y=y;this.directionX=dX;this.directionY=dY;this.size=s;this.color=c;}
+                draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);ctx.fillStyle=this.color;ctx.fill();}
+                update(){if(this.x>canvas.width||this.x<0){this.directionX=-this.directionX;}if(this.y>canvas.height||this.y<0){this.directionY=-this.directionY;}this.x+=this.directionX;this.y+=this.directionY;this.draw();}
+            }
+            function init(){particlesArray=[];let num=(canvas.height*canvas.width)/20000;for(let i=0;i<num;i++){let s=(Math.random()*2)+1;let x=(Math.random()*((innerWidth-s*2)-(s*2))+s*2);let y=(Math.random()*((innerHeight-s*2)-(s*2))+s*2);let dX=(Math.random()*0.4)-0.2;let dY=(Math.random()*0.4)-0.2;particlesArray.push(new Particle(x,y,dX,dY,s,'rgba(0,170,255,0.2)'));}}
+            function animate(){requestAnimationFrame(animate);ctx.clearRect(0,0,innerWidth,innerHeight);for(let i=0;i<particlesArray.length;i++){particlesArray[i].update();}}
+            window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;init();});
+            init();animate();
+        }
 
-  <script>
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (!isMobile) {
-      const cursorGlow = document.getElementById('cursor-glow'); const cursorDot = document.getElementById('cursor-dot');
-      window.addEventListener('mousemove', (e) => { const { clientX, clientY } = e; cursorGlow.style.left = `${clientX}px`; cursorGlow.style.top = `${clientY}px`; cursorDot.style.left = `${clientX}px`; cursorDot.style.top = `${clientY}px`; });
-    }
-    if (!isMobile) {
-      const canvas = document.getElementById('background-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray;
-      class Particle { constructor(x,y,dX,dY,s){this.x=x;this.y=y;this.directionX=dX;this.directionY=dY;this.size=s;} draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);ctx.fillStyle='rgba(0,170,255,0.1)';ctx.fill();} update(){if(this.x>canvas.width||this.x<0){this.directionX=-this.directionX;}if(this.y>canvas.height||this.y<0){this.directionY=-this.directionY;}this.x+=this.directionX;this.y+=this.directionY;this.draw();}}
-      function init(){particlesArray=[];let num=(canvas.height*canvas.width)/15000;for(let i=0;i<num;i++){let s=(Math.random()*2)+1;let x=(Math.random()*((innerWidth-s*2)-(s*2))+s*2);let y=(Math.random()*((innerHeight-s*2)-(s*2))+s*2);let dX=(Math.random()*0.4)-0.2;let dY=(Math.random()*0.4)-0.2;particlesArray.push(new Particle(x,y,dX,dY,s));}}
-      function animate(){requestAnimationFrame(animate);ctx.clearRect(0,0,innerWidth,innerHeight);for(let i=0;i<particlesArray.length;i++){particlesArray[i].update();}}
-      window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;init();}); init();animate();
-    }
-    const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } }); }, { threshold: 0.1 });
-    document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
-    let lastScrollY = window.scrollY; const header = document.getElementById('main-header');
-    window.addEventListener('scroll', () => { if (lastScrollY < window.scrollY && window.scrollY > 150) { header.classList.add('header-hidden'); } else { header.classList.remove('header-hidden'); } lastScrollY = window.scrollY; });
-    
-    const translations = {
-      hi: {
-        heroTitle: `<span class="line"><span class="line-inner"><span>ऑटोमेशन</span> को</span></span><span class="line"><span class="line-inner">दीजिए ज़िम्मेदारी</span></span>`,
-        heroSub: "मैं आपकी बिज़नेस प्रोसेस को आसान और ऑटोमेट करता हूँ — Google Sheets, WhatsApp और APIs जैसे टूल्स से।",
-        ourServices: "हमारी मुख्य सेवाएँ",
-        service1: "🚀 मैसेज ऑटोमेशन", desc1: "रिमाइंडर, फॉलो-अप और नोटिफिकेशन के लिए ऑटोमेटेड WhatsApp, SMS, या ईमेल भेजें, ताकि आप कोई मौका न चूकें।",
-        service2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", desc2: "मैन्युअल डेटा एंट्री और कॉपी-पेस्ट से थक गए? हम आपके वर्कफ़्लो को समझकर Google Sheets जैसे टूल से एक स्मार्ट सिस्टम बनाते हैं जो आपका समय बचाता है।",
-        service3: "🛠️ पूरा सेटअप और सपोर्ट", desc3: "हम सिर्फ़ सिस्टम बनाते नहीं, बल्कि उसे आपके लिए पूरी तरह से सेट अप करते हैं और आपकी टीम को इसका इस्तेमाल करना भी सिखाते हैं।"
-      }
-    };
-    function handleLanguageToggle() {
-      const toggle = document.getElementById('lang-toggle');
-      if (toggle.checked) {
-        const t = translations.hi;
-        document.getElementById('heroTitle').innerHTML = t.heroTitle;
-        document.getElementById('heroSub').innerText = t.heroSub;
-        document.getElementById('ourServices').innerText = t.ourServices;
-        document.getElementById('service1').innerText = t.service1; document.getElementById('desc1').innerText = t.desc1;
-        document.getElementById('service2').innerText = t.service2; document.getElementById('desc2').innerText = t.desc2;
-        document.getElementById('service3').innerText = t.service3; document.getElementById('desc3').innerText = t.desc3;
-      } else { location.reload(); }
-    }
-  </script>
+        // --- Modal Interaction Logic ---
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-description');
+        const serviceNodes = document.querySelectorAll('.service-node');
+        
+        serviceNodes.forEach(node => {
+            node.addEventListener('click', () => {
+                const serviceId = node.dataset.service;
+                const lang = document.getElementById('lang-toggle').checked ? 'hi' : 'en';
+                const contentSource = document.querySelector(`#service-content-${lang} [data-service="${serviceId}"]`);
+
+                modalTitle.innerHTML = contentSource.querySelector('.title').innerHTML;
+                modalDesc.innerHTML = contentSource.querySelector('.desc').innerHTML;
+                
+                modalOverlay.classList.add('active');
+            });
+        });
+        
+        document.getElementById('close-modal').addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+
+        // --- Language Toggle Logic ---
+        function handleLanguageToggle() {
+            const isHindi = document.getElementById('lang-toggle').checked;
+            const lang = isHindi ? 'hi' : 'en';
+            
+            // Simplified content source for node titles
+            const titles = {
+                en: ["Message Automation", "Process Streamlining", "Custom Setup"],
+                hi: ["मैसेज ऑटोमेशन", "प्रोसेस स्ट्रीमलाइनिंग", "पूरा सेटअप"]
+            };
+
+            document.getElementById('node-title-1').innerText = titles[lang][0];
+            document.getElementById('node-title-2').innerText = titles[lang][1];
+            document.getElementById('node-title-3').innerText = titles[lang][2];
+        }
+        
+    </script>
 </body>
 </html>
