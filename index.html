@@ -12,19 +12,19 @@
             --dark-bg: #030409; --light-bg: #F8F9FA;
             --text-dark: #1D2129; --text-light: #EDEFF3; --text-muted: #868E96;
             --primary-color: #007BFF; --primary-glow: rgba(0, 123, 255, 0.5);
+            --particle-color: rgba(255, 255, 255, 0.7);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* The user's request to hide the scrollbar is already implemented correctly here */
         html { scroll-behavior: auto !important; }
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--dark-bg);
             color: var(--text-light);
-            overscroll-behavior: none; /* Prevents "bounce" on scroll boundaries */
-            scrollbar-width: none; /* Firefox */
+            overscroll-behavior: none;
+            scrollbar-width: none;
         }
-        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, Edge */
+        body::-webkit-scrollbar { display: none; }
 
         #main-canvas {
             position: fixed; top: 0; left: 0;
@@ -38,7 +38,7 @@
             width: 100%; height: 100vh;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 0 5%;
-            will-change: transform, opacity; /* Hint for browser animation optimization */
+            will-change: transform, opacity;
         }
         .text-content { text-align: center; max-width: 900px; }
         h1 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; }
@@ -50,12 +50,12 @@
             gap: 30px; width: 100%; max-width: 1100px; margin-top: 50px;
         }
         .service-card {
-            background: rgba(255,255,255,0.7); border: 1px solid #dee2e6;
+            background: rgba(255,255,255,0.75); border: 1px solid #dee2e6;
             border-radius: 16px; padding: 30px;
             text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             will-change: transform, opacity;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
         .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
         .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
@@ -69,68 +69,32 @@
             box-shadow: 0 10px 30px var(--primary-glow);
             transition: all 0.3s ease; white-space: nowrap;
         }
-        #cta-button:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
+        #cta-button:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 0 45px 5px var(--primary-glow);
+        }
         
+        /* Language Toggle CSS (unchanged, but formatted) */
         .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
         #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
-        .toggle-label {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 80px; height: 40px;
-            background-color: rgba(20, 25, 40, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 0 12px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
+        .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20, 25, 40, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
         .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
         .lang-en { color: var(--text-light); }
         .lang-hi { color: var(--text-muted); }
-        .toggle-thumb {
-            position: absolute; top: 3px; left: 4px;
-            width: 32px; height: 32px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            z-index: 1;
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
+        .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
         #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
         #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); }
         .is-light .toggle-label { background-color: rgba(255, 255, 255, 0.8); border-color: rgba(0, 0, 0, 0.1); }
 
-        #scroll-hint {
-            position: fixed; bottom: 30px; left: 50%;
-            transform: translateX(-50%); z-index: 100;
-            width: 24px; height: 40px; border: 2px solid #fff;
-            border-radius: 20px; opacity: 0.7;
-            transition: opacity 0.5s;
-        }
-        #scroll-hint::before {
-            content: ''; position: absolute; top: 8px; left: 50%;
-            transform: translateX(-50%); width: 4px; height: 8px;
-            background: #fff; border-radius: 4px;
-            animation: scroll-anim 2s infinite;
-        }
+        /* Scroll Hint CSS (unchanged) */
+        #scroll-hint { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; width: 24px; height: 40px; border: 2px solid #fff; border-radius: 20px; opacity: 0.7; transition: opacity 0.5s; }
+        #scroll-hint::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 4px; height: 8px; background: #fff; border-radius: 4px; animation: scroll-anim 2s infinite; }
         @keyframes scroll-anim { 0% { transform: translate(-50%, 0); opacity: 1; } 50% { transform: translate(-50%, 10px); opacity: 1; } 100% { transform: translate(-50%, 20px); opacity: 0; } }
         
-        #shockwave-overlay {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 1px; height: 1px;
-            background-color: transparent;
-            border-radius: 50%; z-index: 999;
-            pointer-events: none;
-        }
+        #shockwave-overlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 1px; height: 1px; background-color: transparent; border-radius: 50%; z-index: 999; pointer-events: none; }
         
-        @media (max-width: 900px) {
-            #solution-cards { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { #solution-cards { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -165,14 +129,12 @@
         </section>
     </div>
 
-    <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     
     <script>
         // --- 1. SETUP & CONFIGURATION ---
-        // Cache DOM elements for better performance
         const dom = {
             canvas: document.getElementById('main-canvas'),
             shockwave: document.getElementById('shockwave-overlay'),
@@ -186,30 +148,30 @@
             solutionTitle: document.getElementById('solution-title'),
             serviceCards: document.querySelectorAll('.service-card')
         };
-
         gsap.registerPlugin(ScrollTrigger);
-
-        // Lenis smooth scrolling setup
         const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.9, smoothWheel: true });
         lenis.on('scroll', ScrollTrigger.update);
 
-        // --- 2. PREMIUM PARTICLE SYSTEM ---
+        // --- 2. HIGH-FIDELITY PARTICLE SYSTEM (MULTI-LAYERED) ---
         const ctx = dom.canvas.getContext('2d');
         let particles = [];
         let camera = { z: 1 };
         const fov = 300;
-        const particleCount = 1500;
+        const particleLayers = [
+            { count: 700, speed: 0.5, size: 0.5, color: 'rgba(255, 255, 255, 0.4)' }, // Far
+            { count: 500, speed: 1.0, size: 0.8, color: 'rgba(255, 255, 255, 0.7)' }, // Mid
+            { count: 100, speed: 1.8, size: 1.2, color: 'rgba(255, 255, 255, 0.9)' }  // Near
+        ];
 
         class Particle {
-            constructor() { this.reset(); }
+            constructor(layer) {
+                this.layer = layer;
+                this.reset();
+            }
             reset() {
                 this.x = (Math.random() - 0.5) * dom.canvas.width * 2;
                 this.y = (Math.random() - 0.5) * dom.canvas.height * 2;
                 this.z = Math.random() * 2000;
-                this.size = Math.random() * 1.5 + 0.5;
-                this.vx = (Math.random() - 0.5) * 0.2; // X-axis velocity for subtle drift
-                this.vy = (Math.random() - 0.5) * 0.2; // Y-axis velocity
-                this.baseAlpha = Math.random() * 0.5 + 0.2;
             }
             project() {
                 const z = this.z - camera.z;
@@ -222,28 +184,26 @@
             draw() {
                 const p = this.project();
                 if (p && p.x > 0 && p.x < dom.canvas.width && p.y > 0 && p.y < dom.canvas.height) {
-                    // Create a glowing effect with a radial gradient
-                    const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.scale * this.size * 2);
-                    gradient.addColorStop(0, `rgba(0, 191, 255, ${this.baseAlpha})`); // Brighter core (DeepSkyBlue)
-                    gradient.addColorStop(1, 'rgba(0, 123, 255, 0)'); // Fades to transparent
-                    
-                    ctx.fillStyle = gradient;
+                    ctx.fillStyle = this.layer.color;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.scale * this.size * 2, 0, Math.PI * 2);
+                    // Sharp, crisp circle. No blur.
+                    ctx.arc(p.x, p.y, p.scale * this.layer.size, 0, Math.PI * 2);
                     ctx.fill();
                 }
             }
             update() {
-                this.z -= 1.5; // Move particles towards camera slightly faster
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.z < camera.z) this.reset();
+                this.z -= this.layer.speed; // Move particles based on layer speed
+                if (this.z < camera.z) this.z = 2000;
             }
         }
         
         function initParticles() {
             particles = [];
-            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+            particleLayers.forEach(layer => {
+                for (let i = 0; i < layer.count; i++) {
+                    particles.push(new Particle(layer));
+                }
+            });
         }
 
         function renderCanvas() {
@@ -263,14 +223,14 @@
         window.addEventListener('resize', resizeHandler);
         resizeHandler();
 
-        // --- 3. UNIFIED ANIMATION LOOP (GSAP Ticker + Lenis) ---
+        // --- 3. UNIFIED ANIMATION LOOP ---
         gsap.ticker.add((time) => {
-            lenis.raf(time * 1000); // Lenis requires time in milliseconds
-            renderCanvas(); // Render particles on every frame
+            lenis.raf(time * 1000);
+            renderCanvas();
         });
         gsap.ticker.lagSmoothing(0);
         
-        // --- 4. MAIN GSAP SCROLL TIMELINE ---
+        // --- 4. REBUILT GSAP SCROLL TIMELINE (NO GAPS) ---
         ScrollTrigger.create({
             start: "top top", end: 99999,
             onUpdate: self => self.scroll() > 10 && gsap.to(dom.scrollHint, { autoAlpha: 0 })
@@ -280,8 +240,8 @@
             scrollTrigger: {
                 trigger: ".scroll-container",
                 pin: true,
-                scrub: 1, // Smoother scrub
-                end: "+=200%" // More intuitive end point
+                scrub: 1.2,
+                end: "+=150%" // Tighter scroll duration
             }
         });
         
@@ -296,51 +256,32 @@
             }, "<")
             .set(dom.canvas, { display: "none" }, "<")
             .to(dom.shockwave, { opacity: 0, duration: 0.4 }, ">-0.2")
-            .fromTo(dom.solutionSection, { opacity: 0 }, { opacity: 1, duration: 0.1 }, "<")
+            .from(dom.solutionSection, { opacity: 0, duration: 0.1 }, "<")
             .from(dom.solutionTitle, { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" })
             .from(dom.serviceCards, { scale: 0.5, opacity: 0, stagger: 0.1, duration: 1, ease: "back.out(1.4)" }, "<0.2")
-            .to(dom.solutionSection, { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.6")
-            .from(dom.ctaSection, { y: "100vh", duration: 1, ease: "power2.in" }, "<");
+            // -- CRITICAL CHANGE: NO EMPTY SPACE --
+            // The solution section now STAYS PUT. The CTA section scrolls OVER it.
+            // This creates a seamless transition driven by the user's scroll.
+            .from(dom.ctaSection, { y: "100%", duration: 1, ease: "power2.inOut" }, ">0.8");
 
-        // --- 5. LANGUAGE TOGGLE LOGIC ---
-        const textContent = {
-            hi: {
-                introTitle: "आपका वर्कफ़्लो शोर है।<br>हम सिग्नल ढूंढते हैं।",
-                solutionTitle: "सिग्नल। प्रवर्धित।",
-                cardTitle1: "🚀 मैसेज ऑटोमेशन",
-                cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।",
-                cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग",
-                cardDesc2: "हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।",
-                cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट",
-                cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।",
-                ctaButton: "अपना सिग्नल बढ़ाएँ"
-            }
-        };
-
-        // Store original English content
-        const originalContent = {
-            introTitle: document.getElementById('intro-title').innerHTML,
-            solutionTitle: document.getElementById('solution-title').innerHTML,
-            cardTitle1: document.getElementById('card-title-1').innerHTML,
-            cardDesc1: document.getElementById('card-desc-1').innerHTML,
-            cardTitle2: document.getElementById('card-title-2').innerHTML,
-            cardDesc2: document.getElementById('card-desc-2').innerHTML,
-            cardTitle3: document.getElementById('card-title-3').innerHTML,
-            cardDesc3: document.getElementById('card-desc-3').innerHTML,
-            ctaButton: document.getElementById('cta-button').innerHTML
-        };
-
-        function updateLanguage() {
-            const lang = dom.langToggle.checked ? 'hi' : 'en';
-            const content = lang === 'hi' ? textContent.hi : originalContent;
+        // --- 5. LANGUAGE TOGGLE LOGIC (UNCHANGED) ---
+        const textContent = { /* ... text content ... */ };
+        // ... rest of the language logic from previous version ...
+        (function() {
+            const hiContent = { introTitle: "आपका वर्कफ़्लो शोर है।<br>हम सिग्नल ढूंढते हैं।", solutionTitle: "सिग्नल। प्रवर्धित।", cardTitle1: "🚀 मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।", cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "अपना सिग्नल बढ़ाएँ" };
+            const originalContent = { introTitle: dom.introSection.querySelector('h1').innerHTML, solutionTitle: dom.solutionTitle.innerHTML, cardTitle1: document.getElementById('card-title-1').innerHTML, cardDesc1: document.getElementById('card-desc-1').innerHTML, cardTitle2: document.getElementById('card-title-2').innerHTML, cardDesc2: document.getElementById('card-desc-2').innerHTML, cardTitle3: document.getElementById('card-title-3').innerHTML, cardDesc3: document.getElementById('card-desc-3').innerHTML, ctaButton: document.getElementById('cta-button').innerHTML };
             
-            Object.keys(content).forEach(key => {
-                const elementId = key.replace(/[A-Z0-9]/g, (letter, index) => (index > 0 ? `-${letter.toLowerCase()}` : letter.toLowerCase()));
-                const element = document.getElementById(elementId);
-                if (element) element.innerHTML = content[key];
-            });
-        }
-        dom.langToggle.addEventListener('change', updateLanguage);
+            function updateLanguage() {
+                const lang = dom.langToggle.checked ? 'hi' : 'en';
+                const content = lang === 'hi' ? hiContent : originalContent;
+                Object.keys(content).forEach(key => {
+                    const elementId = key.replace(/[A-Z0-9]/g, (letter, index) => (index > 0 ? `-${letter.toLowerCase()}` : letter.toLowerCase()));
+                    const element = document.getElementById(elementId);
+                    if (element) element.innerHTML = content[key];
+                });
+            }
+            dom.langToggle.addEventListener('change', updateLanguage);
+        })();
 
     </script>
 </body>
