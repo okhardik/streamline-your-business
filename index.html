@@ -3,214 +3,285 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smarter Automation | Find The Signal</title>
+    <title>Smarter Automation | Your Workflow, Solved.</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --dark-bg: #030409; --light-bg: #f5f5f7;
-            --text-dark: #1d1d1f; --text-light: #f5f5f7; --text-muted: #a1a1a6;
-            --primary-color: #0071e3; --primary-glow: rgba(0, 113, 227, 0.5);
-            --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+            --bg-color: #010206; --text-color: #e0e0e0; --text-muted: #a0a0a0;
+            --primary-color: #00aaff; --primary-glow: rgba(0, 170, 255, 0.5);
+            --card-bg: rgba(20, 25, 40, 0.6); --card-border: rgba(255, 255, 255, 0.1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        html { cursor: none; }
+        html, body {
+            width: 100%; height: 100%; overflow: hidden; font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color); color: var(--text-color);
+        }
         body {
-            font-family: 'Outfit', sans-serif; background-color: var(--dark-bg);
-            color: var(--text-light);
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(300deg, #010206, #060913, #02040a);
+            background-size: 180% 180%; animation: gradient-flow 16s ease infinite;
+        }
+        @keyframes gradient-flow { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+
+        #engine { position: relative; width: 100%; height: 100%; }
+
+        /* --- Scene 1: The Diagnostic --- */
+        #scene-diagnostic {
+            position: absolute; width: 100%; height: 100%; display: flex;
+            flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        #engine.is-processing #scene-diagnostic,
+        #engine.is-solved #scene-diagnostic {
+            opacity: 0; transform: scale(0.95); pointer-events: none;
         }
 
-        #main-content {
-            position: relative;
-            width: 100%;
-        }
-        .section-container {
-            height: 100vh;
-            width: 100%;
-            position: sticky;
-            top: 0;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            overflow: hidden;
-        }
-
-        #cursor {
-            position: fixed; z-index: 2000;
-            width: 10px; height: 10px;
-            background-color: var(--text-light);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: difference;
-            transition: width 0.4s var(--ease-out-quint), 
-                        height 0.4s var(--ease-out-quint),
-                        opacity 0.4s var(--ease-out-quint);
-        }
-        #cursor.hovered { width: 30px; height: 30px; }
-        #cursor.hidden { opacity: 0; }
-
-        #main-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none; opacity: 0;
-        }
-
-        .text-content { text-align: center; max-width: 900px; will-change: transform; padding: 0 5%; }
-        h1 { font-size: clamp(2.8rem, 8vw, 6rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.015em; }
-        h2 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 700; line-height: 1.05; color: var(--text-dark); letter-spacing: -0.015em;}
-        p { font-size: clamp(1.1rem, 2.5vw, 1.3rem); color: var(--text-muted); margin-top: 20px; font-weight: 400; line-height: 1.5; }
-
-        #intro-section { z-index: 2; color: var(--text-light); }
-        #solution-section { z-index: 3; background: var(--light-bg); }
-        #cta-section { z-index: 4; background: var(--light-bg); }
-
-        #solution-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; max-width: 1200px; margin-top: 60px; }
-        .service-card { background: #fff; border-radius: 20px; padding: 35px; text-align: left; transition: transform 0.4s var(--ease-out-quint); border: 1px solid rgba(0,0,0,0.1); }
-        .service-card:hover { transform: translateY(-12px); }
-        .service-card h3 { font-size: 1.6rem; color: #1d1d1f; font-weight: 700; margin-bottom: 12px; }
-        .service-card p { font-size: 1rem; color: #6e6e73; line-height: 1.6; margin-top: 0; }
+        .diagnostic-header { text-align: center; margin-bottom: 40px; }
+        .diagnostic-header h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.2; }
+        .diagnostic-header p { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-muted); margin-top: 10px; }
         
-        #cta-button { background: var(--primary-color); color: #fff; text-decoration: none; font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 22px 55px; border-radius: 99px; font-weight: 500; transition: transform 0.3s ease, background-color 0.3s ease; white-space: nowrap; }
-        #cta-button:hover { transform: scale(1.05); background-color: #0077ed; }
+        #problem-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; width: 100%; max-width: 900px;
+        }
+        .problem-item {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            padding: 20px; border-radius: 12px; font-weight: 500;
+            text-align: center; cursor: pointer; backdrop-filter: blur(2px);
+            transition: all 0.3s ease; position: relative;
+        }
+        .problem-item:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+        .problem-item.selected {
+            background: var(--primary-color); border-color: var(--primary-color);
+            color: #010206; font-weight: 700; box-shadow: 0 0 20px var(--primary-glow);
+        }
+        /* The processing animation state */
+        .problem-item.processed {
+            position: fixed; z-index: 100;
+            animation: fly-to-center 1s cubic-bezier(0.5, 0, 0.9, 0.5) forwards;
+        }
+        @keyframes fly-to-center {
+            to { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+
+        #solve-btn-container { text-align: center; margin-top: 40px; }
+        #solve-btn {
+            background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--card-border);
+            font-size: 1.2rem; padding: 20px 40px; border-radius: 50px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s ease; pointer-events: none; opacity: 0.5;
+        }
+        #solve-btn.active {
+            background: var(--primary-color); color: white; border-color: var(--primary-color);
+            box-shadow: 0 0 20px var(--primary-glow); pointer-events: all; opacity: 1;
+        }
         
-        /* --- FIX: ROBUST LANGUAGE TOGGLE & ANIMATION STRUCTURE --- */
-        /* Hide the inactive language completely. This is the key to preventing overlap. */
-        [lang="hi"] { display: none; }
-        body.lang-hi [lang="hi"] { display: block; }
-        body.lang-hi [lang="en"] { display: none; }
-
-        /* The parent container for each line of text, used for the reveal animation */
-        .line {
-            display: block; /* Changed to block for cleaner structure */
-            overflow: hidden;
-            position: relative;
+        /* --- Scene 2: The Solution --- */
+        #scene-solution {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s ease 1s; pointer-events: none;
         }
-        /* The inner element that will be animated */
-        .line-inner {
-            display: block;
-        }
+        #engine.is-solved #scene-solution { opacity: 1; pointer-events: all; }
+        /* The rest of the solution scene styles are similar to previous concepts for consistency */
+        .solution-center { position: absolute; text-align: center; transform: translateY(-25vh); transition: transform 1s ease; }
+        .solution-center h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--text-muted); font-weight: 500;}
+        #cta-core { position: relative; width: 120px; height: 120px; background: var(--primary-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; text-align: center; cursor: pointer; z-index: 10; animation: pulse-core 2.5s infinite 1s; transform: scale(0); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        #engine.is-solved #cta-core { transform: scale(1); transition-delay: 0.8s; }
+        #cta-core:hover { transform: scale(1.1) !important; animation-play-state: paused; }
+        #cta-core a { text-decoration: none; color: white; font-size: 1.5rem; font-weight: 700; }
+        @keyframes pulse-core { 0%{box-shadow:0 0 0 0 var(--primary-glow);} 70%{box-shadow:0 0 0 20px rgba(0,170,255,0);} 100%{box-shadow:0 0 0 0 rgba(0,170,255,0);} }
+        .service-node { position: absolute; width: 150px; height: 150px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 50%; display: flex; justify-content: center; align-items: center; text-align: center; padding: 20px; cursor: pointer; backdrop-filter: blur(5px); opacity: 0; transform: scale(0); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        #engine.is-solved .service-node { opacity: 1; transform: scale(1); }
+        .service-node:hover { border-color: var(--primary-color); transform: scale(1.1) !important; }
+        .service-node h3 { font-size: 1.1rem; color: var(--text-color); }
+        @media (min-width: 769px) { #engine.is-solved #node-1 { transform: rotate(0deg) translateX(280px) rotate(0deg); transition-delay: 1.2s; } #engine.is-solved #node-2 { transform: rotate(120deg) translateX(280px) rotate(-120deg); transition-delay: 1.3s; } #engine.is-solved #node-3 { transform: rotate(240deg) translateX(280px) rotate(-240deg); transition-delay: 1.4s; } }
+        @media (max-width: 768px) { #cta-core { width: 100px; height: 100px; } .solution-center { transform: translateY(-28vh); } #problem-grid { grid-template-columns: 1fr 1fr; } #engine.is-solved #node-1 { transform: translateY(-130px); transition-delay: 1.2s; } #engine.is-solved #node-2 { transform: translateY(0px); transition-delay: 1.3s; } #engine.is-solved #node-3 { transform: translateY(130px); transition-delay: 1.4s; } }
 
-        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
-        .toggle-label { display:flex;align-items:center;justify-content:space-between;width:80px;height:40px;background-color:rgba(30,30,30,0.7);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:0 12px;cursor:pointer;position:relative;transition:all 0.3s ease;backdrop-filter:blur(10px)}#lang-toggle:checked+.toggle-label{background-color:rgba(230,230,230,0.8);border-color:transparent}.lang-text{font-size:.9rem;font-weight:700;z-index:2;transition:color .3s ease}.lang-en{color:var(--text-light)}.lang-hi{color:var(--text-muted)}#lang-toggle:checked+.toggle-label .lang-en{color:var(--text-muted)}#lang-toggle:checked+.toggle-label .lang-hi{color:var(--text-dark)}.toggle-thumb{position:absolute;top:3px;left:4px;width:32px;height:32px;background-color:var(--primary-color);border-radius:50%;z-index:1;transition:transform .3s cubic-bezier(.25,.46,.45,.94)}#lang-toggle:checked+.toggle-label .toggle-thumb{transform:translateX(38px)}
+        /* Modal & Language Toggle remain the same */
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(2,4,10,0.7); backdrop-filter: blur(8px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        #modal-overlay.active { opacity: 1; pointer-events: all; }
+        #modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 500px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 40px; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        #modal-overlay.active #modal-content { transform: translate(-50%, -50%) scale(1); }
+        #modal-content h2 { font-size: 2rem; font-weight: 900; color: var(--primary-color); margin-bottom: 20px; }
+        #modal-content p { font-size: 1.1rem; line-height: 1.7; color: var(--text-muted); }
+        #close-modal { position: absolute; top: 20px; right: 20px; font-size: 2rem; color: var(--text-muted); cursor: pointer; transition: color 0.3s ease; }
+        #close-modal:hover { color: var(--text-color); }
+        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 50; }
+        .language-toggle input[type="checkbox"] { display: none; }
+        .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; }
+        .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
+        .lang-en { color: var(--text-color); } .lang-hi { color: var(--text-muted); }
+        .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); box-shadow: 0 0 10px var(--primary-glow); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
+        #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
+        #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-color); }
 
-        @media (max-width: 900px) { 
-            #solution-cards { grid-template-columns: 1fr; } 
-            #solution-section .text-content, #cta-section .text-content { text-align: left; }
-        }
     </style>
 </head>
 <body>
-    <div id="cursor"></div>
-    <div id="main-content">
-        <canvas id="main-canvas"></canvas>
-        <div class="section-container" id="intro-section">
-            <div class="text-content">
-                <h1 id="intro-title">
-                    <!-- FIX: Headline changed and HTML restructured for clean animation -->
-                    <span class="line">
-                        <span class="line-inner" lang="en">Cut through the noise.</span>
-                        <span class="line-inner" lang="hi">शोर को खत्म करें।</span>
-                    </span>
-                    <span class="line">
-                        <span class="line-inner" lang="en">Automate your workflow.</span>
-                        <span class="line-inner" lang="hi">अपने वर्कफ़्लो को ऑटोमेट करें।</span>
-                    </span>
-                </h1>
+    <div id="engine">
+        <!-- SCENE 1: THE DIAGNOSTIC -->
+        <div id="scene-diagnostic">
+            <div class="diagnostic-header">
+                <h1 id="diagnostic-title">What's slowing you down?</h1>
+                <p id="diagnostic-subtitle">Select your biggest pain points to begin.</p>
+            </div>
+            <div id="problem-grid">
+                <!-- Problems will be generated by JS here -->
+            </div>
+            <div id="solve-btn-container">
+                <button id="solve-btn">Automate This Workflow</button>
             </div>
         </div>
-        <div class="section-container" id="solution-section">
-             <div class="text-content">
-                <h2>
-                    <span lang="en">The Signal. Amplified.</span>
-                    <span lang="hi">सिग्नल। प्रवर्धित।</span>
-                </h2>
-                <div id="solution-cards">
-                    <div class="service-card interactive-item"><h3><span lang="en">🚀 Message Automation</span><span lang="hi">🚀 मैसेज ऑटोमेशन</span></h3><p><span lang="en">Automated sequences that engage clients, follow up on leads, and never miss a beat.</span><span lang="hi">ऑटोमेटेड सीक्वेंस जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।</span></p></div>
-                    <div class="service-card interactive-item"><h3><span lang="en">⚙️ Process Streamlining</span><span lang="hi">⚙️ प्रोसेस स्ट्रीमलाइनिंग</span></h3><p><span lang="en">We transform your manual, repetitive tasks into a flawless, self-running system.</span><span lang="hi">हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।</span></p></div>
-                    <div class="service-card interactive-item"><h3><span lang="en">🛠️ Bespoke Setup</span><span lang="hi">🛠️ विशेष सेटअप</span></h3><p><span lang="en">A white-glove service where we compose, implement, and fine-tune your entire workflow.</span><span lang="hi">एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।</span></p></div>
-                </div>
-            </div>
+
+        <!-- SCENE 2: THE SOLUTION (re-used structure) -->
+        <div id="scene-solution">
+            <div class="solution-center"><h2 id="solution-title">Welcome to a Smarter Workflow.</h2></div>
+            <div id="cta-core"><a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20automating%20my%20workflow." target="_blank">🚀</a></div>
+            <div class="service-node" id="node-1" data-service="1"><h3 id="node-title-1">Message Automation</h3></div>
+            <div class="service-node" id="node-2" data-service="2"><h3 id="node-title-2">Process Streamlining</h3></div>
+            <div class="service-node" id="node-3" data-service="3"><h3 id="node-title-3">Custom Setup</h3></div>
         </div>
-        <div class="section-container" id="cta-section">
-             <div class="text-content">
-                 <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20find%20my%20signal." target="_blank" id="cta-button" class="interactive-item">
-                    <span lang="en">Amplify Your Signal</span>
-                    <span lang="hi">अपना सिग्नल बढ़ाएँ</span>
-                 </a>
-             </div>
-        </div>
-    </div>
-    <div class="language-toggle interactive-item">
-        <input type="checkbox" id="lang-toggle"><label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/ScrollTrigger.min.js"></script>
+    <div id="modal-overlay"> <!-- Modal HTML remains same --> <div id="modal-content"><span id="close-modal">×</span><h2 id="modal-title"></h2><p id="modal-description"></p></div></div>
+    <div class="language-toggle"> <!-- Toggle HTML remains same --> <input type="checkbox" id="lang-toggle" onchange="handleLanguageToggle()"><label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label></div>
+
+    <!-- Hidden content for modals -->
+    <div id="service-content-en" style="display: none;">
+        <div data-service="1"><h2 class="title">🚀 Message Automation</h2><p class="desc">Engage clients instantly. We set up automated WhatsApp, SMS, or email sequences for follow-ups, reminders, and notifications.</p></div>
+        <div data-service="2"><h2 class="title">⚙️ Process Streamlining</h2><p class="desc">Tired of copy-pasting and manual data entry? We analyze your workflow and build a streamlined system using tools like Google Sheets.</p></div>
+        <div data-service="3"><h2 class="title">🛠️ Custom Setup & Support</h2><p class="desc">From concept to full implementation, we handle the entire setup. We build your new automated system and ensure your team knows how to use it.</p></div>
+    </div>
+    <div id="service-content-hi" style="display: none;">
+        <div data-service="1"><h2 class="title">🚀 मैसेज ऑटोमेशन</h2><p class="desc">रिमाइंडर, फॉलो-अप और नोटिफिकेशन के लिए ऑटोमेटेड WhatsApp, SMS, या ईमेल भेजें।</p></div>
+        <div data-service="2"><h2 class="title">⚙️ प्रोसेस स्ट्रीमलाइनिंग</h2><p class="desc">मैन्युअल डेटा एंट्री और कॉपी-पेस्ट से थक गए? हम आपके वर्कफ़्लो को समझकर एक स्मार्ट सिस्टम बनाते हैं।</p></div>
+        <div data-service="3"><h2 class="title">🛠️ पूरा सेटअप और सपोर्ट</h2><p class="desc">हम सिर्फ़ सिस्टम बनाते नहीं, बल्कि उसे आपके लिए पूरी तरह से सेट अप करते हैं और आपकी टीम को सिखाते हैं।</p></div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        const problemsPool = [
+            { id: 1, en: 'Manual Data Entry', hi: 'मैन्युअल डेटा एंट्री' },
+            { id: 2, en: 'Repetitive Emails', hi: 'बार-बार ईमेल भेजना' },
+            { id: 3, en: 'Updating Spreadsheets', hi: 'स्प्रेडशीट अपडेट करना' },
+            { id: 4, en: 'Missed Follow-ups', hi: 'फॉलो-अप मिस होना' },
+            { id: 5, en: 'Chasing Payments', hi: 'पेमेंट के लिए पूछना' },
+            { id: 6, en: 'Onboarding New Clients', hi: 'नए क्लाइंट्स को ऑनबोर्ड करना' },
+            { id: 7, en: 'Generating Reports', hi: 'रिपोर्ट बनाना' },
+            { id: 8, en: 'Scheduling Conflicts', hi: 'शेड्यूलिंग में दिक्कत' },
+            { id: 9, en: 'Copy-Paste Errors', hi: 'कॉपी-पेस्ट की गलतियाँ' },
+            { id: 10, en: 'Sending Reminders', hi: 'रिमाइंडर भेजना' },
+            { id: 11, en: 'Managing Leads', hi: 'लीड्स मैनेज करना' },
+            { id: 12, en: 'Organizing Files', hi: 'फ़ाइलें व्यवस्थित करना' },
+        ];
 
-            gsap.registerPlugin(ScrollTrigger);
-            const dom = { 
-                body: document.body, 
-                main: document.getElementById('main-content'), 
-                intro: document.getElementById('intro-section'), 
-                solutions: document.getElementById('solution-section'), 
-                cta: document.getElementById('cta-section'), 
-                canvas: document.getElementById('main-canvas'), 
-                cursor: document.getElementById('cursor'), 
-                langToggle: document.getElementById('lang-toggle')
-            };
-            
-            dom.main.style.height = '300vh';
-            const lenis = new Lenis();
-            
-            const cursorX = gsap.quickTo(dom.cursor, "x", { duration: 0.4, ease: "power3" });
-            const cursorY = gsap.quickTo(dom.cursor, "y", { duration: 0.4, ease: "power3" });
-            window.addEventListener("mousemove", e => { dom.cursor.classList.remove("hidden"); cursorX(e.clientX); cursorY(e.clientY); });
-            document.querySelectorAll(".interactive-item").forEach(el => { el.addEventListener("mouseenter", () => dom.cursor.classList.add("hovered")); el.addEventListener("mouseleave", () => dom.cursor.classList.remove("hovered")); });
-            document.addEventListener("mouseleave", () => { dom.cursor.classList.add("hidden"); });
+        const textContent = {
+            en: { title: "What's slowing you down?", subtitle: "Select your biggest pain points to begin.", btn: "Automate This Workflow", solution: "Welcome to a Smarter Workflow.", nodes: ["Message Automation", "Process Streamlining", "Custom Setup"] },
+            hi: { title: "आपको क्या धीमा कर रहा है?", subtitle: "शुरू करने के लिए अपनी सबसे बड़ी समस्याएँ चुनें।", btn: "इस वर्कफ़्लो को ऑटोमेट करें", solution: "एक स्मार्ट वर्कफ़्लो में आपका स्वागत है।", nodes: ["मैसेज ऑटोमेशन", "प्रोसेस स्ट्रीमलाइनिंग", "पूरा सेटअप"] }
+        };
 
-            dom.langToggle.addEventListener('change', () => {
-                dom.body.classList.toggle('lang-hi', dom.langToggle.checked);
-                ScrollTrigger.refresh();
+        const engine = document.getElementById('engine');
+        const problemGrid = document.getElementById('problem-grid');
+        const solveBtn = document.getElementById('solve-btn');
+        let selectedProblems = new Set();
+        let currentLang = 'en';
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function initializeProblems() {
+            problemGrid.innerHTML = '';
+            shuffleArray(problemsPool);
+            const problemsToShow = problemsPool.slice(0, 6);
+            
+            problemsToShow.forEach(problem => {
+                const problemDiv = document.createElement('div');
+                problemDiv.classList.add('problem-item');
+                problemDiv.dataset.id = problem.id;
+                problemDiv.innerText = problem[currentLang];
+                problemGrid.appendChild(problemDiv);
+            });
+        }
+
+        problemGrid.addEventListener('click', (e) => {
+            if (e.target.classList.contains('problem-item')) {
+                const problemDiv = e.target;
+                const problemId = problemDiv.dataset.id;
+                problemDiv.classList.toggle('selected');
+
+                if (selectedProblems.has(problemId)) {
+                    selectedProblems.delete(problemId);
+                } else {
+                    selectedProblems.add(problemId);
+                }
+                solveBtn.classList.toggle('active', selectedProblems.size > 0);
+            }
+        });
+
+        solveBtn.addEventListener('click', () => {
+            if (selectedProblems.size === 0) return;
+            engine.classList.add('is-processing');
+
+            document.querySelectorAll('.problem-item.selected').forEach((item, index) => {
+                const rect = item.getBoundingClientRect();
+                item.style.top = `${rect.top}px`;
+                item.style.left = `${rect.left}px`;
+                item.style.width = `${rect.width}px`;
+                item.style.height = `${rect.height}px`;
+                setTimeout(() => item.classList.add('processed'), 50);
             });
 
-            const ctx = dom.canvas.getContext('2d');
-            let particles = [];
-            let mousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-            class Particle { constructor() { this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight; this.z = Math.random() * 2 + 1; this.vx = (Math.random() - 0.5) * 0.1; this.vy = (Math.random() - 0.5) * 0.1; this.baseAlpha = 0.1 + Math.random() * 0.2; this.pulseFactor = 0.5 + Math.random() * 0.5; } draw(time) { const distanceToMouse = Math.hypot(this.x - mousePos.x, this.y - mousePos.y); const proximityFactor = Math.max(0, 1 - distanceToMouse / 400); const alpha = this.baseAlpha + (Math.sin(time * 0.001 * this.pulseFactor) * 0.1) + (proximityFactor * 0.4); const size = (1 + proximityFactor) * this.z; ctx.beginPath(); ctx.arc(this.x, this.y, size, 0, Math.PI * 2); const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, size); gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.8})`); gradient.addColorStop(1, `rgba(255, 255, 255, 0)`); ctx.fillStyle = gradient; ctx.fill(); } update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1; if (this.y < 0 || this.y > window.innerHeight) this.vy *= -1; } }
-            function initCanvas() { const dpr = window.devicePixelRatio || 1; dom.canvas.width = window.innerWidth * dpr; dom.canvas.height = window.innerHeight * dpr; ctx.scale(dpr, dpr); particles = []; for (let i = 0; i < 200; i++) particles.push(new Particle()); }
-            initCanvas();
-            window.addEventListener('resize', initCanvas);
-            window.addEventListener("mousemove", e => { mousePos = { x: e.clientX, y: e.clientY }; });
-            
-            gsap.ticker.add(time => { lenis.raf(time * 1000); ctx.clearRect(0, 0, dom.canvas.width, dom.canvas.height); particles.forEach(p => { p.update(); p.draw(time); }); });
-
-            // --- FIX: CINEMATIC INTRO ANIMATION ---
-            // Set the initial state of all .line-inner elements to be hidden below their container
-            gsap.set("#intro-title .line-inner", { yPercent: 102 });
-            
-            const introTl = gsap.timeline();
-            introTl.to(dom.canvas, { opacity: 1, duration: 2, ease: "power2.inOut" })
-                   // Animate only the visible .line-inner elements into view
-                   .to("#intro-title .line-inner", { 
-                       yPercent: 0, 
-                       stagger: 0.1, 
-                       duration: 1.5, 
-                       ease: "power4.out" 
-                   }, 0.5);
-
-            // SCROLLING TRANSITIONS (Unchanged, they were working correctly)
-            gsap.to(dom.intro, { scrollTrigger: { trigger: dom.intro, start: "center center", end: "bottom top", scrub: 1 }, scale: 0.9, opacity: 0, ease: 'power2.in' });
-            gsap.timeline({ scrollTrigger: { trigger: dom.solutions, start: "top bottom", end: "top top", scrub: 1 }}).from(dom.solutions.querySelector(".text-content"), { y: 150, opacity: 0, ease: 'power3.out' });
-            gsap.to(dom.solutions, { scrollTrigger: { trigger: dom.solutions, start: "center center", end: "bottom top", scrub: 1 }, scale: 0.95, y: -50, opacity: 0, ease: 'power2.in' });
-            gsap.timeline({ scrollTrigger: { trigger: dom.cta, start: "top bottom", end: "center center", scrub: 1 }}).from(dom.cta.querySelector(".text-content"), { y: 100, opacity: 0, ease: 'power2.out' });
-
+            setTimeout(() => {
+                engine.classList.remove('is-processing');
+                engine.classList.add('is-solved');
+            }, 1000);
         });
+
+        function handleLanguageToggle() {
+            currentLang = document.getElementById('lang-toggle').checked ? 'hi' : 'en';
+            const langContent = textContent[currentLang];
+            // Update Scene 1 text
+            document.getElementById('diagnostic-title').innerText = langContent.title;
+            document.getElementById('diagnostic-subtitle').innerText = langContent.subtitle;
+            solveBtn.innerText = langContent.btn;
+            // Update Scene 2 text
+            document.getElementById('solution-title').innerText = langContent.solution;
+            document.getElementById('node-title-1').innerText = langContent.nodes[0];
+            document.getElementById('node-title-2').innerText = langContent.nodes[1];
+            document.getElementById('node-title-3').innerText = langContent.nodes[2];
+            // Update dynamic problems
+            document.querySelectorAll('.problem-item').forEach(div => {
+                const problemId = parseInt(div.dataset.id);
+                const problemData = problemsPool.find(p => p.id === problemId);
+                if (problemData) {
+                    div.innerText = problemData[currentLang];
+                }
+            });
+        }
+        
+        // Modal Logic (re-used)
+        const modalOverlay = document.getElementById('modal-overlay');
+        document.querySelectorAll('.service-node').forEach(node => {
+            node.addEventListener('click', () => {
+                const serviceId = node.dataset.service;
+                const source = document.querySelector(`#service-content-${currentLang} [data-service="${serviceId}"]`);
+                document.getElementById('modal-title').innerHTML = source.querySelector('.title').innerHTML;
+                document.getElementById('modal-description').innerHTML = source.querySelector('.desc').innerHTML;
+                modalOverlay.classList.add('active');
+            });
+        });
+        document.getElementById('close-modal').addEventListener('click', () => modalOverlay.classList.remove('active'));
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+
+        // Initial Load
+        initializeProblems();
+
     </script>
 </body>
 </html>
