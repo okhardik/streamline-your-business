@@ -3,285 +3,228 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smarter Automation | Your Workflow, Solved.</title>
+    <title>Smarter Automation | A Symphony of Workflow</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #010206; --text-color: #e0e0e0; --text-muted: #a0a0a0;
+            --bg-color: #000103; --text-color: #e0e0e0; --text-muted: #b0b0b0;
             --primary-color: #00aaff; --primary-glow: rgba(0, 170, 255, 0.5);
-            --card-bg: rgba(20, 25, 40, 0.6); --card-border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(20, 25, 40, 0.5); --card-border: rgba(255, 255, 255, 0.1);
+            --scroll: 0;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            width: 100%; height: 100%; overflow: hidden; font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color); color: var(--text-color);
-        }
         body {
-            display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(300deg, #010206, #060913, #02040a);
-            background-size: 180% 180%; animation: gradient-flow 16s ease infinite;
+            background-color: var(--bg-color); color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
         }
-        @keyframes gradient-flow { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
-
-        #engine { position: relative; width: 100%; height: 100%; }
-
-        /* --- Scene 1: The Diagnostic --- */
-        #scene-diagnostic {
-            position: absolute; width: 100%; height: 100%; display: flex;
-            flex-direction: column; justify-content: center; align-items: center;
-            padding: 20px; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        .scroll-container {
+            height: 500vh; /* This drives the entire scroll experience */
+            position: relative;
         }
-        #engine.is-processing #scene-diagnostic,
-        #engine.is-solved #scene-diagnostic {
-            opacity: 0; transform: scale(0.95); pointer-events: none;
+        .sticky-container {
+            position: sticky; top: 0; height: 100vh; width: 100%;
+            overflow: hidden;
+        }
+        .scene {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center; text-align: center;
         }
 
-        .diagnostic-header { text-align: center; margin-bottom: 40px; }
-        .diagnostic-header h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.2; }
-        .diagnostic-header p { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-muted); margin-top: 10px; }
-        
-        #problem-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px; width: 100%; max-width: 900px;
+        /* --- ACT I: The Dissonance --- */
+        #act1-title {
+            opacity: calc(1 - (var(--scroll) * 5));
+            transform: scale(calc(1 - (var(--scroll) * 0.5)));
         }
-        .problem-item {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            padding: 20px; border-radius: 12px; font-weight: 500;
-            text-align: center; cursor: pointer; backdrop-filter: blur(2px);
-            transition: all 0.3s ease; position: relative;
+        #act1-title h1 {
+            font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900;
         }
-        .problem-item:hover { transform: translateY(-5px); border-color: var(--primary-color); }
-        .problem-item.selected {
-            background: var(--primary-color); border-color: var(--primary-color);
-            color: #010206; font-weight: 700; box-shadow: 0 0 20px var(--primary-glow);
+        .problem-node {
+            position: absolute; background: var(--card-bg); border: 1px solid var(--card-border);
+            padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(4px);
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            opacity: calc(var(--scroll) * 15 - 0.5);
+            transition: opacity 0.3s;
+            will-change: transform;
         }
-        /* The processing animation state */
-        .problem-item.processed {
-            position: fixed; z-index: 100;
-            animation: fly-to-center 1s cubic-bezier(0.5, 0, 0.9, 0.5) forwards;
-        }
-        @keyframes fly-to-center {
-            to { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0; }
-        }
+        /* Positions are animated with JS */
 
-        #solve-btn-container { text-align: center; margin-top: 40px; }
-        #solve-btn {
-            background: var(--card-bg); color: var(--text-muted); border: 1px solid var(--card-border);
-            font-size: 1.2rem; padding: 20px 40px; border-radius: 50px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s ease; pointer-events: none; opacity: 0.5;
-        }
-        #solve-btn.active {
-            background: var(--primary-color); color: white; border-color: var(--primary-color);
-            box-shadow: 0 0 20px var(--primary-glow); pointer-events: all; opacity: 1;
-        }
-        
-        /* --- Scene 2: The Solution --- */
-        #scene-solution {
+        /* --- ACT II: The Crescendo (The Conduit) --- */
+        #conduit {
             position: absolute; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.5s ease 1s; pointer-events: none;
+            opacity: calc(var(--scroll) * 8 - 2);
         }
-        #engine.is-solved #scene-solution { opacity: 1; pointer-events: all; }
-        /* The rest of the solution scene styles are similar to previous concepts for consistency */
-        .solution-center { position: absolute; text-align: center; transform: translateY(-25vh); transition: transform 1s ease; }
-        .solution-center h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--text-muted); font-weight: 500;}
-        #cta-core { position: relative; width: 120px; height: 120px; background: var(--primary-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; text-align: center; cursor: pointer; z-index: 10; animation: pulse-core 2.5s infinite 1s; transform: scale(0); transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        #engine.is-solved #cta-core { transform: scale(1); transition-delay: 0.8s; }
-        #cta-core:hover { transform: scale(1.1) !important; animation-play-state: paused; }
-        #cta-core a { text-decoration: none; color: white; font-size: 1.5rem; font-weight: 700; }
-        @keyframes pulse-core { 0%{box-shadow:0 0 0 0 var(--primary-glow);} 70%{box-shadow:0 0 0 20px rgba(0,170,255,0);} 100%{box-shadow:0 0 0 0 rgba(0,170,255,0);} }
-        .service-node { position: absolute; width: 150px; height: 150px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 50%; display: flex; justify-content: center; align-items: center; text-align: center; padding: 20px; cursor: pointer; backdrop-filter: blur(5px); opacity: 0; transform: scale(0); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        #engine.is-solved .service-node { opacity: 1; transform: scale(1); }
-        .service-node:hover { border-color: var(--primary-color); transform: scale(1.1) !important; }
-        .service-node h3 { font-size: 1.1rem; color: var(--text-color); }
-        @media (min-width: 769px) { #engine.is-solved #node-1 { transform: rotate(0deg) translateX(280px) rotate(0deg); transition-delay: 1.2s; } #engine.is-solved #node-2 { transform: rotate(120deg) translateX(280px) rotate(-120deg); transition-delay: 1.3s; } #engine.is-solved #node-3 { transform: rotate(240deg) translateX(280px) rotate(-240deg); transition-delay: 1.4s; } }
-        @media (max-width: 768px) { #cta-core { width: 100px; height: 100px; } .solution-center { transform: translateY(-28vh); } #problem-grid { grid-template-columns: 1fr 1fr; } #engine.is-solved #node-1 { transform: translateY(-130px); transition-delay: 1.2s; } #engine.is-solved #node-2 { transform: translateY(0px); transition-delay: 1.3s; } #engine.is-solved #node-3 { transform: translateY(130px); transition-delay: 1.4s; } }
+        #conduit-core {
+            position: absolute; top: 50%; left: 50%; width: 10px; height: 10px;
+            background: white; border-radius: 50%;
+            box-shadow: 0 0 20px 5px white, 0 0 50px 20px var(--primary-glow);
+            transform: translate(-50%, -50%) scale(calc(var(--scroll) * 5 - 1));
+        }
 
-        /* Modal & Language Toggle remain the same */
-        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(2,4,10,0.7); backdrop-filter: blur(8px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-        #modal-overlay.active { opacity: 1; pointer-events: all; }
-        #modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 500px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 40px; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        #modal-overlay.active #modal-content { transform: translate(-50%, -50%) scale(1); }
-        #modal-content h2 { font-size: 2rem; font-weight: 900; color: var(--primary-color); margin-bottom: 20px; }
-        #modal-content p { font-size: 1.1rem; line-height: 1.7; color: var(--text-muted); }
-        #close-modal { position: absolute; top: 20px; right: 20px; font-size: 2rem; color: var(--text-muted); cursor: pointer; transition: color 0.3s ease; }
-        #close-modal:hover { color: var(--text-color); }
-        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 50; }
-        .language-toggle input[type="checkbox"] { display: none; }
-        .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.8); border: 1px solid var(--card-border); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; }
-        .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
-        .lang-en { color: var(--text-color); } .lang-hi { color: var(--text-muted); }
-        .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); box-shadow: 0 0 10px var(--primary-glow); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
-        #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
-        #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-color); }
+        /* --- ACT III: The Harmony (The Solution) --- */
+        #act3-solution {
+             opacity: calc(var(--scroll) * 5 - 3.5);
+             transform: scale(calc(var(--scroll) * 2 - 0.8));
+        }
+        .solution-title {
+            position: absolute; top: 20vh;
+        }
+        .solution-title h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--text-muted); }
+        .service-pillar {
+            position: absolute;
+            width: 250px; text-align: center;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        .service-pillar h3 { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 700; color: var(--primary-color); margin-bottom: 10px;}
+        .service-pillar p { font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.6; color: var(--text-muted);}
 
+        /* Positioning pillars */
+        #pillar-1 { top: 40%; left: 15%; }
+        #pillar-2 { top: 40%; left: 50%; transform: translateX(-50%); }
+        #pillar-3 { top: 40%; left: 85%; transform: translateX(-100%); }
+        
+        /* --- ACT IV: The Overture (The CTA) --- */
+        #act4-cta {
+            opacity: calc(var(--scroll) * 8 - 6.5);
+            transform: translateY(calc(50px - (var(--scroll) * 50px)));
+        }
+        #cta-button {
+            background: var(--primary-color); color: #000103; border: none;
+            font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 20px 50px;
+            border-radius: 50px; font-weight: 700; cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 0 30px var(--primary-glow);
+            transition: all 0.3s ease;
+        }
+        #cta-button:hover { transform: scale(1.05); box-shadow: 0 0 50px var(--primary-glow); }
+
+        /* --- Mobile Adjustments --- */
+        @media (max-width: 768px) {
+            .scroll-container { height: 600vh; }
+            .service-pillar {
+                width: 80%; left: 50% !important; transform: translateX(-50%) !important;
+            }
+            #pillar-1 { top: 25%; }
+            #pillar-2 { top: 45%; }
+            #pillar-3 { top: 65%; }
+            .solution-title { top: 10vh; }
+        }
     </style>
 </head>
 <body>
-    <div id="engine">
-        <!-- SCENE 1: THE DIAGNOSTIC -->
-        <div id="scene-diagnostic">
-            <div class="diagnostic-header">
-                <h1 id="diagnostic-title">What's slowing you down?</h1>
-                <p id="diagnostic-subtitle">Select your biggest pain points to begin.</p>
+    <div class="scroll-container">
+        <div class="sticky-container">
+            <div class="scene" id="act1-title">
+                <h1>Your business has a rhythm.<br>Is it chaos, or a symphony?</h1>
             </div>
-            <div id="problem-grid">
-                <!-- Problems will be generated by JS here -->
+
+            <div class="scene" id="problem-nodes-container">
+                <!-- Problems generated by JS -->
             </div>
-            <div id="solve-btn-container">
-                <button id="solve-btn">Automate This Workflow</button>
+            
+            <div class="scene" id="conduit">
+                <div id="conduit-core"></div>
+            </div>
+
+            <div class="scene" id="act3-solution">
+                <div class="solution-title"><h2>The Instruments of Your Symphony</h2></div>
+                <div class="service-pillar" id="pillar-1">
+                    <h3>🚀 Message Automation</h3>
+                    <p>Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</p>
+                </div>
+                <div class="service-pillar" id="pillar-2">
+                    <h3>⚙️ Process Streamlining</h3>
+                    <p>We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.</p>
+                </div>
+                <div class="service-pillar" id="pillar-3">
+                    <h3>🛠️ Bespoke Setup & Support</h3>
+                    <p>A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.</p>
+                </div>
+            </div>
+
+            <div class="scene" id="act4-cta">
+                <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20compose%20my%20symphony." target="_blank" id="cta-button">Compose Your Symphony</a>
             </div>
         </div>
-
-        <!-- SCENE 2: THE SOLUTION (re-used structure) -->
-        <div id="scene-solution">
-            <div class="solution-center"><h2 id="solution-title">Welcome to a Smarter Workflow.</h2></div>
-            <div id="cta-core"><a href="https://wa.me/919210037310?text=Hi%20there%2C%20I%20am%20interested%20in%20automating%20my%20workflow." target="_blank">🚀</a></div>
-            <div class="service-node" id="node-1" data-service="1"><h3 id="node-title-1">Message Automation</h3></div>
-            <div class="service-node" id="node-2" data-service="2"><h3 id="node-title-2">Process Streamlining</h3></div>
-            <div class="service-node" id="node-3" data-service="3"><h3 id="node-title-3">Custom Setup</h3></div>
-        </div>
-    </div>
-    
-    <div id="modal-overlay"> <!-- Modal HTML remains same --> <div id="modal-content"><span id="close-modal">×</span><h2 id="modal-title"></h2><p id="modal-description"></p></div></div>
-    <div class="language-toggle"> <!-- Toggle HTML remains same --> <input type="checkbox" id="lang-toggle" onchange="handleLanguageToggle()"><label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label></div>
-
-    <!-- Hidden content for modals -->
-    <div id="service-content-en" style="display: none;">
-        <div data-service="1"><h2 class="title">🚀 Message Automation</h2><p class="desc">Engage clients instantly. We set up automated WhatsApp, SMS, or email sequences for follow-ups, reminders, and notifications.</p></div>
-        <div data-service="2"><h2 class="title">⚙️ Process Streamlining</h2><p class="desc">Tired of copy-pasting and manual data entry? We analyze your workflow and build a streamlined system using tools like Google Sheets.</p></div>
-        <div data-service="3"><h2 class="title">🛠️ Custom Setup & Support</h2><p class="desc">From concept to full implementation, we handle the entire setup. We build your new automated system and ensure your team knows how to use it.</p></div>
-    </div>
-    <div id="service-content-hi" style="display: none;">
-        <div data-service="1"><h2 class="title">🚀 मैसेज ऑटोमेशन</h2><p class="desc">रिमाइंडर, फॉलो-अप और नोटिफिकेशन के लिए ऑटोमेटेड WhatsApp, SMS, या ईमेल भेजें।</p></div>
-        <div data-service="2"><h2 class="title">⚙️ प्रोसेस स्ट्रीमलाइनिंग</h2><p class="desc">मैन्युअल डेटा एंट्री और कॉपी-पेस्ट से थक गए? हम आपके वर्कफ़्लो को समझकर एक स्मार्ट सिस्टम बनाते हैं।</p></div>
-        <div data-service="3"><h2 class="title">🛠️ पूरा सेटअप और सपोर्ट</h2><p class="desc">हम सिर्फ़ सिस्टम बनाते नहीं, बल्कि उसे आपके लिए पूरी तरह से सेट अप करते हैं और आपकी टीम को सिखाते हैं।</p></div>
     </div>
 
     <script>
-        const problemsPool = [
-            { id: 1, en: 'Manual Data Entry', hi: 'मैन्युअल डेटा एंट्री' },
-            { id: 2, en: 'Repetitive Emails', hi: 'बार-बार ईमेल भेजना' },
-            { id: 3, en: 'Updating Spreadsheets', hi: 'स्प्रेडशीट अपडेट करना' },
-            { id: 4, en: 'Missed Follow-ups', hi: 'फॉलो-अप मिस होना' },
-            { id: 5, en: 'Chasing Payments', hi: 'पेमेंट के लिए पूछना' },
-            { id: 6, en: 'Onboarding New Clients', hi: 'नए क्लाइंट्स को ऑनबोर्ड करना' },
-            { id: 7, en: 'Generating Reports', hi: 'रिपोर्ट बनाना' },
-            { id: 8, en: 'Scheduling Conflicts', hi: 'शेड्यूलिंग में दिक्कत' },
-            { id: 9, en: 'Copy-Paste Errors', hi: 'कॉपी-पेस्ट की गलतियाँ' },
-            { id: 10, en: 'Sending Reminders', hi: 'रिमाइंडर भेजना' },
-            { id: 11, en: 'Managing Leads', hi: 'लीड्स मैनेज करना' },
-            { id: 12, en: 'Organizing Files', hi: 'फ़ाइलें व्यवस्थित करना' },
+        const scrollContainer = document.querySelector('.scroll-container');
+        const stickyContainer = document.querySelector('.sticky-container');
+        const problemContainer = document.getElementById('problem-nodes-container');
+
+        const problems = [
+            'Manual Data Entry', 'Missed Follow-ups', 'Repetitive Emails',
+            'Chasing Payments', 'Data Errors', 'Excel Juggling', 
+            'Onboarding Friction', 'Generating Reports'
         ];
 
-        const textContent = {
-            en: { title: "What's slowing you down?", subtitle: "Select your biggest pain points to begin.", btn: "Automate This Workflow", solution: "Welcome to a Smarter Workflow.", nodes: ["Message Automation", "Process Streamlining", "Custom Setup"] },
-            hi: { title: "आपको क्या धीमा कर रहा है?", subtitle: "शुरू करने के लिए अपनी सबसे बड़ी समस्याएँ चुनें।", btn: "इस वर्कफ़्लो को ऑटोमेट करें", solution: "एक स्मार्ट वर्कफ़्लो में आपका स्वागत है।", nodes: ["मैसेज ऑटोमेशन", "प्रोसेस स्ट्रीमलाइनिंग", "पूरा सेटअप"] }
-        };
+        // 1. Create Problem Nodes
+        problems.forEach((text, i) => {
+            const node = document.createElement('div');
+            node.classList.add('problem-node');
+            node.textContent = text;
+            node.style.top = `${10 + Math.random() * 80}%`;
+            node.style.left = `${10 + Math.random() * 80}%`;
+            problemContainer.appendChild(node);
+        });
 
-        const engine = document.getElementById('engine');
-        const problemGrid = document.getElementById('problem-grid');
-        const solveBtn = document.getElementById('solve-btn');
-        let selectedProblems = new Set();
-        let currentLang = 'en';
+        const problemNodes = document.querySelectorAll('.problem-node');
+        const pillars = document.querySelectorAll('.service-pillar');
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        function initializeProblems() {
-            problemGrid.innerHTML = '';
-            shuffleArray(problemsPool);
-            const problemsToShow = problemsPool.slice(0, 6);
+        // 2. The Main Scroll Animation Function
+        function animateOnScroll() {
+            const scrollableHeight = scrollContainer.offsetHeight - window.innerHeight;
+            const scrollProgress = window.scrollY / scrollableHeight;
             
-            problemsToShow.forEach(problem => {
-                const problemDiv = document.createElement('div');
-                problemDiv.classList.add('problem-item');
-                problemDiv.dataset.id = problem.id;
-                problemDiv.innerText = problem[currentLang];
-                problemGrid.appendChild(problemDiv);
-            });
-        }
+            // Set the CSS variable for global use
+            stickyContainer.style.setProperty('--scroll', scrollProgress);
 
-        problemGrid.addEventListener('click', (e) => {
-            if (e.target.classList.contains('problem-item')) {
-                const problemDiv = e.target;
-                const problemId = problemDiv.dataset.id;
-                problemDiv.classList.toggle('selected');
-
-                if (selectedProblems.has(problemId)) {
-                    selectedProblems.delete(problemId);
-                } else {
-                    selectedProblems.add(problemId);
-                }
-                solveBtn.classList.toggle('active', selectedProblems.size > 0);
+            // --- Animate elements based on scroll progress ---
+            
+            // ACT II: Problems fly to center
+            const conduitStart = 0.25;
+            const conduitEnd = 0.5;
+            if (scrollProgress > conduitStart && scrollProgress < conduitEnd) {
+                problemNodes.forEach(node => {
+                    const progress = (scrollProgress - conduitStart) / (conduitEnd - conduitStart);
+                    const startX = parseFloat(node.style.left);
+                    const startY = parseFloat(node.style.top);
+                    
+                    const newX = startX + (50 - startX) * progress;
+                    const newY = startY + (50 - startY) * progress;
+                    
+                    node.style.transform = `translate(-50%, -50%) translate(${newX}vw, ${newY}vh) scale(${1 - progress})`;
+                    node.style.opacity = 1 - progress;
+                });
+            } else if (scrollProgress <= conduitStart) {
+                 problemNodes.forEach(node => {
+                     node.style.transform = `translate(0, 0) scale(1)`;
+                 });
             }
-        });
 
-        solveBtn.addEventListener('click', () => {
-            if (selectedProblems.size === 0) return;
-            engine.classList.add('is-processing');
-
-            document.querySelectorAll('.problem-item.selected').forEach((item, index) => {
-                const rect = item.getBoundingClientRect();
-                item.style.top = `${rect.top}px`;
-                item.style.left = `${rect.left}px`;
-                item.style.width = `${rect.width}px`;
-                item.style.height = `${rect.height}px`;
-                setTimeout(() => item.classList.add('processed'), 50);
-            });
-
-            setTimeout(() => {
-                engine.classList.remove('is-processing');
-                engine.classList.add('is-solved');
-            }, 1000);
-        });
-
-        function handleLanguageToggle() {
-            currentLang = document.getElementById('lang-toggle').checked ? 'hi' : 'en';
-            const langContent = textContent[currentLang];
-            // Update Scene 1 text
-            document.getElementById('diagnostic-title').innerText = langContent.title;
-            document.getElementById('diagnostic-subtitle').innerText = langContent.subtitle;
-            solveBtn.innerText = langContent.btn;
-            // Update Scene 2 text
-            document.getElementById('solution-title').innerText = langContent.solution;
-            document.getElementById('node-title-1').innerText = langContent.nodes[0];
-            document.getElementById('node-title-2').innerText = langContent.nodes[1];
-            document.getElementById('node-title-3').innerText = langContent.nodes[2];
-            // Update dynamic problems
-            document.querySelectorAll('.problem-item').forEach(div => {
-                const problemId = parseInt(div.dataset.id);
-                const problemData = problemsPool.find(p => p.id === problemId);
-                if (problemData) {
-                    div.innerText = problemData[currentLang];
-                }
-            });
+            // ACT III: Pillars fade in
+            const solutionStart = 0.7;
+            if (scrollProgress > solutionStart) {
+                pillars.forEach((pillar, i) => {
+                    const pillarProgress = (scrollProgress - solutionStart) / 0.1;
+                    if (pillarProgress > i * 0.5) {
+                        pillar.style.opacity = Math.min(1, (pillarProgress - (i * 0.5)) * 2);
+                    } else {
+                        pillar.style.opacity = 0;
+                    }
+                });
+            } else {
+                pillars.forEach(pillar => pillar.style.opacity = 0);
+            }
         }
-        
-        // Modal Logic (re-used)
-        const modalOverlay = document.getElementById('modal-overlay');
-        document.querySelectorAll('.service-node').forEach(node => {
-            node.addEventListener('click', () => {
-                const serviceId = node.dataset.service;
-                const source = document.querySelector(`#service-content-${currentLang} [data-service="${serviceId}"]`);
-                document.getElementById('modal-title').innerHTML = source.querySelector('.title').innerHTML;
-                document.getElementById('modal-description').innerHTML = source.querySelector('.desc').innerHTML;
-                modalOverlay.classList.add('active');
-            });
-        });
-        document.getElementById('close-modal').addEventListener('click', () => modalOverlay.classList.remove('active'));
-        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
 
-        // Initial Load
-        initializeProblems();
+        // 3. Attach Listener
+        window.addEventListener('scroll', animateOnScroll);
 
+        // Initial call to set positions
+        animateOnScroll();
     </script>
 </body>
 </html>
