@@ -3,228 +3,241 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smarter Automation | A Symphony of Workflow</title>
+    <title>Smarter Automation | Orchestrate Your Flow</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #000103; --text-color: #e0e0e0; --text-muted: #b0b0b0;
-            --primary-color: #00aaff; --primary-glow: rgba(0, 170, 255, 0.5);
-            --card-bg: rgba(20, 25, 40, 0.5); --card-border: rgba(255, 255, 255, 0.1);
-            --scroll: 0;
+            --dark-bg: #030409; --light-bg: #F8F9FA;
+            --text-dark: #1D2129; --text-light: #EDEFF3; --text-muted: #868E96;
+            --primary-color: #007BFF; --primary-glow: rgba(0, 123, 255, 0.5);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: var(--bg-color); color: var(--text-color);
-            font-family: 'Outfit', sans-serif;
-        }
-        .scroll-container {
-            height: 500vh; /* This drives the entire scroll experience */
-            position: relative;
-        }
-        .sticky-container {
-            position: sticky; top: 0; height: 100vh; width: 100%;
-            overflow: hidden;
-        }
-        .scene {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center; text-align: center;
-        }
-
-        /* --- ACT I: The Dissonance --- */
-        #act1-title {
-            opacity: calc(1 - (var(--scroll) * 5));
-            transform: scale(calc(1 - (var(--scroll) * 0.5)));
-        }
-        #act1-title h1 {
-            font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900;
-        }
-        .problem-node {
-            position: absolute; background: var(--card-bg); border: 1px solid var(--card-border);
-            padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(4px);
-            font-size: clamp(0.8rem, 2vw, 1rem);
-            opacity: calc(var(--scroll) * 15 - 0.5);
-            transition: opacity 0.3s;
-            will-change: transform;
-        }
-        /* Positions are animated with JS */
-
-        /* --- ACT II: The Crescendo (The Conduit) --- */
-        #conduit {
-            position: absolute; width: 100%; height: 100%;
-            opacity: calc(var(--scroll) * 8 - 2);
-        }
-        #conduit-core {
-            position: absolute; top: 50%; left: 50%; width: 10px; height: 10px;
-            background: white; border-radius: 50%;
-            box-shadow: 0 0 20px 5px white, 0 0 50px 20px var(--primary-glow);
-            transform: translate(-50%, -50%) scale(calc(var(--scroll) * 5 - 1));
-        }
-
-        /* --- ACT III: The Harmony (The Solution) --- */
-        #act3-solution {
-             opacity: calc(var(--scroll) * 5 - 3.5);
-             transform: scale(calc(var(--scroll) * 2 - 0.8));
-        }
-        .solution-title {
-            position: absolute; top: 20vh;
-        }
-        .solution-title h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--text-muted); }
-        .service-pillar {
-            position: absolute;
-            width: 250px; text-align: center;
-            opacity: 0; transition: opacity 0.5s ease;
-        }
-        .service-pillar h3 { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 700; color: var(--primary-color); margin-bottom: 10px;}
-        .service-pillar p { font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.6; color: var(--text-muted);}
-
-        /* Positioning pillars */
-        #pillar-1 { top: 40%; left: 15%; }
-        #pillar-2 { top: 40%; left: 50%; transform: translateX(-50%); }
-        #pillar-3 { top: 40%; left: 85%; transform: translateX(-100%); }
         
-        /* --- ACT IV: The Overture (The CTA) --- */
-        #act4-cta {
-            opacity: calc(var(--scroll) * 8 - 6.5);
-            transform: translateY(calc(50px - (var(--scroll) * 50px)));
+        /* 1. Smooth Scroll & Hide Scrollbar */
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
         }
-        #cta-button {
-            background: var(--primary-color); color: #000103; border: none;
-            font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 20px 50px;
-            border-radius: 50px; font-weight: 700; cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 0 30px var(--primary-glow);
-            transition: all 0.3s ease;
-        }
-        #cta-button:hover { transform: scale(1.05); box-shadow: 0 0 50px var(--primary-glow); }
+        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, and Opera */
 
-        /* --- Mobile Adjustments --- */
-        @media (max-width: 768px) {
-            .scroll-container { height: 600vh; }
-            .service-pillar {
-                width: 80%; left: 50% !important; transform: translateX(-50%) !important;
-            }
-            #pillar-1 { top: 25%; }
-            #pillar-2 { top: 45%; }
-            #pillar-3 { top: 65%; }
-            .solution-title { top: 10vh; }
+        #main-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+        .content-section {
+            position: relative; z-index: 10;
+            width: 100%; height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 0 5%;
+        }
+        .text-content { text-align: center; max-width: 900px; }
+        h1 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; }
+        h2 { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; color: var(--text-dark); }
+        p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-muted); margin-top: 15px; }
+
+        #solution-cards {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 30px; width: 100%; max-width: 1100px; margin-top: 50px;
+        }
+        .service-card {
+            background: #fff; border: 1px solid #dee2e6;
+            border-radius: 16px; padding: 30px;
+            text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
+        .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
+        
+        #cta-section { background-color: var(--light-bg); }
+        .cta-container { display: flex; justify-content: center; align-items: center; } /* Fix for button breaking */
+        #cta-button {
+            background: var(--primary-color); color: #fff; text-decoration: none;
+            font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 20px 50px;
+            border-radius: 50px; font-weight: 700;
+            box-shadow: 0 10px 30px var(--primary-glow);
+            transition: all 0.3s ease; white-space: nowrap; /* Prevents breaking */
+        }
+        #cta-button:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
+        
+        /* Language Toggle - Bug Fix for checkbox */
+        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
+        .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); }
+        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; } /* Properly hide checkbox */
+        .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
+        .lang-en { color: var(--text-light); } .lang-hi { color: var(--text-muted); }
+        .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
+        #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
+        #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); }
+        .is-light .toggle-label { background-color: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.1); }
+        
+        @media (max-width: 900px) {
+            #solution-cards { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="scroll-container">
-        <div class="sticky-container">
-            <div class="scene" id="act1-title">
-                <h1>Your business has a rhythm.<br>Is it chaos, or a symphony?</h1>
-            </div>
-
-            <div class="scene" id="problem-nodes-container">
-                <!-- Problems generated by JS -->
-            </div>
-            
-            <div class="scene" id="conduit">
-                <div id="conduit-core"></div>
-            </div>
-
-            <div class="scene" id="act3-solution">
-                <div class="solution-title"><h2>The Instruments of Your Symphony</h2></div>
-                <div class="service-pillar" id="pillar-1">
-                    <h3>🚀 Message Automation</h3>
-                    <p>Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</p>
-                </div>
-                <div class="service-pillar" id="pillar-2">
-                    <h3>⚙️ Process Streamlining</h3>
-                    <p>We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.</p>
-                </div>
-                <div class="service-pillar" id="pillar-3">
-                    <h3>🛠️ Bespoke Setup & Support</h3>
-                    <p>A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.</p>
-                </div>
-            </div>
-
-            <div class="scene" id="act4-cta">
-                <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20compose%20my%20symphony." target="_blank" id="cta-button">Compose Your Symphony</a>
-            </div>
-        </div>
+    <canvas id="main-canvas"></canvas>
+    
+    <div class="language-toggle">
+        <input type="checkbox" id="lang-toggle">
+        <label for="lang-toggle" class="toggle-label">
+            <span class="toggle-thumb"></span>
+            <span class="lang-text lang-en">EN</span>
+            <span class="lang-text lang-hi">HI</span>
+        </label>
     </div>
 
+    <div class="scroll-container">
+        <section class="content-section" id="intro-section">
+            <div class="text-content">
+                <h1 id="intro-title">Is your business in motion, or just moving?</h1>
+            </div>
+        </section>
+        
+        <section class="content-section" id="solution-section">
+            <div class="text-content">
+                <h2 id="solution-title">We orchestrate the flow.</h2>
+                <div id="solution-cards">
+                    <div class="service-card">
+                        <h3 id="card-title-1">🚀 Message Automation</h3>
+                        <p id="card-desc-1">Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 id="card-title-2">⚙️ Process Streamlining</h3>
+                        <p id="card-desc-2">We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 id="card-title-3">🛠️ Bespoke Setup & Support</h3>
+                        <p id="card-desc-3">A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" id="cta-section">
+             <div class="text-content cta-container">
+                 <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20orchestrate%20my%20flow." target="_blank" id="cta-button">Let's Compose Your Symphony</a>
+             </div>
+        </section>
+    </div>
+
+    <!-- Animation & Smooth Scroll Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
+    
     <script>
-        const scrollContainer = document.querySelector('.scroll-container');
-        const stickyContainer = document.querySelector('.sticky-container');
-        const problemContainer = document.getElementById('problem-nodes-container');
+        // 1. SMOOTH SCROLL INITIALIZATION
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
 
-        const problems = [
-            'Manual Data Entry', 'Missed Follow-ups', 'Repetitive Emails',
-            'Chasing Payments', 'Data Errors', 'Excel Juggling', 
-            'Onboarding Friction', 'Generating Reports'
-        ];
+        // 2. GSAP & SCROLLTRIGGER SETUP
+        gsap.registerPlugin(ScrollTrigger);
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-        // 1. Create Problem Nodes
-        problems.forEach((text, i) => {
-            const node = document.createElement('div');
-            node.classList.add('problem-node');
-            node.textContent = text;
-            node.style.top = `${10 + Math.random() * 80}%`;
-            node.style.left = `${10 + Math.random() * 80}%`;
-            problemContainer.appendChild(node);
-        });
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-        const problemNodes = document.querySelectorAll('.problem-node');
-        const pillars = document.querySelectorAll('.service-pillar');
-
-        // 2. The Main Scroll Animation Function
-        function animateOnScroll() {
-            const scrollableHeight = scrollContainer.offsetHeight - window.innerHeight;
-            const scrollProgress = window.scrollY / scrollableHeight;
-            
-            // Set the CSS variable for global use
-            stickyContainer.style.setProperty('--scroll', scrollProgress);
-
-            // --- Animate elements based on scroll progress ---
-            
-            // ACT II: Problems fly to center
-            const conduitStart = 0.25;
-            const conduitEnd = 0.5;
-            if (scrollProgress > conduitStart && scrollProgress < conduitEnd) {
-                problemNodes.forEach(node => {
-                    const progress = (scrollProgress - conduitStart) / (conduitEnd - conduitStart);
-                    const startX = parseFloat(node.style.left);
-                    const startY = parseFloat(node.style.top);
-                    
-                    const newX = startX + (50 - startX) * progress;
-                    const newY = startY + (50 - startY) * progress;
-                    
-                    node.style.transform = `translate(-50%, -50%) translate(${newX}vw, ${newY}vh) scale(${1 - progress})`;
-                    node.style.opacity = 1 - progress;
-                });
-            } else if (scrollProgress <= conduitStart) {
-                 problemNodes.forEach(node => {
-                     node.style.transform = `translate(0, 0) scale(1)`;
-                 });
+        // 3. PARTICLE SYSTEM
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
             }
-
-            // ACT III: Pillars fade in
-            const solutionStart = 0.7;
-            if (scrollProgress > solutionStart) {
-                pillars.forEach((pillar, i) => {
-                    const pillarProgress = (scrollProgress - solutionStart) / 0.1;
-                    if (pillarProgress > i * 0.5) {
-                        pillar.style.opacity = Math.min(1, (pillarProgress - (i * 0.5)) * 2);
-                    } else {
-                        pillar.style.opacity = 0;
-                    }
-                });
-            } else {
-                pillars.forEach(pillar => pillar.style.opacity = 0);
+            update() {
+                if (!gsap.isTweening(this)) {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
+        function initParticles() {
+            particles = [];
+            let numberOfParticles = (canvas.width * canvas.height) / 12000;
+            for (let i = 0; i < numberOfParticles; i++) { particles.push(new Particle()); }
+        }
+        initParticles();
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        requestAnimationFrame(animateParticles);
 
-        // 3. Attach Listener
-        window.addEventListener('scroll', animateOnScroll);
+        // 4. THE MAIN GSAP TIMELINE
+        const mainTimeline = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".scroll-container",
+                scrub: 1.2, // Smoother scrub
+                pin: true,
+                end: "200%" 
+            }
+        });
 
-        // Initial call to set positions
-        animateOnScroll();
+        mainTimeline.to("#intro-section .text-content", { opacity: 0, duration: 0.5 }, 0)
+        .to(particles, {
+            x: () => canvas.width / 2, y: () => canvas.height / 2,
+            ease: "power2.in", duration: 1.5,
+            stagger: { each: 0.005, from: "random" }
+        }, 0.2)
+        .to("body", { 
+            backgroundColor: "#F8F9FA", color: "#1D2129", duration: 0.25,
+            onStart: () => document.querySelector('.language-toggle').classList.add('is-light'),
+            onReverseComplete: () => document.querySelector('.language-toggle').classList.remove('is-light')
+        }, ">-0.2")
+        .to(particles, { opacity: 0, duration: 0.1 }, "<")
+        .fromTo("#solution-section", { opacity: 0, y: 150 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "<")
+        .from(".service-card", { y: 50, opacity: 0, stagger: 0.2, duration: 0.8, ease: "power2.out" }, "<0.3")
+        .to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.8")
+        .from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
+
+        // 5. LANGUAGE TOGGLE LOGIC
+        const textContent = {
+            en: { introTitle: "Is your business in motion, or just moving?", solutionTitle: "We orchestrate the flow.", cardTitle1: "🚀 Message Automation", cardDesc1: "Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.", cardTitle2: "⚙️ Process Streamlining", cardDesc2: "We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.", cardTitle3: "🛠️ Bespoke Setup & Support", cardDesc3: "A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.", ctaButton: "Let's Compose Your Symphony" },
+            hi: { introTitle: "आपका बिज़नेस चल रहा है, या सिर्फ़ हिल रहा है?", solutionTitle: "हम प्रवाह को व्यवस्थित करते हैं।", cardTitle1: "🚀 मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।", cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम Google Sheets जैसे टूल में आपके मैन्युअल कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे ऑटोमेटेड वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "आइए आपकी सिम्फनी तैयार करें" }
+        };
+        const langToggle = document.getElementById('lang-toggle');
+        langToggle.addEventListener('change', () => {
+            const lang = langToggle.checked ? 'hi' : 'en';
+            const content = textContent[lang];
+            Object.keys(content).forEach(key => {
+                const element = document.getElementById(key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`));
+                if (element) element.innerHTML = content[key];
+            });
+        });
+
     </script>
 </body>
 </html>
