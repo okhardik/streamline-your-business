@@ -15,62 +15,51 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* 1. Smooth Scroll & General Styles */
         html.lenis { height: auto; }
         .lenis.lenis-smooth { scroll-behavior: auto !important; }
-        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-        .lenis.lenis-stopped { overflow: hidden; }
-        
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--dark-bg);
             color: var(--text-light);
             transition: background-color 0.6s ease, color 0.6s ease;
         }
-
         body.is-light {
             background-color: var(--light-bg);
             color: var(--text-dark);
         }
-
         #main-canvas {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 1; pointer-events: none;
+            transition: opacity 0.5s ease; /* Added for smooth GSAP fade */
         }
-        
-        /* 2. Content Sections - IMPROVED FOR MOBILE */
         .content-section {
             position: relative; z-index: 10;
             width: 100%;
-            min-height: 100vh; /* Use min-height to allow content to expand */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 5vh 5%; /* Use vh for vertical padding */
+            padding: 5vh 5%;
         }
-        
         .text-content {
             text-align: center;
             max-width: 900px;
             width: 100%;
-            will-change: transform, opacity; /* Performance hint for GSAP */
+            will-change: transform, opacity;
         }
-
-        h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; line-height: 1.1; }
+        h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; line-height: 1.2; }
         h2 { font-size: clamp(2.2rem, 7vw, 4rem); font-weight: 900; line-height: 1.2; color: var(--text-dark); }
         p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-muted); margin-top: 15px; }
-
         #solution-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* More responsive grid */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
             width: 100%;
             max-width: 1100px;
             margin-top: 60px;
         }
-        
         .service-card {
             background: #fff;
             border: 1px solid #dee2e6;
@@ -78,23 +67,20 @@
             padding: 30px;
             text-align: left;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            will-change: transform, opacity; /* Performance hint for GSAP */
+            will-change: transform, opacity;
         }
         .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
         .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
-        
         #cta-button {
             background: var(--primary-color); color: #fff; text-decoration: none;
             font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 20px 50px;
             border-radius: 50px; font-weight: 700;
             box-shadow: 0 10px 30px var(--primary-glow);
             transition: all 0.3s ease; white-space: nowrap;
-            display: inline-block; /* Fix for transform */
-            will-change: transform, opacity; /* Performance hint for GSAP */
+            display: inline-block;
+            will-change: transform, opacity;
         }
         #cta-button:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
-        
-        /* 3. Language Toggle */
         .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
         .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); }
         #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
@@ -104,14 +90,11 @@
         #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
         #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
         #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); }
-        
         .is-light .toggle-label { background-color: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.1); }
-
-        /* 4. MOBILE OPTIMIZATIONS */
         @media (max-width: 768px) {
             .content-section {
-                padding: 10vh 20px; /* Reduce side padding on mobile */
-                min-height: 0; /* Let content define height */
+                padding: 10vh 20px;
+                min-height: 0;
             }
             #intro-section { min-height: 90vh; }
             #solution-cards { margin-top: 40px; }
@@ -131,28 +114,28 @@
         </label>
     </div>
 
-    <!-- The content is now a natural-flowing page -->
+    <!-- Content is now pre-filled with the default language (English) -->
     <section class="content-section" id="intro-section">
         <div class="text-content">
-            <h1 id="intro-title">Is your business in motion, or just moving?</h1>
+            <h1 id="intro-title">Overwhelmed by Chaos? 🌪️ Let's Orchestrate Your Success. ✨</h1>
         </div>
     </section>
     
     <section class="content-section" id="solution-section">
         <div class="text-content">
-            <h2 id="solution-title">We orchestrate the flow.</h2>
+            <h2 id="solution-title">Your Workflow, Perfected. 🎯</h2>
             <div id="solution-cards">
                 <div class="service-card">
-                    <h3 id="card-title-1">Message Automation</h3>
-                    <p id="card-desc-1">Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</p>
+                    <h3 id="card-title-1">🚀 24/7 Lead Engagement</h3>
+                    <p id="card-desc-1">Never miss a lead again. Our automated WhatsApp, SMS & Email bots engage customers instantly, turning interest into action.</p>
                 </div>
                 <div class="service-card">
-                    <h3 id="card-title-2">Process Streamlining</h3>
-                    <p id="card-desc-2">We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.</p>
+                    <h3 id="card-title-2">⚙️ Effortless Operations</h3>
+                    <p id="card-desc-2">Say goodbye to tedious data entry. We transform your manual Google Sheets & repetitive tasks into a self-running, error-free system.</p>
                 </div>
                 <div class="service-card">
-                    <h3 id="card-title-3">Bespoke Setup & Support</h3>
-                    <p id="card-desc-3">A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.</p>
+                    <h3 id="card-title-3">🤝 White-Glove Partnership</h3>
+                    <p id="card-desc-3">Consider us your in-house automation experts. We design, build, and manage your entire workflow, tailored precisely to your business goals.</p>
                 </div>
             </div>
         </div>
@@ -160,157 +143,122 @@
 
     <section class="content-section" id="cta-section">
          <div class="text-content">
-             <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20orchestrate%20my%20flow." target="_blank" id="cta-button">Let's Compose Your Symphony</a>
+             <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20orchestrate%20my%20flow." target="_blank" id="cta-button">Start Automating Now 🚀</a>
          </div>
     </section>
 
-        <!-- Libraries -->
+    <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     
     <script>
-        // --- 1. SMOOTH SCROLL & BASIC SETUP ---
-        const lenis = new Lenis();
-        function raf(time) {
-            lenis.raf(time);
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. SMOOTH SCROLL & BASIC SETUP ---
+            const lenis = new Lenis();
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
             requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-        gsap.registerPlugin(ScrollTrigger);
+            gsap.registerPlugin(ScrollTrigger);
 
-        // --- 2. PARTICLE CANVAS LOGIC ---
-        const canvas = document.getElementById('main-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        const particleColor = 'rgba(0, 123, 255, 0.5)';
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            initParticles();
-        });
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 1.5 + 1;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * 1 - 0.5;
-                this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
+            // --- 2. PARTICLE CANVAS LOGIC ---
+            const canvas = document.getElementById('main-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
             }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.size > 0.2) this.size -= 0.01;
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        function initParticles() {
-            particles = [];
-            let numberOfParticles = (canvas.width * canvas.height) / 15000;
-            for (let i = 0; i < numberOfParticles; i++) { particles.push(new Particle()); }
-        }
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateParticles);
-        }
-        resizeCanvas();
-        initParticles();
-        animateParticles();
-        
-        // --- 3. ANIMATIONS SETUP (SMOOTHER & MODULAR) ---
-        ScrollTrigger.create({
-            trigger: "#solution-section",
-            start: "top center",
-            end: "bottom center",
-            toggleClass: { targets: "body, .language-toggle", className: "is-light" },
-            onEnter: () => gsap.to(particles, { opacity: 0, duration: 0.5 }),
-            onLeaveBack: () => gsap.to(particles, { opacity: 1, duration: 0.5 })
-        });
-        
-        function createFadeUpAnimation(triggerElement, targets, start = "top 80%") {
-            gsap.from(targets, {
-                y: 50,
-                opacity: 0,
-                duration: 1,
-                ease: 'power3.out',
-                stagger: 0.2,
-                scrollTrigger: {
-                    trigger: triggerElement,
-                    start: start,
-                    toggleActions: 'play none none none'
-                }
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                initParticles();
             });
-        }
-
-        createFadeUpAnimation("#intro-section", "#intro-title");
-        createFadeUpAnimation("#solution-section", "#solution-title");
-        createFadeUpAnimation("#solution-section", ".service-card", "top 70%");
-        createFadeUpAnimation("#cta-section", "#cta-button");
-
-        // --- 4. LANGUAGE TOGGLE LOGIC ---
-        const textContent = {
-            en: {
-                introTitle: "Overwhelmed by Chaos? 🌪️ Let's Orchestrate Your Success. ✨",
-                solutionTitle: "Your Workflow, Perfected. 🎯",
-                cardTitle1: "🚀 24/7 Lead Engagement",
-                cardDesc1: "Never miss a lead again. Our automated WhatsApp, SMS & Email bots engage customers instantly, turning interest into action.",
-                cardTitle2: "⚙️ Effortless Operations",
-                cardDesc2: "Say goodbye to tedious data entry. We transform your manual Google Sheets & repetitive tasks into a self-running, error-free system.",
-                cardTitle3: "🤝 White-Glove Partnership",
-                cardDesc3: "Consider us your in-house automation experts. We design, build, and manage your entire workflow, tailored precisely to your business goals.",
-                ctaButton: "Start Automating Now 🚀"
-            },
-            hi: {
-                introTitle: "अव्यवस्था से परेशान? 🌪️ आइए आपकी सफलता को व्यवस्थित करें। ✨",
-                solutionTitle: "आपका वर्कफ़्लो, उत्तम। 🎯",
-                cardTitle1: "🚀 24/7 लीड एंगेजमेंट",
-                cardDesc1: "अब कोई भी लीड न छूटे। हमारे ऑटोमेटेड WhatsApp, SMS और ईमेल बॉट्स ग्राहकों से तुरंत जुड़ते हैं, और उनकी रुचि को एक्शन में बदलते हैं।",
-                cardTitle2: "⚙️ सरल ऑपरेशन्स",
-                cardDesc2: "उबाऊ डेटा एंट्री को अलविदा कहें। हम आपके मैन्युअल Google Sheets और दोहराए जाने वाले कार्यों को एक स्वचालित, गलती-मुक्त सिस्टम में बदलते हैं।",
-                cardTitle3: "🤝 व्हाइट-ग्लव पार्टनरशिप",
-                cardDesc3: "हमें अपनी इन-हाउस ऑटोमेशन टीम समझें। हम आपके व्यावसायिक लक्ष्यों के लिए, आपके पूरे वर्कफ़्लो को डिज़ाइन, निर्माण और प्रबंधित करते हैं।",
-                ctaButton: "अभी ऑटोमेट करना शुरू करें 🚀"
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 1.5 + 1;
+                    this.speedX = Math.random() * 1 - 0.5; this.speedY = Math.random() * 1 - 0.5;
+                    this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
+                }
+                update() {
+                    this.x += this.speedX; this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.fillStyle = this.color; ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
             }
-        };
+            function initParticles() {
+                particles = [];
+                let n = (canvas.width * canvas.height) / 15000;
+                for (let i = 0; i < n; i++) { particles.push(new Particle()); }
+            }
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animateParticles);
+            }
+            resizeCanvas(); initParticles(); animateParticles();
+            
+            // --- 3. SCROLL-BASED ANIMATIONS ---
+            ScrollTrigger.create({
+                trigger: "#solution-section",
+                start: "top center",
+                end: "bottom center",
+                toggleClass: { targets: "body, .language-toggle", className: "is-light" },
+                // *** FIX: Target the canvas element for fade, not the particle array ***
+                onEnter: () => gsap.to("#main-canvas", { opacity: 0, duration: 0.5 }),
+                onLeaveBack: () => gsap.to("#main-canvas", { opacity: 1, duration: 0.5 })
+            });
+            
+            function createFadeUpAnimation(trigger, targets, start = "top 85%") {
+                gsap.from(targets, {
+                    y: 50, opacity: 0, duration: 1, ease: 'power3.out',
+                    stagger: 0.2, scrollTrigger: { trigger, start, toggleActions: 'play none none none' }
+                });
+            }
+            createFadeUpAnimation("#intro-section", "#intro-title");
+            createFadeUpAnimation("#solution-section", "#solution-title");
+            createFadeUpAnimation("#solution-section", ".service-card", "top 75%");
+            createFadeUpAnimation("#cta-section", "#cta-button");
 
-        const langToggle = document.getElementById('lang-toggle');
-        
-        function updateTextContent(lang) {
-            const content = textContent[lang];
-            document.getElementById('intro-title').innerHTML = content.introTitle;
-            document.getElementById('solution-title').innerHTML = content.solutionTitle;
-            document.getElementById('card-title-1').innerHTML = content.cardTitle1;
-            document.getElementById('card-desc-1').innerHTML = content.cardDesc1;
-            document.getElementById('card-title-2').innerHTML = content.cardTitle2;
-            document.getElementById('card-desc-2').innerHTML = content.cardDesc2;
-            document.getElementById('card-title-3').innerHTML = content.cardTitle3;
-            document.getElementById('card-desc-3').innerHTML = content.cardDesc3;
-            document.getElementById('cta-button').innerHTML = content.ctaButton;
-        }
+            // --- 4. LANGUAGE TOGGLE LOGIC ---
+            const textContent = {
+                en: { introTitle: "Overwhelmed by Chaos? 🌪️ Let's Orchestrate Your Success. ✨", solutionTitle: "Your Workflow, Perfected. 🎯", cardTitle1: "🚀 24/7 Lead Engagement", cardDesc1: "Never miss a lead again. Our automated WhatsApp, SMS & Email bots engage customers instantly, turning interest into action.", cardTitle2: "⚙️ Effortless Operations", cardDesc2: "Say goodbye to tedious data entry. We transform your manual Google Sheets & repetitive tasks into a self-running, error-free system.", cardTitle3: "🤝 White-Glove Partnership", cardDesc3: "Consider us your in-house automation experts. We design, build, and manage your entire workflow, tailored precisely to your business goals.", ctaButton: "Start Automating Now 🚀" },
+                hi: { introTitle: "अव्यवस्था से परेशान? 🌪️ आइए आपकी सफलता को व्यवस्थित करें। ✨", solutionTitle: "आपका वर्कफ़्लो, उत्तम। 🎯", cardTitle1: "🚀 24/7 लीड एंगेजमेंट", cardDesc1: "अब कोई भी लीड न छूटे। हमारे ऑटोमेटेड WhatsApp, SMS और ईमेल बॉट्स ग्राहकों से तुरंत जुड़ते हैं, और उनकी रुचि को एक्शन में बदलते हैं।", cardTitle2: "⚙️ सरल ऑपरेशन्स", cardDesc2: "उबाऊ डेटा एंट्री को अलविदा कहें। हम आपके मैन्युअल Google Sheets और दोहराए जाने वाले कार्यों को एक स्वचालित, गलती-मुक्त सिस्टम में बदलते हैं।", cardTitle3: "🤝 व्हाइट-ग्लव पार्टनरशिप", cardDesc3: "हमें अपनी इन-हाउस ऑटोमेशन टीम समझें। हम आपके व्यावसायिक लक्ष्यों के लिए, आपके पूरे वर्कफ़्लो को डिज़ाइन, निर्माण और प्रबंधित करते हैं।", ctaButton: "अभी ऑटोमेट करना शुरू करें 🚀" }
+            };
 
-        langToggle.addEventListener('change', () => {
-            const lang = langToggle.checked ? 'hi' : 'en';
-            updateTextContent(lang);
+            const langToggle = document.getElementById('lang-toggle');
+            function updateTextContent(lang) {
+                const content = textContent[lang];
+                localStorage.setItem('language', lang); // Save preference
+                document.getElementById('intro-title').innerHTML = content.introTitle;
+                document.getElementById('solution-title').innerHTML = content.solutionTitle;
+                document.getElementById('card-title-1').innerHTML = content.cardTitle1;
+                document.getElementById('card-desc-1').innerHTML = content.cardDesc1;
+                document.getElementById('card-title-2').innerHTML = content.cardTitle2;
+                document.getElementById('card-desc-2').innerHTML = content.cardDesc2;
+                document.getElementById('card-title-3').innerHTML = content.cardTitle3;
+                document.getElementById('card-desc-3').innerHTML = content.cardDesc3;
+                document.getElementById('cta-button').innerHTML = content.ctaButton;
+            }
+
+            langToggle.addEventListener('change', () => {
+                updateTextContent(langToggle.checked ? 'hi' : 'en');
+            });
+
+            // On load, check for saved language preference
+            const savedLang = localStorage.getItem('language');
+            if (savedLang === 'hi') {
+                langToggle.checked = true;
+                updateTextContent('hi');
+            }
+            // English is already loaded by default in the HTML
         });
-
-        // Set initial language on page load
-        const initialLang = langToggle.checked ? 'hi' : 'en';
-        updateTextContent(initialLang);
-        
     </script>
 </body>
 </html>
