@@ -164,7 +164,7 @@
          </div>
     </section>
 
-    <!-- Libraries -->
+        <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
@@ -232,8 +232,6 @@
         animateParticles();
         
         // --- 3. ANIMATIONS SETUP (SMOOTHER & MODULAR) ---
-
-        // Animate the background color change
         ScrollTrigger.create({
             trigger: "#solution-section",
             start: "top center",
@@ -243,7 +241,6 @@
             onLeaveBack: () => gsap.to(particles, { opacity: 1, duration: 0.5 })
         });
         
-        // General function for a "fade and slide up" animation
         function createFadeUpAnimation(triggerElement, targets, start = "top 80%") {
             gsap.from(targets, {
                 y: 50,
@@ -259,7 +256,6 @@
             });
         }
 
-        // Apply animations to each section
         createFadeUpAnimation("#intro-section", "#intro-title");
         createFadeUpAnimation("#solution-section", "#solution-title");
         createFadeUpAnimation("#solution-section", ".service-card", "top 70%");
@@ -267,9 +263,30 @@
 
         // --- 4. LANGUAGE TOGGLE LOGIC ---
         const textContent = {
-            en: { introTitle: "Is your business in motion, or just moving?", solutionTitle: "We orchestrate the flow.", cardTitle1: "Message Automation", cardDesc1: "Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.", cardTitle2: "Process Streamlining", cardDesc2: "We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.", cardTitle3: "Bespoke Setup & Support", cardDesc3: "A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.", ctaButton: "Let's Compose Your Symphony" },
-            hi: { introTitle: "आपका बिज़नेस चल रहा है, या सिर्फ़ हिल रहा है?", solutionTitle: "हम प्रवाह को व्यवस्थित करते हैं।", cardTitle1: "मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।", cardTitle2: "प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम Google Sheets जैसे टूल में आपके मैन्युअल कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे ऑटोमेटेड वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "आइए आपकी सिम्फनी तैयार करें" }
+            en: {
+                introTitle: "Overwhelmed by Chaos? 🌪️ Let's Orchestrate Your Success. ✨",
+                solutionTitle: "Your Workflow, Perfected. 🎯",
+                cardTitle1: "🚀 24/7 Lead Engagement",
+                cardDesc1: "Never miss a lead again. Our automated WhatsApp, SMS & Email bots engage customers instantly, turning interest into action.",
+                cardTitle2: "⚙️ Effortless Operations",
+                cardDesc2: "Say goodbye to tedious data entry. We transform your manual Google Sheets & repetitive tasks into a self-running, error-free system.",
+                cardTitle3: "🤝 White-Glove Partnership",
+                cardDesc3: "Consider us your in-house automation experts. We design, build, and manage your entire workflow, tailored precisely to your business goals.",
+                ctaButton: "Start Automating Now 🚀"
+            },
+            hi: {
+                introTitle: "अव्यवस्था से परेशान? 🌪️ आइए आपकी सफलता को व्यवस्थित करें। ✨",
+                solutionTitle: "आपका वर्कफ़्लो, उत्तम। 🎯",
+                cardTitle1: "🚀 24/7 लीड एंगेजमेंट",
+                cardDesc1: "अब कोई भी लीड न छूटे। हमारे ऑटोमेटेड WhatsApp, SMS और ईमेल बॉट्स ग्राहकों से तुरंत जुड़ते हैं, और उनकी रुचि को एक्शन में बदलते हैं।",
+                cardTitle2: "⚙️ सरल ऑपरेशन्स",
+                cardDesc2: "उबाऊ डेटा एंट्री को अलविदा कहें। हम आपके मैन्युअल Google Sheets और दोहराए जाने वाले कार्यों को एक स्वचालित, गलती-मुक्त सिस्टम में बदलते हैं।",
+                cardTitle3: "🤝 व्हाइट-ग्लव पार्टनरशिप",
+                cardDesc3: "हमें अपनी इन-हाउस ऑटोमेशन टीम समझें। हम आपके व्यावसायिक लक्ष्यों के लिए, आपके पूरे वर्कफ़्लो को डिज़ाइन, निर्माण और प्रबंधित करते हैं।",
+                ctaButton: "अभी ऑटोमेट करना शुरू करें 🚀"
+            }
         };
+
         const langToggle = document.getElementById('lang-toggle');
         
         function updateTextContent(lang) {
@@ -289,6 +306,10 @@
             const lang = langToggle.checked ? 'hi' : 'en';
             updateTextContent(lang);
         });
+
+        // Set initial language on page load
+        const initialLang = langToggle.checked ? 'hi' : 'en';
+        updateTextContent(initialLang);
         
     </script>
 </body>
