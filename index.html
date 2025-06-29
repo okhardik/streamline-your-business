@@ -15,34 +15,42 @@
     }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f2ede4;
-      color: #2c2c2c;
+      background-color: #121212;
+      color: #f2f2f2;
     }
     header {
-      background-color: #ffffff;
+      background-color: #1f1f1f;
       padding: 30px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       text-align: center;
     }
     header h1 {
       font-size: 2.5rem;
-      color: #0b3d91;
+      color: #f2f2f2;
       font-weight: 800;
     }
     .language-toggle {
       text-align: center;
       margin-top: 10px;
     }
-    .language-toggle select {
-      padding: 6px 12px;
-      border-radius: 6px;
+    .lang-btn {
+      padding: 6px 16px;
+      background: #2c2c2c;
+      border: none;
+      border-radius: 20px;
+      color: #fff;
+      margin: 0 6px;
       font-weight: 600;
-      border: 1px solid #ccc;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .lang-btn.active {
+      background: #4f4f4f;
     }
     .hero {
       text-align: center;
       padding: 60px 20px;
-      background: url('https://images.unsplash.com/photo-1557682260-9677e5decc72?fit=crop&w=1200') no-repeat center center/cover;
+      background: linear-gradient(135deg, #1c1c1c, #2e2e2e);
       color: white;
     }
     .hero h2 {
@@ -61,19 +69,19 @@
     }
     .section h3 {
       font-size: 2rem;
-      color: #0b3d91;
+      color: #ffffff;
       margin-bottom: 10px;
     }
     .section p {
       font-size: 1.1rem;
-      color: #333;
+      color: #ccc;
     }
     .cta {
       text-align: center;
       margin-top: 60px;
     }
     .cta a {
-      background: #0b3d91;
+      background: #2c2c2c;
       color: #fff;
       padding: 16px 36px;
       border-radius: 9999px;
@@ -83,25 +91,22 @@
       transition: background 0.3s ease;
     }
     .cta a:hover {
-      background: #092e6e;
+      background: #4f4f4f;
     }
     footer {
       text-align: center;
       padding: 40px 20px;
       font-size: 0.9rem;
-      color: #777;
+      color: #888;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1 id="pageTitle">Automation by Hardik</h1>
+    <h1>Automation by Hardik</h1>
     <div class="language-toggle">
-      <label for="langSwitch">🌐 Language: </label>
-      <select id="langSwitch" onchange="switchLang()">
-        <option value="en">English</option>
-        <option value="hi">हिन्दी</option>
-      </select>
+      <button class="lang-btn active" onclick="switchLang('en')" id="btn-en">English</button>
+      <button class="lang-btn" onclick="switchLang('hi')" id="btn-hi">हिन्दी</button>
     </div>
   </header>
 
@@ -141,7 +146,6 @@
   <script>
     const translations = {
       hi: {
-        pageTitle: "हार्दिक का ऑटोमेशन",
         heroTitle: "ऑटोमेशन को दीजिए ज़िम्मेदारी",
         heroSub: "मैं आपकी बिज़नेस प्रोसेस को आसान और ऑटोमेट करता हूँ — Google Sheets, WhatsApp और APIs जैसे टूल्स से।",
         service1: "🧠 स्मार्ट वर्कफ़्लो",
@@ -152,26 +156,21 @@
         desc3: "ऑपरेशन, पेमेंट्स, क्लाइंट एक्टिविटी — सब कुछ लाइव देखें।",
         service4: "🔗 इंटीग्रेशन",
         desc4: "CRM, ERP, पेमेंट गेटवे — सब कुछ जोड़ते हैं, ताकि आप चिंता मुक्त रहें।"
-      },
-      en: {
-        pageTitle: "Automation by Hardik",
-        heroTitle: "Let Automation Do The Heavy Lifting",
-        heroSub: "I help businesses like yours streamline operations using tools like Google Sheets, WhatsApp, and APIs — so you focus on growth, not grunt work.",
-        service1: "🧠 Smarter Workflows",
-        desc1: "Invoice generation, lead follow-ups, onboarding journeys — all handled automatically using tools you're already familiar with.",
-        service2: "🤖 WhatsApp Bots",
-        desc2: "Trigger WhatsApp messages from Google Sheets, send auto-reminders, or run entire workflows through your own WhatsApp number.",
-        service3: "📊 Live Dashboards",
-        desc3: "Visualize operations, payments, client activity — all in real time. One glance, and you're informed.",
-        service4: "🔗 Seamless Integrations",
-        desc4: "We connect your CRMs, ERPs, payment gateways and more — so everything talks to each other, and to you."
       }
     };
 
-    function switchLang() {
-      const lang = document.getElementById('langSwitch').value;
+    function switchLang(lang) {
+      const btnEn = document.getElementById('btn-en');
+      const btnHi = document.getElementById('btn-hi');
+      btnEn.classList.remove('active');
+      btnHi.classList.remove('active');
+      document.getElementById('btn-' + lang).classList.add('active');
+
+      if (lang === 'en') {
+        location.reload();
+        return;
+      }
       const t = translations[lang];
-      document.getElementById('pageTitle').innerText = t.pageTitle;
       document.getElementById('heroTitle').innerText = t.heroTitle;
       document.getElementById('heroSub').innerText = t.heroSub;
       document.getElementById('service1').innerText = t.service1;
