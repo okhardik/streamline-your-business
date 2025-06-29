@@ -15,27 +15,31 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* 1. FORCE HIDE SCROLLBAR & PREPARE FOR LENIS */
-        html, body {
-            overflow: hidden; /* This is the key change */
-            height: 100%;
+        /* 1. CORRECT SCROLLBAR HIDING */
+        html { scroll-behavior: auto; /* Let JS handle it */ }
+        body {
+            font-family: 'Outfit', sans-serif;
             background-color: var(--dark-bg);
+            color: var(--text-light);
+            overscroll-behavior: none; /* Prevents bounce on mobile */
+            scrollbar-width: none; /* Firefox */
         }
-        body { font-family: 'Outfit', sans-serif; color: var(--text-light); }
+        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, Opera */
 
-        .scroll-container {
-            position: relative;
-            z-index: 2; /* Sits above the canvas */
-        }
         #main-canvas {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 1; pointer-events: none;
         }
+        .scroll-container {
+            position: relative;
+            z-index: 2; /* Sits above the canvas */
+        }
         .content-section {
             width: 100%; height: 100vh;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 0 5%;
+            will-change: transform, opacity;
         }
         .text-content { text-align: center; max-width: 900px; }
         h1 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; }
@@ -50,6 +54,7 @@
             background: #fff; border: 1px solid #dee2e6;
             border-radius: 16px; padding: 30px;
             text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            will-change: transform, opacity;
         }
         .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
         .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
@@ -129,19 +134,18 @@
     </div>
 
     <!-- Animation & Smooth Scroll Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     
     <script>
         // 1. LENIS SMOOTH SCROLL
-        const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9 });
+        const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, smoothWheel: true });
         function raf(time) {
             lenis.raf(time);
             requestAnimationFrame(raf);
         }
         requestAnimationFrame(raf);
-        // Integrate with GSAP
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
         gsap.ticker.lagSmoothing(0);
@@ -151,34 +155,35 @@
         const canvas = document.getElementById('main-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
+        let isLightMode = false;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            initParticles();
         }
-        resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
         // 3. PARTICLE SYSTEM
         class Particle {
-            constructor() {
+            constructor() { this.respawn(); this.size = Math.random() * 2 + 1; }
+            respawn() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 1;
                 this.speedX = Math.random() * 1 - 0.5;
                 this.speedY = Math.random() * 1 - 0.5;
-                this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
-                this.initialX = this.x; this.initialY = this.y;
+                this.color = `rgba(0, 123, 255, ${Math.random() * 0.5 + 0.2})`;
+                this.blur = Math.random() * 3;
             }
             update() {
                 if (!gsap.isTweening(this)) {
                     this.x += this.speedX; this.y += this.speedY;
-                    if (this.x < 0 || this.x > canvas.width) { this.x = this.initialX; this.y = this.initialY; }
-                    if (this.y < 0 || this.y > canvas.height) { this.x = this.initialX; this.y = this.initialY; }
+                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) { this.respawn(); }
                 }
             }
             draw() {
                 ctx.fillStyle = this.color;
+                ctx.filter = `blur(${this.blur}px)`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -186,7 +191,7 @@
         }
         function initParticles() {
             particles = [];
-            let numberOfParticles = (canvas.width * canvas.height) / 12000;
+            let numberOfParticles = Math.min(200, (canvas.width * canvas.height) / 8000);
             for (let i = 0; i < numberOfParticles; i++) { particles.push(new Particle()); }
         }
         initParticles();
@@ -201,57 +206,35 @@
         const mainTimeline = gsap.timeline({
             scrollTrigger: {
                 trigger: ".scroll-container",
-                scrub: 1,
-                pin: true,
-                end: "150%" // Tighter scroll journey
+                scrub: 1, pin: true, end: "120%"
             }
         });
         
-        // ACT I: The Hook
-        mainTimeline.fromTo("#intro-section .text-content", { opacity: 1 }, { opacity: 0, duration: 0.5 }, 0.05);
-
-        // ACT II: The Convergence & Deconstruction
-        const conduitGlow = { strength: 0 };
-        mainTimeline.to(conduitGlow, {
-            strength: 1, duration: 1,
-            onUpdate: () => {
-                canvas.style.boxShadow = `inset 0 0 200px 100px rgba(0, 123, 255, ${conduitGlow.strength * 0.1})`;
-            }
-        }, 0.2);
-
-        mainTimeline.to(particles, {
+        mainTimeline.to("#intro-section", { opacity: 0, duration: 0.5 }, 0.05)
+        .to(particles, {
             x: () => canvas.width / 2, y: () => canvas.height / 2,
-            scale: 0, // Stretch effect
-            ease: "power3.in", duration: 1,
+            scale: 1.5, // Particles appear to get closer before streaking
+            ease: "power2.in", duration: 1,
             stagger: { each: 0.005, from: "random" }
-        }, "<");
-        
-        // ACT III: The Catalyst (Flash) & Emergence
-        mainTimeline.to("body", { 
+        }, 0)
+        .to(particles, { // The "streaking" effect
+            x: () => canvas.width / 2, y: () => canvas.height / 2,
+            scale: 0, ease: "power4.in", duration: 0.5
+        }, ">-0.2")
+        .to("body", { 
             backgroundColor: "#F8F9FA", color: "#1D2129", duration: 0.2,
             onStart: () => document.querySelector('.language-toggle').classList.add('is-light'),
             onReverseComplete: () => document.querySelector('.language-toggle').classList.remove('is-light')
-        }, ">-0.1");
-        
-        mainTimeline.to(conduitGlow, { strength: 0, duration: 0.2 }, "<");
-        mainTimeline.to(particles, { opacity: 0, duration: 0.1 }, "<");
-        
-        mainTimeline.fromTo("#solution-section", { display: 'none', opacity: 0 }, { display: 'flex', opacity: 1, duration: 0.1 }, "<");
-        mainTimeline.from("#solution-title", { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" }, ">");
-
-        // "Emergence Bloom" animation for cards
-        mainTimeline.from(".service-card", {
-            x: (i) => (i - 1) * -100, // Cards spread from center
-            scale: 0.5,
-            opacity: 0,
-            stagger: 0.15,
-            duration: 0.8,
-            ease: "back.out(1.7)"
-        }, "<0.2");
-
-        // ACT IV: The Invitation
-        mainTimeline.to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.6");
-        mainTimeline.from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
+        }, "<0.1")
+        .set(particles, { opacity: 0 }, "<") // Hide particles during light mode
+        .fromTo("#solution-section", { opacity: 0 }, { opacity: 1, duration: 0.1 }, "<")
+        .from("#solution-title", { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" })
+        .from(".service-card", {
+            y: (i) => (i + 1) * 30, // Cascading effect
+            scale: 0.8, opacity: 0, stagger: 0.15, duration: 0.8, ease: "back.out(1.7)"
+        }, "<0.2")
+        .to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.5")
+        .from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
 
         // 5. LANGUAGE TOGGLE LOGIC
         const textContent = {
