@@ -15,27 +15,24 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* 1. Smooth Scroll & Hide Scrollbar */
-        html.lenis { height: auto; }
-        .lenis.lenis-smooth { scroll-behavior: auto !important; }
-        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-        .lenis.lenis-stopped { overflow: hidden; }
-        body {
-            font-family: 'Outfit', sans-serif;
+        /* 1. FORCE HIDE SCROLLBAR & PREPARE FOR LENIS */
+        html, body {
+            overflow: hidden; /* This is the key change */
+            height: 100%;
             background-color: var(--dark-bg);
-            color: var(--text-light);
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
         }
-        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, and Opera */
+        body { font-family: 'Outfit', sans-serif; color: var(--text-light); }
 
+        .scroll-container {
+            position: relative;
+            z-index: 2; /* Sits above the canvas */
+        }
         #main-canvas {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 1; pointer-events: none;
         }
         .content-section {
-            position: relative; z-index: 10;
             width: 100%; height: 100vh;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 0 5%;
@@ -58,20 +55,20 @@
         .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
         
         #cta-section { background-color: var(--light-bg); }
-        .cta-container { display: flex; justify-content: center; align-items: center; } /* Fix for button breaking */
+        .cta-container { display: flex; justify-content: center; align-items: center; }
         #cta-button {
             background: var(--primary-color); color: #fff; text-decoration: none;
             font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 20px 50px;
             border-radius: 50px; font-weight: 700;
             box-shadow: 0 10px 30px var(--primary-glow);
-            transition: all 0.3s ease; white-space: nowrap; /* Prevents breaking */
+            transition: all 0.3s ease; white-space: nowrap;
         }
         #cta-button:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
         
-        /* Language Toggle - Bug Fix for checkbox */
+        /* Language Toggle */
         .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
         .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); }
-        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; } /* Properly hide checkbox */
+        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
         .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
         .lang-en { color: var(--text-light); } .lang-hi { color: var(--text-muted); }
         .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
@@ -137,13 +134,17 @@
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     
     <script>
-        // 1. SMOOTH SCROLL INITIALIZATION
-        const lenis = new Lenis();
+        // 1. LENIS SMOOTH SCROLL
+        const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9 });
         function raf(time) {
             lenis.raf(time);
             requestAnimationFrame(raf);
         }
         requestAnimationFrame(raf);
+        // Integrate with GSAP
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
+        gsap.ticker.lagSmoothing(0);
 
         // 2. GSAP & SCROLLTRIGGER SETUP
         gsap.registerPlugin(ScrollTrigger);
@@ -163,17 +164,17 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 1.5 + 1;
+                this.size = Math.random() * 2 + 1;
                 this.speedX = Math.random() * 1 - 0.5;
                 this.speedY = Math.random() * 1 - 0.5;
                 this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
+                this.initialX = this.x; this.initialY = this.y;
             }
             update() {
                 if (!gsap.isTweening(this)) {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                    this.x += this.speedX; this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width) { this.x = this.initialX; this.y = this.initialY; }
+                    if (this.y < 0 || this.y > canvas.height) { this.x = this.initialX; this.y = this.initialY; }
                 }
             }
             draw() {
@@ -200,28 +201,57 @@
         const mainTimeline = gsap.timeline({
             scrollTrigger: {
                 trigger: ".scroll-container",
-                scrub: 1.2, // Smoother scrub
+                scrub: 1,
                 pin: true,
-                end: "200%" 
+                end: "150%" // Tighter scroll journey
             }
         });
+        
+        // ACT I: The Hook
+        mainTimeline.fromTo("#intro-section .text-content", { opacity: 1 }, { opacity: 0, duration: 0.5 }, 0.05);
 
-        mainTimeline.to("#intro-section .text-content", { opacity: 0, duration: 0.5 }, 0)
-        .to(particles, {
+        // ACT II: The Convergence & Deconstruction
+        const conduitGlow = { strength: 0 };
+        mainTimeline.to(conduitGlow, {
+            strength: 1, duration: 1,
+            onUpdate: () => {
+                canvas.style.boxShadow = `inset 0 0 200px 100px rgba(0, 123, 255, ${conduitGlow.strength * 0.1})`;
+            }
+        }, 0.2);
+
+        mainTimeline.to(particles, {
             x: () => canvas.width / 2, y: () => canvas.height / 2,
-            ease: "power2.in", duration: 1.5,
+            scale: 0, // Stretch effect
+            ease: "power3.in", duration: 1,
             stagger: { each: 0.005, from: "random" }
-        }, 0.2)
-        .to("body", { 
-            backgroundColor: "#F8F9FA", color: "#1D2129", duration: 0.25,
+        }, "<");
+        
+        // ACT III: The Catalyst (Flash) & Emergence
+        mainTimeline.to("body", { 
+            backgroundColor: "#F8F9FA", color: "#1D2129", duration: 0.2,
             onStart: () => document.querySelector('.language-toggle').classList.add('is-light'),
             onReverseComplete: () => document.querySelector('.language-toggle').classList.remove('is-light')
-        }, ">-0.2")
-        .to(particles, { opacity: 0, duration: 0.1 }, "<")
-        .fromTo("#solution-section", { opacity: 0, y: 150 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "<")
-        .from(".service-card", { y: 50, opacity: 0, stagger: 0.2, duration: 0.8, ease: "power2.out" }, "<0.3")
-        .to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.8")
-        .from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
+        }, ">-0.1");
+        
+        mainTimeline.to(conduitGlow, { strength: 0, duration: 0.2 }, "<");
+        mainTimeline.to(particles, { opacity: 0, duration: 0.1 }, "<");
+        
+        mainTimeline.fromTo("#solution-section", { display: 'none', opacity: 0 }, { display: 'flex', opacity: 1, duration: 0.1 }, "<");
+        mainTimeline.from("#solution-title", { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" }, ">");
+
+        // "Emergence Bloom" animation for cards
+        mainTimeline.from(".service-card", {
+            x: (i) => (i - 1) * -100, // Cards spread from center
+            scale: 0.5,
+            opacity: 0,
+            stagger: 0.15,
+            duration: 0.8,
+            ease: "back.out(1.7)"
+        }, "<0.2");
+
+        // ACT IV: The Invitation
+        mainTimeline.to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.6");
+        mainTimeline.from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
 
         // 5. LANGUAGE TOGGLE LOGIC
         const textContent = {
@@ -233,7 +263,8 @@
             const lang = langToggle.checked ? 'hi' : 'en';
             const content = textContent[lang];
             Object.keys(content).forEach(key => {
-                const element = document.getElementById(key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`));
+                const elementId = key.replace(/[A-Z0-9]/g, (letter, index) => (index > 0 ? `-${letter.toLowerCase()}` : letter.toLowerCase()));
+                const element = document.getElementById(elementId);
                 if (element) element.innerHTML = content[key];
             });
         });
