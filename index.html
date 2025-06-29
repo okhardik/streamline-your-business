@@ -16,23 +16,15 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* --- FIX 1: ROBUST SCROLLING ARCHITECTURE --- */
-        /* Removed overflow:hidden from html and body. Let the document scroll naturally. */
-        /* This is a much more stable approach. */
         html { cursor: none; }
         body {
             font-family: 'Outfit', sans-serif; background-color: var(--dark-bg);
             color: var(--text-light);
-            /* Lenis handles smooth scrolling, no need for these anymore */
-            /* overscroll-behavior-y: none; */
-            /* scrollbar-width: none; */
         }
-        /* body::-webkit-scrollbar { display: none; } */
 
         #main-content {
             position: relative;
             width: 100%;
-            /* Height is set by JS to enable sticky scrolling */
         }
         .section-container {
             height: 100vh;
@@ -44,7 +36,6 @@
             overflow: hidden;
         }
 
-        /* TACTILE INTERACTIVITY: Custom Cursor */
         #cursor {
             position: fixed; z-index: 2000;
             width: 10px; height: 10px;
@@ -60,15 +51,13 @@
         #cursor.hovered { width: 30px; height: 30px; }
         #cursor.hidden { opacity: 0; }
 
-        /* VISUALS: Nebula Particle System */
         #main-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none; opacity: 0;
         }
 
-        /* TYPOGRAPHY & CONTENT */
         .text-content { text-align: center; max-width: 900px; will-change: transform; padding: 0 5%; }
-        h1 { font-size: clamp(2.8rem, 8vw, 6rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.015em; }
+        h1 { font-size: clamp(2.8rem, 8vw, 6rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.015em; }
         h2 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 700; line-height: 1.05; color: var(--text-dark); letter-spacing: -0.015em;}
         p { font-size: clamp(1.1rem, 2.5vw, 1.3rem); color: var(--text-muted); margin-top: 20px; font-weight: 400; line-height: 1.5; }
 
@@ -76,35 +65,31 @@
         #solution-section { z-index: 3; background: var(--light-bg); }
         #cta-section { z-index: 4; background: var(--light-bg); }
 
-        #solution-cards {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
-            width: 100%; max-width: 1200px; margin-top: 60px;
-        }
-        .service-card {
-            background: #fff; border-radius: 20px; padding: 35px;
-            text-align: left; transition: transform 0.4s var(--ease-out-quint);
-            border: 1px solid rgba(0,0,0,0.1);
-        }
+        #solution-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; max-width: 1200px; margin-top: 60px; }
+        .service-card { background: #fff; border-radius: 20px; padding: 35px; text-align: left; transition: transform 0.4s var(--ease-out-quint); border: 1px solid rgba(0,0,0,0.1); }
         .service-card:hover { transform: translateY(-12px); }
         .service-card h3 { font-size: 1.6rem; color: #1d1d1f; font-weight: 700; margin-bottom: 12px; }
         .service-card p { font-size: 1rem; color: #6e6e73; line-height: 1.6; margin-top: 0; }
         
-        #cta-button {
-            background: var(--primary-color); color: #fff; text-decoration: none;
-            font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 22px 55px; border-radius: 99px;
-            font-weight: 500; transition: transform 0.3s ease, background-color 0.3s ease; white-space: nowrap;
-        }
+        #cta-button { background: var(--primary-color); color: #fff; text-decoration: none; font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 22px 55px; border-radius: 99px; font-weight: 500; transition: transform 0.3s ease, background-color 0.3s ease; white-space: nowrap; }
         #cta-button:hover { transform: scale(1.05); background-color: #0077ed; }
         
-        /* --- FIX 2: ROBUST LANGUAGE TOGGLE --- */
-        /* Hide the inactive language completely. This prevents text merging and layout shifts. */
+        /* --- FIX: ROBUST LANGUAGE TOGGLE & ANIMATION STRUCTURE --- */
+        /* Hide the inactive language completely. This is the key to preventing overlap. */
         [lang="hi"] { display: none; }
-        body.lang-hi [lang="hi"] { display: block; } /* Use block to ensure it takes up its own space */
+        body.lang-hi [lang="hi"] { display: block; }
         body.lang-hi [lang="en"] { display: none; }
 
-        /* The line animation wrappers */
-        .line { display: inline-block; overflow: hidden; vertical-align: top; } 
-        .line-inner { display: block; }
+        /* The parent container for each line of text, used for the reveal animation */
+        .line {
+            display: block; /* Changed to block for cleaner structure */
+            overflow: hidden;
+            position: relative;
+        }
+        /* The inner element that will be animated */
+        .line-inner {
+            display: block;
+        }
 
         .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; }
         #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
@@ -123,9 +108,15 @@
         <div class="section-container" id="intro-section">
             <div class="text-content">
                 <h1 id="intro-title">
-                    <!-- FIX: Restructured for clean language switching -->
-                    <span class="line"><span class="line-inner" lang="en">Your workflow is noise.</span><span class="line-inner" lang="hi">आपका वर्कफ़्लो शोर है।</span></span><br>
-                    <span class="line"><span class="line-inner" lang="en">We find the signal.</span><span class="line-inner" lang="hi">हम सिग्नल ढूंढते हैं।</span></span>
+                    <!-- FIX: Headline changed and HTML restructured for clean animation -->
+                    <span class="line">
+                        <span class="line-inner" lang="en">Cut through the noise.</span>
+                        <span class="line-inner" lang="hi">शोर को खत्म करें।</span>
+                    </span>
+                    <span class="line">
+                        <span class="line-inner" lang="en">Automate your workflow.</span>
+                        <span class="line-inner" lang="hi">अपने वर्कफ़्लो को ऑटोमेट करें।</span>
+                    </span>
                 </h1>
             </div>
         </div>
@@ -136,36 +127,9 @@
                     <span lang="hi">सिग्नल। प्रवर्धित।</span>
                 </h2>
                 <div id="solution-cards">
-                    <div class="service-card interactive-item">
-                        <h3>
-                            <span lang="en">🚀 Message Automation</span>
-                            <span lang="hi">🚀 मैसेज ऑटोमेशन</span>
-                        </h3>
-                        <p>
-                            <span lang="en">Automated sequences that engage clients, follow up on leads, and never miss a beat.</span>
-                            <span lang="hi">ऑटोमेटेड सीक्वेंस जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।</span>
-                        </p>
-                    </div>
-                    <div class="service-card interactive-item">
-                        <h3>
-                            <span lang="en">⚙️ Process Streamlining</span>
-                            <span lang="hi">⚙️ प्रोसेस स्ट्रीमलाइनिंग</span>
-                        </h3>
-                        <p>
-                            <span lang="en">We transform your manual, repetitive tasks into a flawless, self-running system.</span>
-                            <span lang="hi">हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।</span>
-                        </p>
-                    </div>
-                    <div class="service-card interactive-item">
-                        <h3>
-                            <span lang="en">🛠️ Bespoke Setup</span>
-                            <span lang="hi">🛠️ विशेष सेटअप</span>
-                        </h3>
-                        <p>
-                            <span lang="en">A white-glove service where we compose, implement, and fine-tune your entire workflow.</span>
-                            <span lang="hi">एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।</span>
-                        </p>
-                    </div>
+                    <div class="service-card interactive-item"><h3><span lang="en">🚀 Message Automation</span><span lang="hi">🚀 मैसेज ऑटोमेशन</span></h3><p><span lang="en">Automated sequences that engage clients, follow up on leads, and never miss a beat.</span><span lang="hi">ऑटोमेटेड सीक्वेंस जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।</span></p></div>
+                    <div class="service-card interactive-item"><h3><span lang="en">⚙️ Process Streamlining</span><span lang="hi">⚙️ प्रोसेस स्ट्रीमलाइनिंग</span></h3><p><span lang="en">We transform your manual, repetitive tasks into a flawless, self-running system.</span><span lang="hi">हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।</span></p></div>
+                    <div class="service-card interactive-item"><h3><span lang="en">🛠️ Bespoke Setup</span><span lang="hi">🛠️ विशेष सेटअप</span></h3><p><span lang="en">A white-glove service where we compose, implement, and fine-tune your entire workflow.</span><span lang="hi">एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।</span></p></div>
                 </div>
             </div>
         </div>
@@ -189,7 +153,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- CORE SETUP ---
             gsap.registerPlugin(ScrollTrigger);
             const dom = { 
                 body: document.body, 
@@ -202,89 +165,50 @@
                 langToggle: document.getElementById('lang-toggle')
             };
             
-            // Set the scrollable height based on the number of sections (3 sections = 300vh)
             dom.main.style.height = '300vh';
-            
-            // Lenis smooth scrolling setup
             const lenis = new Lenis();
             
-            // --- 1. TACTILE EXPERIENCE: CUSTOM CURSOR ---
             const cursorX = gsap.quickTo(dom.cursor, "x", { duration: 0.4, ease: "power3" });
             const cursorY = gsap.quickTo(dom.cursor, "y", { duration: 0.4, ease: "power3" });
-            
-            window.addEventListener("mousemove", e => { 
-                dom.cursor.classList.remove("hidden");
-                cursorX(e.clientX); 
-                cursorY(e.clientY); 
-            });
-            document.querySelectorAll(".interactive-item").forEach(el => {
-                el.addEventListener("mouseenter", () => dom.cursor.classList.add("hovered"));
-                el.addEventListener("mouseleave", () => dom.cursor.classList.remove("hovered"));
-            });
-            document.addEventListener("mouseleave", () => {
-                dom.cursor.classList.add("hidden");
-            });
+            window.addEventListener("mousemove", e => { dom.cursor.classList.remove("hidden"); cursorX(e.clientX); cursorY(e.clientY); });
+            document.querySelectorAll(".interactive-item").forEach(el => { el.addEventListener("mouseenter", () => dom.cursor.classList.add("hovered")); el.addEventListener("mouseleave", () => dom.cursor.classList.remove("hovered")); });
+            document.addEventListener("mouseleave", () => { dom.cursor.classList.add("hidden"); });
 
-            // --- 2. LANGUAGE TOGGLE ---
             dom.langToggle.addEventListener('change', () => {
                 dom.body.classList.toggle('lang-hi', dom.langToggle.checked);
-                // Refresh ScrollTrigger to account for any minor layout shifts
                 ScrollTrigger.refresh();
             });
 
-            // --- 3. LIVING BACKGROUND: PARTICLE NEBULA ---
             const ctx = dom.canvas.getContext('2d');
             let particles = [];
             let mousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-
-            class Particle {
-                constructor() { this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight; this.z = Math.random() * 2 + 1; this.vx = (Math.random() - 0.5) * 0.1; this.vy = (Math.random() - 0.5) * 0.1; this.baseAlpha = 0.1 + Math.random() * 0.2; this.pulseFactor = 0.5 + Math.random() * 0.5; }
-                draw(time) { const distanceToMouse = Math.hypot(this.x - mousePos.x, this.y - mousePos.y); const proximityFactor = Math.max(0, 1 - distanceToMouse / 400); const alpha = this.baseAlpha + (Math.sin(time * 0.001 * this.pulseFactor) * 0.1) + (proximityFactor * 0.4); const size = (1 + proximityFactor) * this.z; ctx.beginPath(); ctx.arc(this.x, this.y, size, 0, Math.PI * 2); const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, size); gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.8})`); gradient.addColorStop(1, `rgba(255, 255, 255, 0)`); ctx.fillStyle = gradient; ctx.fill(); }
-                update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1; if (this.y < 0 || this.y > window.innerHeight) this.vy *= -1; }
-            }
-
-            function initCanvas() {
-                const dpr = window.devicePixelRatio || 1;
-                dom.canvas.width = window.innerWidth * dpr;
-                dom.canvas.height = window.innerHeight * dpr;
-                ctx.scale(dpr, dpr);
-                particles = [];
-                for (let i = 0; i < 200; i++) particles.push(new Particle());
-            }
-            
+            class Particle { constructor() { this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight; this.z = Math.random() * 2 + 1; this.vx = (Math.random() - 0.5) * 0.1; this.vy = (Math.random() - 0.5) * 0.1; this.baseAlpha = 0.1 + Math.random() * 0.2; this.pulseFactor = 0.5 + Math.random() * 0.5; } draw(time) { const distanceToMouse = Math.hypot(this.x - mousePos.x, this.y - mousePos.y); const proximityFactor = Math.max(0, 1 - distanceToMouse / 400); const alpha = this.baseAlpha + (Math.sin(time * 0.001 * this.pulseFactor) * 0.1) + (proximityFactor * 0.4); const size = (1 + proximityFactor) * this.z; ctx.beginPath(); ctx.arc(this.x, this.y, size, 0, Math.PI * 2); const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, size); gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.8})`); gradient.addColorStop(1, `rgba(255, 255, 255, 0)`); ctx.fillStyle = gradient; ctx.fill(); } update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1; if (this.y < 0 || this.y > window.innerHeight) this.vy *= -1; } }
+            function initCanvas() { const dpr = window.devicePixelRatio || 1; dom.canvas.width = window.innerWidth * dpr; dom.canvas.height = window.innerHeight * dpr; ctx.scale(dpr, dpr); particles = []; for (let i = 0; i < 200; i++) particles.push(new Particle()); }
             initCanvas();
             window.addEventListener('resize', initCanvas);
             window.addEventListener("mousemove", e => { mousePos = { x: e.clientX, y: e.clientY }; });
             
-            // --- 4. FLUID MOTION: MAIN ANIMATION LOOP & TIMELINES ---
-            gsap.ticker.add(time => {
-                lenis.raf(time * 1000);
-                ctx.clearRect(0, 0, dom.canvas.width, dom.canvas.height);
-                particles.forEach(p => { p.update(); p.draw(time); });
-            });
+            gsap.ticker.add(time => { lenis.raf(time * 1000); ctx.clearRect(0, 0, dom.canvas.width, dom.canvas.height); particles.forEach(p => { p.update(); p.draw(time); }); });
 
-            // CINEMATIC INTRO
+            // --- FIX: CINEMATIC INTRO ANIMATION ---
+            // Set the initial state of all .line-inner elements to be hidden below their container
             gsap.set("#intro-title .line-inner", { yPercent: 102 });
-            gsap.timeline()
-                .to(dom.canvas, { opacity: 1, duration: 2, ease: "power2.inOut" })
-                .to("#intro-title .line-inner", { yPercent: 0, stagger: 0.1, duration: 1.5, ease: "power4.out" }, 0.5);
-
-            // SEAMLESS SCROLLING TRANSITIONS
-            gsap.to(dom.intro, {
-                scrollTrigger: { trigger: dom.intro, start: "center center", end: "bottom top", scrub: 1 },
-                scale: 0.9, opacity: 0, ease: 'power2.in'
-            });
-
-            gsap.timeline({ scrollTrigger: { trigger: dom.solutions, start: "top bottom", end: "top top", scrub: 1 }})
-                .from(dom.solutions.querySelector(".text-content"), { y: 150, opacity: 0, ease: 'power3.out' });
             
-            gsap.to(dom.solutions, {
-                scrollTrigger: { trigger: dom.solutions, start: "center center", end: "bottom top", scrub: 1 },
-                scale: 0.95, y: -50, opacity: 0, ease: 'power2.in'
-            });
+            const introTl = gsap.timeline();
+            introTl.to(dom.canvas, { opacity: 1, duration: 2, ease: "power2.inOut" })
+                   // Animate only the visible .line-inner elements into view
+                   .to("#intro-title .line-inner", { 
+                       yPercent: 0, 
+                       stagger: 0.1, 
+                       duration: 1.5, 
+                       ease: "power4.out" 
+                   }, 0.5);
 
-            gsap.timeline({ scrollTrigger: { trigger: dom.cta, start: "top bottom", end: "center center", scrub: 1 }})
-                .from(dom.cta.querySelector(".text-content"), { y: 100, opacity: 0, ease: 'power2.out' });
+            // SCROLLING TRANSITIONS (Unchanged, they were working correctly)
+            gsap.to(dom.intro, { scrollTrigger: { trigger: dom.intro, start: "center center", end: "bottom top", scrub: 1 }, scale: 0.9, opacity: 0, ease: 'power2.in' });
+            gsap.timeline({ scrollTrigger: { trigger: dom.solutions, start: "top bottom", end: "top top", scrub: 1 }}).from(dom.solutions.querySelector(".text-content"), { y: 150, opacity: 0, ease: 'power3.out' });
+            gsap.to(dom.solutions, { scrollTrigger: { trigger: dom.solutions, start: "center center", end: "bottom top", scrub: 1 }, scale: 0.95, y: -50, opacity: 0, ease: 'power2.in' });
+            gsap.timeline({ scrollTrigger: { trigger: dom.cta, start: "top bottom", end: "center center", scrub: 1 }}).from(dom.cta.querySelector(".text-content"), { y: 100, opacity: 0, ease: 'power2.out' });
 
         });
     </script>
