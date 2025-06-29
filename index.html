@@ -18,207 +18,63 @@
       --card-border: rgba(255, 255, 255, 0.1);
       --card-hover-border: rgba(0, 170, 255, 0.7);
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      overflow-x: hidden;
-    }
-
-    /* --- DESKTOP: Interactive Cursor --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
     #cursor-glow, #cursor-dot { display: none; }
-    
     @media (pointer: fine) {
       body { cursor: none; }
-      #cursor-glow {
-        display: block; position: fixed; left: 0; top: 0; width: 800px; height: 800px;
-        background: radial-gradient(circle, rgba(0, 170, 255, 0.08) 0%, rgba(0, 170, 255, 0) 60%);
-        border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none;
-        z-index: 9999; transition: background 0.2s ease;
-      }
-      #cursor-dot {
-        display: block; position: fixed; left: 0; top: 0; width: 6px; height: 6px;
-        background-color: var(--primary-color); border-radius: 50%;
-        transform: translate(-50%, -50%); pointer-events: none;
-        z-index: 10000; transition: transform 0.1s ease-out;
-      }
-      body:has(a:hover, button:hover, .service-card:hover, .toggle-label:hover) #cursor-dot {
-        transform: translate(-50%, -50%) scale(5); background-color: rgba(0, 170, 255, 0.2);
-      }
+      #cursor-glow { display: block; position: fixed; left: 0; top: 0; width: 800px; height: 800px; background: radial-gradient(circle, rgba(0, 170, 255, 0.08) 0%, rgba(0, 170, 255, 0) 60%); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 9999; transition: background 0.2s ease; }
+      #cursor-dot { display: block; position: fixed; left: 0; top: 0; width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 10000; transition: transform 0.1s ease-out; }
+      body:has(a:hover, button:hover, .service-card:hover, .toggle-label:hover) #cursor-dot { transform: translate(-50%, -50%) scale(5); background-color: rgba(0, 170, 255, 0.2); }
     }
-
-    /* --- DESKTOP: Animated Background Canvas --- */
-    #background-canvas {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-    }
-
-    /* --- NEW: Smart Header --- */
-    header {
-      position: fixed; top: 0; left: 0; width: 100%;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 20px 5%; z-index: 1000;
-      background: rgba(2, 4, 10, 0.5);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--card-border);
-      transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
-    }
-    header.header-hidden {
-      transform: translateY(-100%);
-    }
-
-    header h1 {
-      font-size: 1.5rem; font-weight: 700;
-      background: linear-gradient(90deg, #ffffff, #c0c0c0);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-
+    #background-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+    header { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; z-index: 1000; background: rgba(2, 4, 10, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1); }
+    header.header-hidden { transform: translateY(-100%); }
+    header h1 { font-size: 1.5rem; font-weight: 700; background: linear-gradient(90deg, #ffffff, #c0c0c0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     main { padding: 0 5%; }
-
-    /* --- NEW: Hero Cascade Animation --- */
-    .hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; align-items: center; text-align: center;
-      padding-top: 80px;
-    }
-    .hero h2 {
-      font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900;
-      margin-bottom: 20px; max-width: 1000px; line-height: 1.1;
-    }
-    .hero h2 .line {
-        display: block;
-        overflow: hidden; /* Clip the text for the animation */
-    }
-    .hero h2 .line-inner {
-        display: block;
-        animation: slideUpFadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        transform: translateY(110%);
-        opacity: 0;
-    }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 80px; }
+    .hero h2 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; margin-bottom: 20px; max-width: 1000px; line-height: 1.1; }
+    .hero h2 .line { display: block; overflow: hidden; }
+    .hero h2 .line-inner { display: block; animation: slideUpFadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; transform: translateY(110%); opacity: 0; }
     .hero h2 .line:nth-child(1) .line-inner { animation-delay: 0.2s; }
     .hero h2 .line:nth-child(2) .line-inner { animation-delay: 0.4s; }
     .hero h2 .line:nth-child(3) .line-inner { animation-delay: 0.6s; }
-
-    @keyframes slideUpFadeIn {
-        to { transform: translateY(0); opacity: 1; }
-    }
-
-    .hero h2 span {
-      background: linear-gradient(90deg, var(--primary-color), #33caff);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero p {
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem); max-width: 750px;
-      color: var(--text-muted); font-weight: 300; line-height: 1.6;
-      opacity: 0; animation: fadeInUp 1s ease-out 1.2s forwards;
-    }
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* --- Sections & Service Cards --- */
+    @keyframes slideUpFadeIn { to { transform: translateY(0); opacity: 1; } }
+    .hero h2 span { background: linear-gradient(90deg, var(--primary-color), #33caff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: clamp(1.1rem, 2.5vw, 1.4rem); max-width: 750px; color: var(--text-muted); font-weight: 300; line-height: 1.6; opacity: 0; animation: fadeInUp 1s ease-out 1.2s forwards; }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
     .section-title { text-align: center; margin-bottom: 50px; }
     .section-title h3 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; margin-bottom: 10px; color: #f5f5f5; }
     .section-title p { max-width: 800px; margin: 0 auto; font-size: 1.15rem; color: var(--text-muted); }
     .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 100px 0; }
-    
-    .service-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 15px; padding: 30px; text-align: left;
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      backdrop-filter: blur(5px);
-      position: relative; overflow: hidden; /* Important for shine effect */
-    }
-    /* NEW: Card Shine Effect */
-    .service-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.1) 50%, transparent 80%);
-        transform: translateX(-150%);
-        transition: transform 0.6s ease;
-    }
-    .service-card:hover {
-      transform: translateY(-10px);
-      border-color: var(--card-hover-border);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    .service-card:hover::before {
-        transform: translateX(150%);
-    }
+    .service-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 30px; text-align: left; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; backdrop-filter: blur(5px); position: relative; overflow: hidden; }
+    .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.1) 50%, transparent 80%); transform: translateX(-150%); transition: transform 0.6s ease; }
+    .service-card:hover { transform: translateY(-10px); border-color: var(--card-hover-border); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+    .service-card:hover::before { transform: translateX(150%); }
     .service-card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; color: #f5f5f5; }
     .service-card p { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
-
-    /* --- NEW: Animated CTA Button --- */
     .cta { text-align: center; margin: 60px 0 120px; }
-    .cta a {
-      background: linear-gradient(90deg, var(--primary-color), #0077b3, var(--primary-color));
-      background-size: 200% auto;
-      animation: gradient-flow 3s linear infinite;
-      color: #fff; padding: 20px 50px; font-size: 1.2rem; font-weight: 700;
-      border-radius: 50px; text-decoration: none; display: inline-block;
-      box-shadow: 0 0 20px var(--primary-glow); border: none;
-      transition: all 0.3s ease;
-    }
-    @keyframes gradient-flow {
-      to { background-position: 200% center; }
-    }
-    .cta a:hover {
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 0 35px var(--primary-glow);
-    }
-    
+    .cta a { background: linear-gradient(90deg, var(--primary-color), #0077b3, var(--primary-color)); background-size: 200% auto; animation: gradient-flow 3s linear infinite; color: #fff; padding: 20px 50px; font-size: 1.2rem; font-weight: 700; border-radius: 50px; text-decoration: none; display: inline-block; box-shadow: 0 0 20px var(--primary-glow); border: none; transition: all 0.3s ease; }
+    @keyframes gradient-flow { to { background-position: 200% center; } }
+    .cta a:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 0 35px var(--primary-glow); }
     footer { text-align: center; padding: 40px 20px; font-size: 0.9rem; color: #666; border-top: 1px solid var(--card-border); }
-    
     .scroll-reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
     .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* --- Language Toggle Switch --- */
     .language-toggle { position: relative; display: flex; align-items: center; }
     .language-toggle input[type="checkbox"] { display: none; }
-    .toggle-label {
-      display: flex; align-items: center; justify-content: space-between;
-      width: 80px; height: 40px; background-color: var(--card-bg);
-      border: 1px solid var(--card-border); border-radius: 20px;
-      padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease;
-    }
+    .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; }
     .toggle-label:hover { border-color: var(--card-hover-border); }
     .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
     .lang-en { color: var(--text-color); }
     .lang-hi { color: var(--text-muted); }
-    .toggle-thumb {
-      position: absolute; top: 3px; left: 4px; width: 32px; height: 32px;
-      background-color: var(--primary-color); box-shadow: 0 0 10px var(--primary-glow);
-      border-radius: 50%; z-index: 1;
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
+    .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); box-shadow: 0 0 10px var(--primary-glow); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
     #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
     #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
     #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-color); }
-
-    /* --- MOBILE OPTIMIZATIONS --- */
     @media (max-width: 768px) {
-      /* NEW: Subtle animated background for mobile */
-      body {
-        background: linear-gradient(300deg, #010206, #060913, #02040a);
-        background-size: 180% 180%;
-        animation: gradient-flow 16s ease infinite;
-      }
+      body { background: linear-gradient(300deg, #010206, #060913, #02040a); background-size: 180% 180%; animation: gradient-flow 16s ease infinite; }
       #background-canvas { display: none; }
-
       main { padding: 0 5%; }
       header { padding: 15px 5%; }
       header h1 { font-size: 1.2rem; }
@@ -229,7 +85,6 @@
       .service-card:active { transform: scale(0.98); }
       .cta { margin: 40px 0 80px; }
       .cta a { padding: 18px 35px; font-size: 1.1rem; }
-      
       .toggle-label { width: 70px; height: 36px; padding: 0 10px; }
       .toggle-thumb { width: 28px; height: 28px; }
       #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(34px); }
@@ -237,10 +92,8 @@
   </style>
 </head>
 <body>
-  <!-- Cursor Elements (Desktop only) -->
   <div id="cursor-glow"></div>
   <div id="cursor-dot"></div>
-  
   <canvas id="background-canvas"></canvas>
 
   <header id="main-header">
@@ -248,9 +101,7 @@
     <div class="language-toggle">
         <input type="checkbox" id="lang-toggle" onchange="handleLanguageToggle()">
         <label for="lang-toggle" class="toggle-label">
-            <span class="toggle-thumb"></span>
-            <span class="lang-text lang-en">EN</span>
-            <span class="lang-text lang-hi">HI</span>
+            <span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span>
         </label>
     </div>
   </header>
@@ -267,25 +118,21 @@
 
     <section class="services-section">
       <div class="section-title scroll-reveal">
-          <h3>What We Automate</h3>
-          <p>From simple tasks to complex enterprise workflows, we build intelligent systems that work for you 24/7.</p>
+          <h3 id="ourServices">Our Core Services</h3>
+          <p>We focus on three key areas to give you back your time.</p>
       </div>
       <div class="services-grid">
         <div class="service-card scroll-reveal">
-          <h3 id="service1">🧠 Smarter Workflows</h3>
-          <p id="desc1">Invoice generation, lead follow-ups, onboarding journeys — all handled automatically using tools you're already familiar with.</p>
+          <h3 id="service1">🚀 Message Automation</h3>
+          <p id="desc1">Engage clients instantly. We set up automated WhatsApp, SMS, or email sequences for follow-ups, reminders, and notifications, so you never miss an opportunity.</p>
         </div>
         <div class="service-card scroll-reveal">
-          <h3 id="service2">🤖 WhatsApp Bots</h3>
-          <p id="desc2">Trigger WhatsApp messages from Google Sheets, send auto-reminders, or run entire workflows through your own WhatsApp number.</p>
+          <h3 id="service2">⚙️ Process Streamlining</h3>
+          <p id="desc2">Tired of copy-pasting and manual data entry? We analyze your workflow and build a streamlined system using tools like Google Sheets to eliminate grunt work.</p>
         </div>
         <div class="service-card scroll-reveal">
-          <h3 id="service3">📊 Live Dashboards</h3>
-          <p id="desc3">Visualize operations, payments, client activity — all in real time. One glance, and you're informed.</p>
-        </div>
-        <div class="service-card scroll-reveal">
-          <h3 id="service4">🔗 Seamless Integrations</h3>
-          <p id="desc4">We connect your CRMs, ERPs, payment gateways and more — so everything talks to each other, and to you.</p>
+          <h3 id="service3">🛠️ Custom Setup & Support</h3>
+          <p id="desc3">From concept to full implementation, we handle the entire setup. We build your new automated system and ensure your team knows exactly how to use it.</p>
         </div>
       </div>
     </section>
@@ -295,95 +142,47 @@
     </div>
   </main>
 
-  <footer>
-    © 2025 — Built for those who work smart.
-  </footer>
+  <footer> © 2025 — Built for those who work smart. </footer>
 
   <script>
-    // --- SMART SCRIPT INITIALIZATION ---
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-    // --- 1. DESKTOP-ONLY: INTERACTIVE CURSOR ---
     if (!isMobile) {
-      const cursorGlow = document.getElementById('cursor-glow');
-      const cursorDot = document.getElementById('cursor-dot');
-      window.addEventListener('mousemove', (e) => {
-        const { clientX, clientY } = e;
-        cursorGlow.style.left = `${clientX}px`;
-        cursorGlow.style.top = `${clientY}px`;
-        cursorDot.style.left = `${clientX}px`;
-        cursorDot.style.top = `${clientY}px`;
-      });
+      const cursorGlow = document.getElementById('cursor-glow'); const cursorDot = document.getElementById('cursor-dot');
+      window.addEventListener('mousemove', (e) => { const { clientX, clientY } = e; cursorGlow.style.left = `${clientX}px`; cursorGlow.style.top = `${clientY}px`; cursorDot.style.left = `${clientX}px`; cursorDot.style.top = `${clientY}px`; });
     }
-
-    // --- 2. DESKTOP-ONLY: DYNAMIC BACKGROUND ---
     if (!isMobile) {
-      const canvas = document.getElementById('background-canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      let particlesArray;
-      class Particle {
-        constructor(x,y,dX,dY,s){this.x=x;this.y=y;this.directionX=dX;this.directionY=dY;this.size=s;}
-        draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);ctx.fillStyle='rgba(0,170,255,0.1)';ctx.fill();}
-        update(){if(this.x>canvas.width||this.x<0){this.directionX=-this.directionX;}if(this.y>canvas.height||this.y<0){this.directionY=-this.directionY;}this.x+=this.directionX;this.y+=this.directionY;this.draw();}
-      }
+      const canvas = document.getElementById('background-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray;
+      class Particle { constructor(x,y,dX,dY,s){this.x=x;this.y=y;this.directionX=dX;this.directionY=dY;this.size=s;} draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);ctx.fillStyle='rgba(0,170,255,0.1)';ctx.fill();} update(){if(this.x>canvas.width||this.x<0){this.directionX=-this.directionX;}if(this.y>canvas.height||this.y<0){this.directionY=-this.directionY;}this.x+=this.directionX;this.y+=this.directionY;this.draw();}}
       function init(){particlesArray=[];let num=(canvas.height*canvas.width)/15000;for(let i=0;i<num;i++){let s=(Math.random()*2)+1;let x=(Math.random()*((innerWidth-s*2)-(s*2))+s*2);let y=(Math.random()*((innerHeight-s*2)-(s*2))+s*2);let dX=(Math.random()*0.4)-0.2;let dY=(Math.random()*0.4)-0.2;particlesArray.push(new Particle(x,y,dX,dY,s));}}
       function animate(){requestAnimationFrame(animate);ctx.clearRect(0,0,innerWidth,innerHeight);for(let i=0;i<particlesArray.length;i++){particlesArray[i].update();}}
-      window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;init();});
-      init();animate();
+      window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;init();}); init();animate();
     }
-
-    // --- 3. SCROLL REVEAL (All devices) ---
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
-    }, { threshold: 0.1 });
+    const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } }); }, { threshold: 0.1 });
     document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
-
-    // --- 4. NEW: AUTO-HIDING SMART HEADER (All devices) ---
-    let lastScrollY = window.scrollY;
-    const header = document.getElementById('main-header');
-    window.addEventListener('scroll', () => {
-        if (lastScrollY < window.scrollY && window.scrollY > 150) {
-            header.classList.add('header-hidden');
-        } else {
-            header.classList.remove('header-hidden');
-        }
-        lastScrollY = window.scrollY;
-    });
-
-    // --- 5. LANGUAGE TOGGLE (All devices) ---
+    let lastScrollY = window.scrollY; const header = document.getElementById('main-header');
+    window.addEventListener('scroll', () => { if (lastScrollY < window.scrollY && window.scrollY > 150) { header.classList.add('header-hidden'); } else { header.classList.remove('header-hidden'); } lastScrollY = window.scrollY; });
+    
     const translations = {
-        hi: {
-            heroTitle: `<span class="line"><span class="line-inner"><span>ऑटोमेशन</span> को</span></span><span class="line"><span class="line-inner">दीजिए ज़िम्मेदारी</span></span>`,
-            heroSub: "मैं आपकी बिज़नेस प्रोसेस को आसान और ऑटोमेट करता हूँ — Google Sheets, WhatsApp और APIs जैसे टूल्स से।",
-            service1: "🧠 स्मार्ट वर्कफ़्लो", desc1: "इनवॉइस जनरेशन, लीड फॉलोअप्स, ऑनबोर्डिंग — सब कुछ ऑटोमैटिक।",
-            service2: "🤖 व्हाट्सएप बॉट", desc2: "Google Sheets से WhatsApp मैसेज भेजें, रिमाइंडर सेट करें — वो भी अपने नंबर से।",
-            service3: "📊 लाइव डैशबोर्ड", desc3: "ऑपरेशन, पेमेंट्स, क्लाइंट एक्टिविटी — सब कुछ लाइव देखें।",
-            service4: "🔗 इंटीग्रेशन", desc4: "CRM, ERP, पेमेंट गेटवे — सब कुछ जोड़ते हैं, ताकि आप चिंता मुक्त रहें।"
-        }
+      hi: {
+        heroTitle: `<span class="line"><span class="line-inner"><span>ऑटोमेशन</span> को</span></span><span class="line"><span class="line-inner">दीजिए ज़िम्मेदारी</span></span>`,
+        heroSub: "मैं आपकी बिज़नेस प्रोसेस को आसान और ऑटोमेट करता हूँ — Google Sheets, WhatsApp और APIs जैसे टूल्स से।",
+        ourServices: "हमारी मुख्य सेवाएँ",
+        service1: "🚀 मैसेज ऑटोमेशन", desc1: "रिमाइंडर, फॉलो-अप और नोटिफिकेशन के लिए ऑटोमेटेड WhatsApp, SMS, या ईमेल भेजें, ताकि आप कोई मौका न चूकें।",
+        service2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", desc2: "मैन्युअल डेटा एंट्री और कॉपी-पेस्ट से थक गए? हम आपके वर्कफ़्लो को समझकर Google Sheets जैसे टूल से एक स्मार्ट सिस्टम बनाते हैं जो आपका समय बचाता है।",
+        service3: "🛠️ पूरा सेटअप और सपोर्ट", desc3: "हम सिर्फ़ सिस्टम बनाते नहीं, बल्कि उसे आपके लिए पूरी तरह से सेट अप करते हैं और आपकी टीम को इसका इस्तेमाल करना भी सिखाते हैं।"
+      }
     };
     function handleLanguageToggle() {
-        const toggle = document.getElementById('lang-toggle');
-        const elementsToAnimate = document.querySelectorAll('.hero h2 .line-inner, .hero p');
-        elementsToAnimate.forEach(el => { el.style.animation = 'none'; }); // Reset animations
-
-        if (toggle.checked) {
-            const t = translations.hi;
-            document.getElementById('heroTitle').innerHTML = t.heroTitle;
-            document.getElementById('heroSub').innerText = t.heroSub;
-            document.getElementById('service1').innerText = t.service1; document.getElementById('desc1').innerText = t.desc1;
-            document.getElementById('service2').innerText = t.service2; document.getElementById('desc2').innerText = t.desc2;
-            document.getElementById('service3').innerText = t.service3; document.getElementById('desc3').innerText = t.desc3;
-            document.getElementById('service4').innerText = t.service4; document.getElementById('desc4').innerText = t.desc4;
-        } else {
-            location.reload();
-        }
-        
-        // Re-trigger animations after content change
-        setTimeout(() => {
-            elementsToAnimate.forEach(el => { el.style.animation = ''; });
-        }, 10);
+      const toggle = document.getElementById('lang-toggle');
+      if (toggle.checked) {
+        const t = translations.hi;
+        document.getElementById('heroTitle').innerHTML = t.heroTitle;
+        document.getElementById('heroSub').innerText = t.heroSub;
+        document.getElementById('ourServices').innerText = t.ourServices;
+        document.getElementById('service1').innerText = t.service1; document.getElementById('desc1').innerText = t.desc1;
+        document.getElementById('service2').innerText = t.service2; document.getElementById('desc2').innerText = t.desc2;
+        document.getElementById('service3').innerText = t.service3; document.getElementById('desc3').innerText = t.desc3;
+      } else { location.reload(); }
     }
   </script>
 </body>
