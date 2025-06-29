@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smarter Automation | Orchestrate Your Flow</title>
+    <title>Smarter Automation | A New Experience</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -12,66 +12,73 @@
             --dark-bg: #030409; --light-bg: #F8F9FA;
             --text-dark: #1D2129; --text-light: #EDEFF3; --text-muted: #868E96;
             --primary-color: #007BFF; --primary-glow: rgba(0, 123, 255, 0.5);
+            --y-progress: 0;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        /* 1. CORRECT SCROLLBAR HIDING */
-        html { scroll-behavior: auto; /* Let JS handle it */ }
-        body {
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden; /* Absolutely no scrolling */
             font-family: 'Outfit', sans-serif;
-            background-color: var(--dark-bg);
+            background: linear-gradient(to top, var(--dark-bg) 50%, var(--light-bg) 150%);
             color: var(--text-light);
-            overscroll-behavior: none; /* Prevents bounce on mobile */
-            scrollbar-width: none; /* Firefox */
         }
-        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, Opera */
-
-        #main-canvas {
+        .scene {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
+            pointer-events: none;
         }
-        .scroll-container {
-            position: relative;
-            z-index: 2; /* Sits above the canvas */
-        }
-        .content-section {
-            width: 100%; height: 100vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 0 5%;
-            will-change: transform, opacity;
-        }
-        .text-content { text-align: center; max-width: 900px; }
-        h1 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; }
-        h2 { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; color: var(--text-dark); }
-        p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-muted); margin-top: 15px; }
 
+        /* --- THE TWO POLES: CHAOS & ORDER --- */
+        #chaos-pole, #order-pole {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        #chaos-pole { justify-content: flex-end; padding-bottom: 12vh; opacity: calc(1 - var(--y-progress) * 2); }
+        #order-pole { justify-content: flex-start; padding-top: 12vh; opacity: calc(var(--y-progress) * 2 - 1); }
+        
+        .pole-text { text-align: center; max-width: 900px; }
+        #chaos-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; }
+        #chaos-title span { font-weight: 900; color: var(--primary-color); }
+        #order-title { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 900; color: var(--text-dark); }
+        
         #solution-cards {
             display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 30px; width: 100%; max-width: 1100px; margin-top: 50px;
         }
         .service-card {
             background: #fff; border: 1px solid #dee2e6;
-            border-radius: 16px; padding: 30px;
-            text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            will-change: transform, opacity;
+            border-radius: 16px; padding: 30px; text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transform: scale(calc(var(--y-progress) * 1.5 - 0.5));
+            opacity: calc(var(--y-progress) * 2 - 1);
         }
         .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
-        .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
+        .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; }
         
-        #cta-section { background-color: var(--light-bg); }
-        .cta-container { display: flex; justify-content: center; align-items: center; }
-        #cta-button {
-            background: var(--primary-color); color: #fff; text-decoration: none;
-            font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 20px 50px;
-            border-radius: 50px; font-weight: 700;
-            box-shadow: 0 10px 30px var(--primary-glow);
-            transition: all 0.3s ease; white-space: nowrap;
+        #final-cta {
+            position: absolute; bottom: 10vh; opacity: 0;
+            transition: opacity 0.5s;
         }
-        #cta-button:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
+        #final-cta a { background: var(--primary-color); color: #fff; text-decoration: none; font-size: 1.2rem; padding: 20px 40px; border-radius: 50px; font-weight: 700; box-shadow: 0 10px 30px var(--primary-glow); }
+
+        /* --- THE KINETIC CORE --- */
+        #kinetic-core {
+            position: fixed; z-index: 100;
+            left: 50%; top: 85%; /* Start at the bottom */
+            width: 80px; height: 80px;
+            transform: translateX(-50%);
+            cursor: grab; pointer-events: auto;
+        }
+        #kinetic-core:active { cursor: grabbing; }
+        .core-glow { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: var(--primary-color); transition: all 0.3s; }
+        .core-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%{transform: scale(1); opacity: 0.6;} 50%{transform: scale(1.4); opacity: 0.2;} 100%{transform: scale(1); opacity: 0.6;} }
+        .core-center { background: #fff; box-shadow: 0 0 20px 5px var(--primary-glow); }
         
         /* Language Toggle */
-        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
+        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; pointer-events: auto; }
+        /* Rest of the toggle CSS is the same and robust */
         .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20,25,40,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); }
         #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
         .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
@@ -84,162 +91,106 @@
         
         @media (max-width: 900px) {
             #solution-cards { grid-template-columns: 1fr; }
+            #chaos-pole { padding-bottom: 15vh; }
+            #order-pole { padding-top: 10vh; }
         }
     </style>
 </head>
 <body>
-    <canvas id="main-canvas"></canvas>
-    
-    <div class="language-toggle">
-        <input type="checkbox" id="lang-toggle">
-        <label for="lang-toggle" class="toggle-label">
-            <span class="toggle-thumb"></span>
-            <span class="lang-text lang-en">EN</span>
-            <span class="lang-text lang-hi">HI</span>
-        </label>
+    <div id="chaos-pole" class="scene">
+        <div class="pole-text"><h1 id="chaos-title">Your workflow is chaos.<br><span>Bring it to order.</span></h1></div>
     </div>
-
-    <div class="scroll-container">
-        <section class="content-section" id="intro-section">
-            <div class="text-content">
-                <h1 id="intro-title">Is your business in motion, or just moving?</h1>
-            </div>
-        </section>
-        
-        <section class="content-section" id="solution-section">
-            <div class="text-content">
-                <h2 id="solution-title">We orchestrate the flow.</h2>
-                <div id="solution-cards">
-                    <div class="service-card">
-                        <h3 id="card-title-1">🚀 Message Automation</h3>
-                        <p id="card-desc-1">Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</p>
-                    </div>
-                    <div class="service-card">
-                        <h3 id="card-title-2">⚙️ Process Streamlining</h3>
-                        <p id="card-desc-2">We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.</p>
-                    </div>
-                    <div class="service-card">
-                        <h3 id="card-title-3">🛠️ Bespoke Setup & Support</h3>
-                        <p id="card-desc-3">A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.</p>
-                    </div>
+    <div id="order-pole" class="scene">
+        <div class="pole-text">
+            <h2 id="order-title">Welcome to The Flow.</h2>
+            <div id="solution-cards">
+                <div class="service-card">
+                    <h3 id="card-title-1">🚀 Message Automation</h3>
+                    <p id="card-desc-1">Automated WhatsApp, SMS, and email sequences that engage clients and never miss a beat.</p>
+                </div>
+                <div class="service-card">
+                    <h3 id="card-title-2">⚙️ Process Streamlining</h3>
+                    <p id="card-desc-2">We transform your manual, repetitive tasks into a flawless, self-running system.</p>
+                </div>
+                <div class="service-card">
+                    <h3 id="card-title-3">🛠️ Bespoke Setup & Support</h3>
+                    <p id="card-desc-3">A white-glove service where we compose, implement, and fine-tune your entire workflow.</p>
                 </div>
             </div>
-        </section>
-
-        <section class="content-section" id="cta-section">
-             <div class="text-content cta-container">
-                 <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20orchestrate%20my%20flow." target="_blank" id="cta-button">Let's Compose Your Symphony</a>
-             </div>
-        </section>
+            <div id="final-cta">
+                <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20orchestrate%20my%20flow." target="_blank" id="cta-button">Let's Compose Your Symphony</a>
+            </div>
+        </div>
+    </div>
+    <div id="kinetic-core">
+        <div class="core-glow core-pulse"></div>
+        <div class="core-glow core-center"></div>
+    </div>
+    <div class="language-toggle">
+        <input type="checkbox" id="lang-toggle">
+        <label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label>
     </div>
 
-    <!-- Animation & Smooth Scroll Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/Draggable.min.js"></script>
+
     <script>
-        // 1. LENIS SMOOTH SCROLL
-        const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, smoothWheel: true });
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
-        gsap.ticker.lagSmoothing(0);
+        gsap.registerPlugin(Draggable);
 
-        // 2. GSAP & SCROLLTRIGGER SETUP
-        gsap.registerPlugin(ScrollTrigger);
-        const canvas = document.getElementById('main-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let isLightMode = false;
+        const core = document.getElementById('kinetic-core');
+        const body = document.body;
+        const finalCTA = document.getElementById('final-cta');
+        let dragProxy = { y: 0 };
+        let isDocked = false;
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
-        }
-        window.addEventListener('resize', resizeCanvas);
+        const bounds = {
+            minY: window.innerHeight * 0.15,
+            maxY: window.innerHeight * 0.85
+        };
 
-        // 3. PARTICLE SYSTEM
-        class Particle {
-            constructor() { this.respawn(); this.size = Math.random() * 2 + 1; }
-            respawn() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * 1 - 0.5;
-                this.color = `rgba(0, 123, 255, ${Math.random() * 0.5 + 0.2})`;
-                this.blur = Math.random() * 3;
+        function updateScene(y) {
+            const progress = 1 - ((y - bounds.minY) / (bounds.maxY - bounds.minY));
+            body.style.setProperty('--y-progress', progress);
+
+            const bgGradient = `linear-gradient(to top, #030409 ${50 - progress * 50}%, #F8F9FA ${150 - progress * 100}%)`;
+            body.style.background = bgGradient;
+
+            const textColor = progress > 0.5 ? '#1D2129' : '#EDEFF3';
+            body.style.color = textColor;
+
+            if (progress > 0.5) {
+                document.querySelector('.language-toggle').classList.add('is-light');
+            } else {
+                document.querySelector('.language-toggle').classList.remove('is-light');
             }
-            update() {
-                if (!gsap.isTweening(this)) {
-                    this.x += this.speedX; this.y += this.speedY;
-                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) { this.respawn(); }
+        }
+
+        Draggable.create(core, {
+            type: "y",
+            bounds: { minY: bounds.minY, maxY: bounds.maxY },
+            inertia: true,
+            onDrag: function() {
+                updateScene(this.y);
+                isDocked = false;
+                gsap.to(finalCTA, { opacity: 0, duration: 0.2 });
+            },
+            onThrowUpdate: function() {
+                updateScene(this.y);
+            },
+            onDragEnd: function() {
+                if (this.y < window.innerHeight * 0.5) {
+                    gsap.to(this.target, { y: bounds.minY, duration: 0.4, ease: "power2.out" });
+                    updateScene(bounds.minY);
+                    isDocked = true;
+                    gsap.to(finalCTA, { opacity: 1, duration: 0.5, delay: 0.2 });
                 }
             }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.filter = `blur(${this.blur}px)`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        function initParticles() {
-            particles = [];
-            let numberOfParticles = Math.min(200, (canvas.width * canvas.height) / 8000);
-            for (let i = 0; i < numberOfParticles; i++) { particles.push(new Particle()); }
-        }
-        initParticles();
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateParticles);
-        }
-        requestAnimationFrame(animateParticles);
-
-        // 4. THE MAIN GSAP TIMELINE
-        const mainTimeline = gsap.timeline({
-            scrollTrigger: {
-                trigger: ".scroll-container",
-                scrub: 1, pin: true, end: "120%"
-            }
         });
-        
-        mainTimeline.to("#intro-section", { opacity: 0, duration: 0.5 }, 0.05)
-        .to(particles, {
-            x: () => canvas.width / 2, y: () => canvas.height / 2,
-            scale: 1.5, // Particles appear to get closer before streaking
-            ease: "power2.in", duration: 1,
-            stagger: { each: 0.005, from: "random" }
-        }, 0)
-        .to(particles, { // The "streaking" effect
-            x: () => canvas.width / 2, y: () => canvas.height / 2,
-            scale: 0, ease: "power4.in", duration: 0.5
-        }, ">-0.2")
-        .to("body", { 
-            backgroundColor: "#F8F9FA", color: "#1D2129", duration: 0.2,
-            onStart: () => document.querySelector('.language-toggle').classList.add('is-light'),
-            onReverseComplete: () => document.querySelector('.language-toggle').classList.remove('is-light')
-        }, "<0.1")
-        .set(particles, { opacity: 0 }, "<") // Hide particles during light mode
-        .fromTo("#solution-section", { opacity: 0 }, { opacity: 1, duration: 0.1 }, "<")
-        .from("#solution-title", { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" })
-        .from(".service-card", {
-            y: (i) => (i + 1) * 30, // Cascading effect
-            scale: 0.8, opacity: 0, stagger: 0.15, duration: 0.8, ease: "back.out(1.7)"
-        }, "<0.2")
-        .to("#solution-section", { y: "-100vh", duration: 1, ease: "power2.in" }, ">0.5")
-        .from("#cta-section", { y: "100vh", duration: 1, ease: "power2.in" }, "<");
 
-        // 5. LANGUAGE TOGGLE LOGIC
+        // Language Toggle Logic
         const textContent = {
-            en: { introTitle: "Is your business in motion, or just moving?", solutionTitle: "We orchestrate the flow.", cardTitle1: "🚀 Message Automation", cardDesc1: "Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.", cardTitle2: "⚙️ Process Streamlining", cardDesc2: "We transform your manual, repetitive tasks in tools like Google Sheets into a flawless, self-running system.", cardTitle3: "🛠️ Bespoke Setup & Support", cardDesc3: "A white-glove service where we compose, implement, and fine-tune your entire automated workflow from start to finish.", ctaButton: "Let's Compose Your Symphony" },
-            hi: { introTitle: "आपका बिज़नेस चल रहा है, या सिर्फ़ हिल रहा है?", solutionTitle: "हम प्रवाह को व्यवस्थित करते हैं।", cardTitle1: "🚀 मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।", cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम Google Sheets जैसे टूल में आपके मैन्युअल कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे ऑटोमेटेड वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "आइए आपकी सिम्फनी तैयार करें" }
+            en: { chaosTitle: "Your workflow is chaos.<br><span>Bring it to order.</span>", orderTitle: "Welcome to The Flow.", cardTitle1: "🚀 Message Automation", cardDesc1: "Automated WhatsApp, SMS, and email sequences that engage clients and never miss a beat.", cardTitle2: "⚙️ Process Streamlining", cardDesc2: "We transform your manual, repetitive tasks into a flawless, self-running system.", cardTitle3: "🛠️ Bespoke Setup & Support", cardDesc3: "A white-glove service where we compose, implement, and fine-tune your entire workflow.", ctaButton: "Let's Compose Your Symphony" },
+            hi: { chaosTitle: "आपका वर्कफ़्लो chaos है।<br><span>इसे व्यवस्थित करें।</span>", orderTitle: "The Flow में आपका स्वागत है।", cardTitle1: "🚀 मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं और कभी कोई मौका नहीं चूकते।", cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "आइए आपकी सिम्फनी तैयार करें" }
         };
         const langToggle = document.getElementById('lang-toggle');
         langToggle.addEventListener('change', () => {
