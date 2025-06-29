@@ -95,7 +95,7 @@
 </head>
 <body>
   <header>
-    <h1>Automation by Hardik</h1>
+    <h1 id="pageTitle">Automation by Hardik</h1>
     <div class="language-toggle">
       <label for="langSwitch">🌐 Language: </label>
       <select id="langSwitch" onchange="switchLang()">
@@ -141,6 +141,7 @@
   <script>
     const translations = {
       hi: {
+        pageTitle: "हार्दिक का ऑटोमेशन",
         heroTitle: "ऑटोमेशन को दीजिए ज़िम्मेदारी",
         heroSub: "मैं आपकी बिज़नेस प्रोसेस को आसान और ऑटोमेट करता हूँ — Google Sheets, WhatsApp और APIs जैसे टूल्स से।",
         service1: "🧠 स्मार्ट वर्कफ़्लो",
@@ -152,14 +153,25 @@
         service4: "🔗 इंटीग्रेशन",
         desc4: "CRM, ERP, पेमेंट गेटवे — सब कुछ जोड़ते हैं, ताकि आप चिंता मुक्त रहें।"
       },
-      en: null
+      en: {
+        pageTitle: "Automation by Hardik",
+        heroTitle: "Let Automation Do The Heavy Lifting",
+        heroSub: "I help businesses like yours streamline operations using tools like Google Sheets, WhatsApp, and APIs — so you focus on growth, not grunt work.",
+        service1: "🧠 Smarter Workflows",
+        desc1: "Invoice generation, lead follow-ups, onboarding journeys — all handled automatically using tools you're already familiar with.",
+        service2: "🤖 WhatsApp Bots",
+        desc2: "Trigger WhatsApp messages from Google Sheets, send auto-reminders, or run entire workflows through your own WhatsApp number.",
+        service3: "📊 Live Dashboards",
+        desc3: "Visualize operations, payments, client activity — all in real time. One glance, and you're informed.",
+        service4: "🔗 Seamless Integrations",
+        desc4: "We connect your CRMs, ERPs, payment gateways and more — so everything talks to each other, and to you."
+      }
     };
 
     function switchLang() {
       const lang = document.getElementById('langSwitch').value;
-      if (lang === 'en') location.reload();
-
       const t = translations[lang];
+      document.getElementById('pageTitle').innerText = t.pageTitle;
       document.getElementById('heroTitle').innerText = t.heroTitle;
       document.getElementById('heroSub').innerText = t.heroSub;
       document.getElementById('service1').innerText = t.service1;
