@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Add lang attribute for accessibility -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -7,201 +6,194 @@
     <title>Smarter Automation | Find The Signal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --dark-bg: #030409; --light-bg: #F8F9FA;
-            --text-dark: #1D2129; --text-light: #EDEFF3; --text-muted: #868E96;
-            --primary-color: #007BFF; --primary-glow: rgba(0, 123, 255, 0.5);
+            --dark-bg: #030409; --light-bg: #f5f5f7;
+            --text-dark: #1d1d1f; --text-light: #f5f5f7; --text-muted: #a1a1a6;
+            --primary-color: #0071e3; --primary-glow: rgba(0, 113, 227, 0.5);
+            --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* THE ULTIMATE SCROLLBAR FIX */
-        html { overflow: hidden; height: 100%; }
+        /* ARCHITECTURE: Bulletproof Scroll & Layout */
+        html { overflow: hidden; height: 100%; cursor: none; }
         body {
-            height: 100%; overflow: auto; /* Allow Lenis/native scroll on this element */
+            height: 100%; overflow: auto; 
             font-family: 'Outfit', sans-serif; background-color: var(--dark-bg);
             color: var(--text-light); overscroll-behavior-y: none;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
-        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, Edge */
+        body::-webkit-scrollbar { display: none; }
 
-        /* MAIN PAGE STRUCTURE: ROBUST & RELIABLE */
-        #master-container {
-            position: relative; width: 100%; height: 100vh; overflow: hidden;
+        #main-content {
+            position: relative;
+            width: 100%;
         }
-        .content-section {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 0 5%;
+        .section-container {
+            height: 100vh;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            overflow: hidden;
         }
 
+        /* TACTILE INTERACTIVITY: Custom Cursor */
+        #cursor {
+            position: fixed; z-index: 2000;
+            width: 10px; height: 10px;
+            background-color: var(--text-light);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: width 0.4s var(--ease-out-quint), height 0.4s var(--ease-out-quint);
+        }
+        #cursor.hovered { width: 30px; height: 30px; }
+
+        /* VISUALS: Nebula Particle System */
         #main-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none; opacity: 0;
         }
 
-        /* --- STYLING & WOW-FACTOR --- */
-        #intro-section { z-index: 2; }
-        #solution-section { z-index: 3; background: var(--light-bg); transform: translateY(100%);}
-        #cta-section { z-index: 4; background: var(--light-bg); transform: translateY(100%); }
+        /* TYPOGRAPHY & CONTENT */
+        .text-content { text-align: center; max-width: 900px; will-change: transform; padding: 0 5%; }
+        h1 { font-size: clamp(2.8rem, 8vw, 6rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.015em; }
+        h2 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 700; line-height: 1.05; color: var(--text-dark); letter-spacing: -0.015em;}
+        p { font-size: clamp(1.1rem, 2.5vw, 1.3rem); color: var(--text-muted); margin-top: 20px; font-weight: 400; line-height: 1.5; }
 
-        .text-content { text-align: center; max-width: 900px; will-change: transform; }
-        h1 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; }
-        h2 { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; color: var(--text-dark); }
-        p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-muted); margin-top: 15px; }
-        
+        #intro-section { z-index: 2; color: var(--text-light); }
+        #solution-section { z-index: 3; background: var(--light-bg); }
+        #cta-section { z-index: 4; background: var(--light-bg); }
+
         #solution-cards {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
-            width: 100%; max-width: 1100px; margin-top: 50px;
+            width: 100%; max-width: 1200px; margin-top: 60px;
         }
         .service-card {
-            position: relative; background: rgba(255,255,255,0.75); border: 1px solid #dee2e6;
-            border-radius: 16px; padding: 30px; text-align: left;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #fff; border-radius: 20px; padding: 35px;
+            text-align: left; transition: transform 0.4s var(--ease-out-quint);
+            border: 1px solid rgba(0,0,0,0.1);
         }
-        .service-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 16px;
-            padding: 2px; background: linear-gradient(135deg, var(--primary-color), #00AFFF);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor;
-            mask-composite: exclude; opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
-        }
-        .service-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .service-card:hover::before { opacity: 1; }
-        .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
-        .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
+        .service-card:hover { transform: translateY(-12px); }
+        .service-card h3 { font-size: 1.6rem; color: #1d1d1f; font-weight: 700; margin-bottom: 12px; }
+        .service-card p { font-size: 1rem; color: #6e6e73; line-height: 1.6; margin-top: 0; }
         
         #cta-button {
-            background: var(--primary-color); color: #fff; text-decoration: none; font-size: clamp(1.2rem, 3vw, 1.5rem);
-            padding: 20px 50px; border-radius: 50px; font-weight: 700;
-            box-shadow: 0 10px 30px var(--primary-glow); transition: all 0.3s ease; white-space: nowrap;
+            background: var(--primary-color); color: #fff; text-decoration: none;
+            font-size: clamp(1.2rem, 3vw, 1.5rem); padding: 22px 55px; border-radius: 99px;
+            font-weight: 500; transition: transform 0.3s ease, background-color 0.3s ease; white-space: nowrap;
         }
-        #cta-button:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 0 50px 8px var(--primary-glow); }
+        #cta-button:hover { transform: scale(1.05); background-color: #0077ed; }
         
-        #shockwave-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--light-bg);
-            z-index: 999; pointer-events: none; transform-origin: center; transform: scaleY(0);
-        }
+        /* LANGUAGE TOGGLE: Robust, reliable, and clean. */
+        [lang="hi"] { display: none; }
+        body.lang-hi [lang="hi"] { display: inline-block; }
+        body.lang-hi [lang="en"] { display: none; }
+        .line { display: inline-block; overflow: hidden; } .line-inner { display: inline-block; }
 
-        /* --- LANGUAGE TOGGLE: THE BULLETPROOF METHOD --- */
-        [lang="hi"] { display: none; } /* Initially hide Hindi text */
-        body.lang-hi [lang="hi"] { display: inline-block; } /* Show Hindi text when body class is present */
-        body.lang-hi [lang="en"] { display: none; } /* Hide English text */
-        .line { display: inline-block; } /* Necessary for animations */
+        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .toggle-label { /* Unchanged styles for toggle */ display:flex;align-items:center;justify-content:space-between;width:80px;height:40px;background-color:rgba(30,30,30,0.7);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:0 12px;cursor:pointer;position:relative;transition:all 0.3s ease;backdrop-filter:blur(10px)}#lang-toggle:checked+.toggle-label{background-color:rgba(230,230,230,0.8);border-color:transparent}.lang-text{font-size:.9rem;font-weight:700;z-index:2;transition:color .3s ease}.lang-en{color:var(--text-light)}.lang-hi{color:var(--text-muted)}#lang-toggle:checked+.toggle-label .lang-en{color:var(--text-muted)}#lang-toggle:checked+.toggle-label .lang-hi{color:var(--text-dark)}.toggle-thumb{position:absolute;top:3px;left:4px;width:32px;height:32px;background-color:var(--primary-color);border-radius:50%;z-index:1;transition:transform .3s cubic-bezier(.25,.46,.45,.94)}#lang-toggle:checked+.toggle-label .toggle-thumb{transform:translateX(38px)}
 
-        /* --- Other UI elements --- */
-        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; } #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; } .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20, 25, 40, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); } .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; } .lang-en { color: var(--text-light); } .lang-hi { color: var(--text-muted); } .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); } #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); } #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); } #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); } body.is-light .toggle-label { background-color: rgba(255, 255, 255, 0.8); border-color: rgba(0, 0, 0, 0.1); }
-        #scroll-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; width: 24px; height: 40px; border: 2px solid #fff; border-radius: 20px; opacity: 0; transition: opacity 0.5s; } #scroll-hint::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 4px; height: 8px; background: #fff; border-radius: 4px; animation: scroll-anim 2s infinite; } @keyframes scroll-anim { 0% { transform: translate(-50%, 0); opacity: 1; } 50% { transform: translate(-50%, 10px); opacity: 1; } 100% { transform: translate(-50%, 20px); opacity: 0; } } @media (max-width: 900px) { #solution-cards { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { #solution-cards { grid-template-columns: 1fr; } h1,h2,p{text-align:left;} }
     </style>
 </head>
 <body>
-    <div id="shockwave-overlay"></div>
-    <div id="master-container">
+    <div id="cursor"></div>
+    <div id="main-content">
         <canvas id="main-canvas"></canvas>
-        <section class="content-section" id="intro-section">
+        <div class="section-container" id="intro-section">
             <div class="text-content">
                 <h1 id="intro-title">
-                    <span lang="en" class="line">Your workflow is noise.</span>
-                    <span lang="hi" class="line">आपका वर्कफ़्लो शोर है।</span>
-                    <br>
-                    <span lang="en" class="line">We find the signal.</span>
-                    <span lang="hi" class="line">हम सिग्नल ढूंढते हैं।</span>
+                    <span class="line"><span class="line-inner" lang="en">Your workflow is noise.</span><span class="line-inner" lang="hi">आपका वर्कफ़्लो शोर है।</span></span><br>
+                    <span class="line"><span class="line-inner" lang="en">We find the signal.</span><span class="line-inner" lang="hi">हम सिग्नल ढूंढते हैं।</span></span>
                 </h1>
             </div>
-            <div id="scroll-hint"></div>
-        </section>
-        <section class="content-section" id="solution-section">
-            <div class="text-content">
+        </div>
+        <div class="section-container" id="solution-section">
+             <div class="text-content">
                 <h2 id="solution-title">
                     <span lang="en">The Signal. Amplified.</span>
                     <span lang="hi">सिग्नल। प्रवर्धित।</span>
                 </h2>
                 <div id="solution-cards">
-                    <div class="service-card"><h3 id="card-title-1"><span lang="en">🚀 Message Automation</span><span lang="hi">🚀 मैसेज ऑटोमेशन</span></h3><p id="card-desc-1"><span lang="en">Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</span><span lang="hi">ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।</span></p></div>
-                    <div class="service-card"><h3 id="card-title-2"><span lang="en">⚙️ Process Streamlining</span><span lang="hi">⚙️ प्रोसेस स्ट्रीमलाइनिंग</span></h3><p id="card-desc-2"><span lang="en">We transform your manual, repetitive tasks into a flawless, self-running system.</span><span lang="hi">हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।</span></p></div>
-                    <div class="service-card"><h3 id="card-title-3"><span lang="en">🛠️ Bespoke Setup & Support</span><span lang="hi">🛠️ विशेष सेटअप और सपोर्ट</span></h3><p id="card-desc-3"><span lang="en">A white-glove service where we compose, implement, and fine-tune your entire workflow.</span><span lang="hi">एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।</span></p></div>
+                    <div class="service-card interactive-item"><h3><span lang="en">🚀 Message Automation</span><span lang="hi">🚀 मैसेज ऑटोमेशन</span></h3><p><span lang="en">Automated sequences that engage clients, follow up on leads, and never miss a beat.</span><span lang="hi">ऑटोमेटेड सीक्वेंस जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।</span></p></div>
+                    <div class="service-card interactive-item"><h3><span lang="en">⚙️ Process Streamlining</span><span lang="hi">⚙️ प्रोसेस स्ट्रीमलाइनिंग</span></h3><p><span lang="en">We transform your manual, repetitive tasks into a flawless, self-running system.</span><span lang="hi">हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।</span></p></div>
+                    <div class="service-card interactive-item"><h3><span lang="en">🛠️ Bespoke Setup</span><span lang="hi">🛠️ विशेष सेटअप</span></h3><p><span lang="en">A white-glove service where we compose, implement, and fine-tune your entire workflow.</span><span lang="hi">एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।</span></p></div>
                 </div>
             </div>
-        </section>
-        <section class="content-section" id="cta-section">
-             <div class="text-content cta-container">
-                 <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20find%20my%20signal." target="_blank" id="cta-button">
+        </div>
+        <div class="section-container" id="cta-section">
+             <div class="text-content">
+                 <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20find%20my%20signal." target="_blank" id="cta-button" class="interactive-item">
                     <span lang="en">Amplify Your Signal</span>
                     <span lang="hi">अपना सिग्नल बढ़ाएँ</span>
                  </a>
              </div>
-        </section>
+        </div>
     </div>
-    
-    <div class="language-toggle">
-        <input type="checkbox" id="lang-toggle">
-        <label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label>
+    <div class="language-toggle interactive-item">
+        <input type="checkbox" id="lang-toggle"><label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label>
     </div>
     
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/split-type"></script>
 
     <script>
-        document.body.style.height = '300vh'; // Define the total scrollable length
+        // --- CORE SETUP ---
         gsap.registerPlugin(ScrollTrigger);
-        
-        // --- 1. CORE SETUP (ROBUST & RELIABLE) ---
-        const dom = { body: document.body, canvas: document.getElementById('main-canvas'), introSection: document.getElementById('intro-section'), solutionSection: document.getElementById('solution-section'), ctaSection: document.getElementById('cta-section'), shockwave: document.getElementById('shockwave-overlay'), scrollHint: document.getElementById('scroll-hint'), langToggle: document.getElementById('lang-toggle'), langToggleContainer: document.querySelector('.language-toggle')};
+        const dom = { body: document.body, main: document.getElementById('main-content'), intro: document.getElementById('intro-section'), solutions: document.getElementById('solution-section'), cta: document.getElementById('cta-section'), canvas: document.getElementById('main-canvas'), cursor: document.getElementById('cursor'), langToggle: document.getElementById('lang-toggle')};
+        dom.main.style.height = '300vh';
         const lenis = new Lenis();
-        const isMobile = window.innerWidth < 768;
-
-        // --- 2. LANGUAGE TOGGLE (THE BULLETPROOF METHOD) ---
-        dom.langToggle.addEventListener('change', () => {
-            dom.body.classList.toggle('lang-hi', dom.langToggle.checked);
-        });
-
-        // --- 3. CANVAS & PARTICLES (PERFORMANCE-FOCUSED) ---
-        const ctx = dom.canvas.getContext('2d'); let particles = [];
-        const particleLayers = [ /* ... particle config (same) ... */ { count: isMobile ? 200 : 400, speed: 0.5, size: 0.5, color: 'rgba(255, 255, 255, 0.4)' }, { count: isMobile ? 100 : 250, speed: 1.0, size: 0.8, color: 'rgba(255, 255, 255, 0.7)' }, { count: isMobile ? 25 : 50, speed: 1.8, size: 1.2, color: 'rgba(255, 255, 255, 0.9)' } ];
-        class Particle { constructor(layer) {this.layer = layer; this.reset();} reset() {this.x = (Math.random() - 0.5) * window.innerWidth * 2; this.y = (Math.random() - 0.5) * window.innerHeight * 2; this.z = Math.random() * 2000;} update(cameraZ) {this.z -= this.layer.speed; if (this.z < cameraZ) this.z = 2000;} draw(cameraZ) {const fov=300; const z = this.z-cameraZ; if (z < 1) return; const scale = fov/z; const x2d = this.x*scale + window.innerWidth/2; const y2d = this.y*scale + window.innerHeight/2; if (x2d>0&&x2d<window.innerWidth&&y2d>0&&y2d<window.innerHeight){ctx.fillStyle=this.layer.color; ctx.beginPath(); ctx.arc(x2d,y2d,scale*this.layer.size,0,Math.PI*2); ctx.fill();}}}
-        function initParticles() { const dpr=Math.min(window.devicePixelRatio,2); dom.canvas.width=window.innerWidth*dpr; dom.canvas.height=window.innerHeight*dpr; ctx.scale(dpr,dpr); particles=[]; particleLayers.forEach(l=>{for(let i=0;i<l.count;i++)particles.push(new Particle(l));}); }
-
-        // --- 4. UNIFIED ANIMATION & SCROLL ---
-        let cameraZ = 0;
-        gsap.ticker.add(time => { lenis.raf(time * 1000); ctx.clearRect(0, 0, window.innerWidth, window.innerHeight); particles.forEach(p=>{p.update(cameraZ); p.draw(cameraZ);}); });
-        lenis.on('scroll', ScrollTrigger.update);
-        window.addEventListener('resize', initParticles); initParticles();
-
-        // --- 5. THE ULTIMATE "NO FAIL" SCROLL TIMELINE ---
         
-        // Boot-up Sequence
-        const introTitle = new SplitType('#intro-title', { types: 'lines' });
-        gsap.set(introTitle.lines, { yPercent: 105 });
-        gsap.timeline()
-            .to(dom.canvas, { opacity: 1, duration: 1 })
-            .to(introTitle.lines, { yPercent: 0, stagger: 0.1, duration: 1.2, ease: 'power4.out' }, 0)
-            .to(dom.scrollHint, { opacity: 0.7, duration: 1 }, ">-0.5");
+        // --- 1. TACTILE EXPERIENCE: CUSTOM CURSOR ---
+        const cursorX = gsap.quickTo(dom.cursor, "x", { duration: 0.4, ease: "power3" });
+        const cursorY = gsap.quickTo(dom.cursor, "y", { duration: 0.4, ease: "power3" });
+        window.addEventListener("mousemove", e => { cursorX(e.clientX); cursorY(e.clientY); });
+        document.querySelectorAll(".interactive-item").forEach(el => {
+            el.addEventListener("mouseenter", () => dom.cursor.classList.add("hovered"));
+            el.addEventListener("mouseleave", () => dom.cursor.classList.remove("hovered"));
+        });
+        
+        // --- 2. LANGUAGE TOGGLE (RELIABLE METHOD) ---
+        dom.langToggle.addEventListener('change', () => dom.body.classList.toggle('lang-hi', dom.langToggle.checked));
 
-        // Master Scroll Timeline
-        const masterScroll = gsap.timeline({
-            scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: 1 }
+        // --- 3. LIVING BACKGROUND: PARTICLE NEBULA ---
+        const ctx = dom.canvas.getContext('2d'); let particles = []; let mousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        class Particle { constructor() {this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight; this.z = Math.random() * 2 + 1; this.vx = (Math.random() - 0.5) * 0.1; this.vy = (Math.random() - 0.5) * 0.1; this.baseAlpha = 0.1 + Math.random() * 0.2; this.pulseFactor = 0.5 + Math.random() * 0.5;} draw(time) { const distanceToMouse = Math.hypot(this.x - mousePos.x, this.y - mousePos.y); const proximityFactor = Math.max(0, 1 - distanceToMouse / 400); const alpha = this.baseAlpha + (Math.sin(time * 0.001 * this.pulseFactor) * 0.1) + (proximityFactor * 0.4); const size = (1 + proximityFactor) * this.z; ctx.beginPath(); ctx.arc(this.x, this.y, size, 0, Math.PI * 2); const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, size); gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.8})`); gradient.addColorStop(1, `rgba(255, 255, 255, 0)`); ctx.fillStyle = gradient; ctx.fill(); } update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1; if (this.y < 0 || this.y > window.innerHeight) this.vy *= -1; } }
+        function initCanvas() { const dpr=window.devicePixelRatio||1; dom.canvas.width=window.innerWidth*dpr; dom.canvas.height=window.innerHeight*dpr; ctx.scale(dpr,dpr); particles=[]; for (let i = 0; i < 200; i++) particles.push(new Particle()); } window.addEventListener('resize', initCanvas); initCanvas();
+        window.addEventListener("mousemove", e => { mousePos = { x: e.clientX, y: e.clientY }; });
+        
+        // --- 4. FLUID MOTION: MAIN ANIMATION LOOP & TIMELINES ---
+        gsap.ticker.add(time => { lenis.raf(time * 1000); ctx.clearRect(0,0,window.innerWidth,window.innerHeight); particles.forEach(p => { p.update(); p.draw(time); }); });
+
+        // CINEMATIC INTRO
+        gsap.set("#intro-title .line-inner", { yPercent: 102 });
+        const introTl = gsap.timeline();
+        introTl.to(dom.canvas, { opacity: 1, duration: 2, ease: "power2.inOut" })
+               .to("#intro-title .line-inner", { yPercent: 0, stagger: 0.1, duration: 1.5, ease: "power4.out" }, 0.5);
+
+        // SEAMLESS SCROLLING TRANSITIONS
+        gsap.to(dom.intro, {
+            scrollTrigger: { trigger: dom.intro, start: "center center", end: "bottom top", scrub: 1 },
+            scale: 0.9, opacity: 0, ease: 'power2.in'
         });
 
-        masterScroll
-            // Section 1 -> Section 2 Transition
-            .to(cameraZ, { value: 1000, ease: 'power2.in', onUpdate: () => cameraZ = cameraZ.value }, 'section1')
-            .to(dom.introSection, { yPercent: -100, ease: 'power2.in' }, 'section1')
-            .to(dom.shockwave, { scaleY: 1, ease: 'power2.in' }, 'section1')
-            .to(dom.shockwave, { transformOrigin: 'bottom', scaleY: 0, ease: 'power2.out' })
-            .set(dom.body, { backgroundColor: 'var(--light-bg)' }, '<')
-            .set(dom.langToggleContainer, { onStart: () => dom.langToggleContainer.classList.add('is-light'), onReverseComplete: () => dom.langToggleContainer.classList.remove('is-light') }, '<')
-            .set(dom.canvas, { display: 'none' }, '<')
-            .fromTo(dom.solutionSection, { yPercent: 0 }, { yPercent: 0 }, '<') // Already in position, just ensuring it's active
-            .from('#solution-section .text-content', { y: 100, opacity: 0, ease: 'power3.out' }, '<')
-            
-            // Section 2 -> Section 3 Transition
-            .to(dom.solutionSection, { yPercent: -100, ease: 'power2.in' }, 'section2')
-            .from(dom.ctaSection, { yPercent: 100 }, 'section2')
-            .to(dom.ctaSection, { yPercent: 0, ease: 'power2.in' });
+        const solTl = gsap.timeline({ scrollTrigger: { trigger: dom.solutions, start: "top bottom", end: "top top", scrub: 1 }});
+        solTl.from(dom.solutions.querySelector(".text-content"), { y: 150, opacity: 0, ease: 'power3.out' });
+
+        gsap.to(dom.solutions, {
+            scrollTrigger: { trigger: dom.solutions, start: "center center", end: "bottom top", scrub: 1 },
+            scale: 0.95, y: -50, opacity: 0.5, ease: 'power2.in'
+        });
+
+        const ctaTl = gsap.timeline({ scrollTrigger: { trigger: dom.cta, start: "top bottom", end: "center center", scrub: 1 }});
+        ctaTl.from(dom.cta.querySelector(".text-content"), { y: 100, opacity: 0, ease: 'power2.out' });
     </script>
 </body>
 </html>
