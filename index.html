@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smarter Automation | Orchestrate Your Flow</title>
+    <title>Smarter Automation | Grow Your Business</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 1; pointer-events: none;
-            transition: opacity 0.5s ease; /* Added for smooth GSAP fade */
+            transition: opacity 0.5s ease;
         }
         .content-section {
             position: relative; z-index: 10;
@@ -47,11 +47,10 @@
             text-align: center;
             max-width: 900px;
             width: 100%;
-            will-change: transform, opacity;
         }
-        h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; line-height: 1.2; }
+        h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); font-weight: 900; line-height: 1.2; }
         h2 { font-size: clamp(2.2rem, 7vw, 4rem); font-weight: 900; line-height: 1.2; color: var(--text-dark); }
-        p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-muted); margin-top: 15px; }
+        p { font-size: clamp(1rem, 2.5vw, 1.1rem); color: var(--text-muted); margin-top: 15px; }
         #solution-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -67,9 +66,8 @@
             padding: 30px;
             text-align: left;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            will-change: transform, opacity;
         }
-        .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
+        .service-card h3 { font-size: 1.3rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
         .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
         #cta-button {
             background: var(--primary-color); color: #fff; text-decoration: none;
@@ -78,7 +76,6 @@
             box-shadow: 0 10px 30px var(--primary-glow);
             transition: all 0.3s ease; white-space: nowrap;
             display: inline-block;
-            will-change: transform, opacity;
         }
         #cta-button:hover { transform: scale(1.05); box-shadow: 0 15px 40px var(--primary-glow); }
         .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
@@ -91,6 +88,10 @@
         #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
         #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); }
         .is-light .toggle-label { background-color: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.1); }
+        
+        /* FIX: Set initial state for all animated elements to prevent load-in bugs */
+        .gsap-fade-up { opacity: 0; transform: translateY(30px); }
+
         @media (max-width: 768px) {
             .content-section {
                 padding: 10vh 20px;
@@ -114,28 +115,28 @@
         </label>
     </div>
 
-    <!-- Content is now pre-filled with the default language (English) -->
+    <!-- Content is pre-filled with the new professional English text -->
     <section class="content-section" id="intro-section">
         <div class="text-content">
-            <h1 id="intro-title">Overwhelmed by Chaos? 🌪️ Let's Orchestrate Your Success. ✨</h1>
+            <h1 id="intro-title" class="gsap-fade-up">Free yourself from repetitive tasks. Focus on growing your business.</h1>
         </div>
     </section>
     
     <section class="content-section" id="solution-section">
         <div class="text-content">
-            <h2 id="solution-title">Your Workflow, Perfected. 🎯</h2>
+            <h2 id="solution-title" class="gsap-fade-up">Simple Automation for Big Results.</h2>
             <div id="solution-cards">
-                <div class="service-card">
-                    <h3 id="card-title-1">🚀 24/7 Lead Engagement</h3>
-                    <p id="card-desc-1">Never miss a lead again. Our automated WhatsApp, SMS & Email bots engage customers instantly, turning interest into action.</p>
+                <div class="service-card gsap-fade-up">
+                    <h3 id="card-title-1">💬 Automated Client Communication</h3>
+                    <p id="card-desc-1">Engage every new lead instantly with automated WhatsApp, SMS, and email messages. Turn inquiries into customers, 24/7.</p>
                 </div>
-                <div class="service-card">
-                    <h3 id="card-title-2">⚙️ Effortless Operations</h3>
-                    <p id="card-desc-2">Say goodbye to tedious data entry. We transform your manual Google Sheets & repetitive tasks into a self-running, error-free system.</p>
+                <div class="service-card gsap-fade-up">
+                    <h3 id="card-title-2">⚙️ Streamlined Business Operations</h3>
+                    <p id="card-desc-2">We connect your everyday tools (like Google Sheets) to eliminate manual data entry, reduce errors, and automate your daily workflow.</p>
                 </div>
-                <div class="service-card">
-                    <h3 id="card-title-3">🤝 White-Glove Partnership</h3>
-                    <p id="card-desc-3">Consider us your in-house automation experts. We design, build, and manage your entire workflow, tailored precisely to your business goals.</p>
+                <div class="service-card gsap-fade-up">
+                    <h3 id="card-title-3">✨ Complete Done-For-You Setup</h3>
+                    <p id="card-desc-3">From planning to launch, we build and manage the entire automation setup for you. You get the benefits without the technical headache.</p>
                 </div>
             </div>
         </div>
@@ -143,7 +144,7 @@
 
     <section class="content-section" id="cta-section">
          <div class="text-content">
-             <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20orchestrate%20my%20flow." target="_blank" id="cta-button">Start Automating Now 🚀</a>
+             <a href="https://wa.me/919210037310?text=I'm%20ready%20to%20save%20time" target="_blank" id="cta-button" class="gsap-fade-up">Start Saving Time Today</a>
          </div>
     </section>
 
@@ -154,19 +155,22 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. SMOOTH SCROLL & BASIC SETUP ---
+            // --- 1. UNIFIED ANIMATION & SCROLL SETUP (PERFORMANCE FIX) ---
             const lenis = new Lenis();
-            function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-            }
-            requestAnimationFrame(raf);
             gsap.registerPlugin(ScrollTrigger);
+            
+            // Integrate Lenis smooth scroll with GSAP's animation ticker for optimal performance
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
 
             // --- 2. PARTICLE CANVAS LOGIC ---
             const canvas = document.getElementById('main-canvas');
             const ctx = canvas.getContext('2d');
             let particles = [];
+            
             function resizeCanvas() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
@@ -175,11 +179,12 @@
                 resizeCanvas();
                 initParticles();
             });
+
             class Particle {
                 constructor() {
                     this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
                     this.size = Math.random() * 1.5 + 1;
-                    this.speedX = Math.random() * 1 - 0.5; this.speedY = Math.random() * 1 - 0.5;
+                    this.speedX = Math.random() * 0.5 - 0.25; this.speedY = Math.random() * 0.5 - 0.25;
                     this.color = `rgba(0, 123, 255, ${Math.random() * 0.4 + 0.1})`;
                 }
                 update() {
@@ -192,17 +197,21 @@
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
                 }
             }
+
             function initParticles() {
                 particles = [];
-                let n = (canvas.width * canvas.height) / 15000;
+                // Reduced particle count for better performance
+                let n = (canvas.width * canvas.height) / 25000;
                 for (let i = 0; i < n; i++) { particles.push(new Particle()); }
             }
-            function animateParticles() {
+
+            // Hook particle animation into the main GSAP ticker for a single render loop
+            gsap.ticker.add(() => {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 particles.forEach(p => { p.update(); p.draw(); });
-                requestAnimationFrame(animateParticles);
-            }
-            resizeCanvas(); initParticles(); animateParticles();
+            });
+            
+            resizeCanvas(); initParticles();
             
             // --- 3. SCROLL-BASED ANIMATIONS ---
             ScrollTrigger.create({
@@ -210,32 +219,35 @@
                 start: "top center",
                 end: "bottom center",
                 toggleClass: { targets: "body, .language-toggle", className: "is-light" },
-                // *** FIX: Target the canvas element for fade, not the particle array ***
                 onEnter: () => gsap.to("#main-canvas", { opacity: 0, duration: 0.5 }),
                 onLeaveBack: () => gsap.to("#main-canvas", { opacity: 1, duration: 0.5 })
             });
-            
-            function createFadeUpAnimation(trigger, targets, start = "top 85%") {
-                gsap.from(targets, {
-                    y: 50, opacity: 0, duration: 1, ease: 'power3.out',
-                    stagger: 0.2, scrollTrigger: { trigger, start, toggleActions: 'play none none none' }
+
+            // FIX: Animate all elements with the class '.gsap-fade-up' as they enter the viewport
+            gsap.utils.toArray('.gsap-fade-up').forEach(element => {
+                gsap.to(element, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 90%', // Start animation when element is 90% from the top
+                        toggleActions: 'play none none none',
+                    }
                 });
-            }
-            createFadeUpAnimation("#intro-section", "#intro-title");
-            createFadeUpAnimation("#solution-section", "#solution-title");
-            createFadeUpAnimation("#solution-section", ".service-card", "top 75%");
-            createFadeUpAnimation("#cta-section", "#cta-button");
+            });
 
             // --- 4. LANGUAGE TOGGLE LOGIC ---
             const textContent = {
-                en: { introTitle: "Overwhelmed by Chaos? 🌪️ Let's Orchestrate Your Success. ✨", solutionTitle: "Your Workflow, Perfected. 🎯", cardTitle1: "🚀 24/7 Lead Engagement", cardDesc1: "Never miss a lead again. Our automated WhatsApp, SMS & Email bots engage customers instantly, turning interest into action.", cardTitle2: "⚙️ Effortless Operations", cardDesc2: "Say goodbye to tedious data entry. We transform your manual Google Sheets & repetitive tasks into a self-running, error-free system.", cardTitle3: "🤝 White-Glove Partnership", cardDesc3: "Consider us your in-house automation experts. We design, build, and manage your entire workflow, tailored precisely to your business goals.", ctaButton: "Start Automating Now 🚀" },
-                hi: { introTitle: "अव्यवस्था से परेशान? 🌪️ आइए आपकी सफलता को व्यवस्थित करें। ✨", solutionTitle: "आपका वर्कफ़्लो, उत्तम। 🎯", cardTitle1: "🚀 24/7 लीड एंगेजमेंट", cardDesc1: "अब कोई भी लीड न छूटे। हमारे ऑटोमेटेड WhatsApp, SMS और ईमेल बॉट्स ग्राहकों से तुरंत जुड़ते हैं, और उनकी रुचि को एक्शन में बदलते हैं।", cardTitle2: "⚙️ सरल ऑपरेशन्स", cardDesc2: "उबाऊ डेटा एंट्री को अलविदा कहें। हम आपके मैन्युअल Google Sheets और दोहराए जाने वाले कार्यों को एक स्वचालित, गलती-मुक्त सिस्टम में बदलते हैं।", cardTitle3: "🤝 व्हाइट-ग्लव पार्टनरशिप", cardDesc3: "हमें अपनी इन-हाउस ऑटोमेशन टीम समझें। हम आपके व्यावसायिक लक्ष्यों के लिए, आपके पूरे वर्कफ़्लो को डिज़ाइन, निर्माण और प्रबंधित करते हैं।", ctaButton: "अभी ऑटोमेट करना शुरू करें 🚀" }
+                en: { introTitle: "Free yourself from repetitive tasks. Focus on growing your business.", solutionTitle: "Simple Automation for Big Results.", cardTitle1: "💬 Automated Client Communication", cardDesc1: "Engage every new lead instantly with automated WhatsApp, SMS, and email messages. Turn inquiries into customers, 24/7.", cardTitle2: "⚙️ Streamlined Business Operations", cardDesc2: "We connect your everyday tools (like Google Sheets) to eliminate manual data entry, reduce errors, and automate your daily workflow.", cardTitle3: "✨ Complete Done-For-You Setup", cardDesc3: "From planning to launch, we build and manage the entire automation setup for you. You get the benefits without the technical headache.", ctaButton: "Start Saving Time Today" },
+                hi: { introTitle: "दोहराए जाने वाले कामों से मुक्ति पाएं। अपना व्यवसाय बढ़ाने पर ध्यान दें।", solutionTitle: "सरल ऑटोमेशन, बड़े परिणामों के लिए।", cardTitle1: "💬 स्वचालित ग्राहक संचार", cardDesc1: "हर नई लीड से तुरंत जुड़ें स्वचालित WhatsApp, SMS और ईमेल संदेशों के साथ। पूछताछ को ग्राहकों में बदलें, 24/7.", cardTitle2: "⚙️ सुव्यवस्थित व्यावसायिक संचालन", cardDesc2: "हम आपके रोजमर्रा के टूल (जैसे Google Sheets) को जोड़ते हैं ताकि मैनुअल डेटा एंट्री खत्म हो, गलतियाँ कम हों, और आपका दैनिक वर्कफ़्लो स्वचालित हो।", cardTitle3: "✨ आपके लिए पूरी सेटअप सर्विस", cardDesc3: "योजना से लेकर लॉन्च तक, हम आपके लिए पूरा ऑटोमेशन सेटअप बनाते और प्रबंधित करते हैं। आपको बिना किसी तकनीकी झंझट के लाभ मिलता है।", ctaButton: "आज ही समय बचाना शुरू करें" }
             };
 
             const langToggle = document.getElementById('lang-toggle');
             function updateTextContent(lang) {
                 const content = textContent[lang];
-                localStorage.setItem('language', lang); // Save preference
+                localStorage.setItem('language', lang);
                 document.getElementById('intro-title').innerHTML = content.introTitle;
                 document.getElementById('solution-title').innerHTML = content.solutionTitle;
                 document.getElementById('card-title-1').innerHTML = content.cardTitle1;
@@ -251,13 +263,11 @@
                 updateTextContent(langToggle.checked ? 'hi' : 'en');
             });
 
-            // On load, check for saved language preference
             const savedLang = localStorage.getItem('language');
             if (savedLang === 'hi') {
                 langToggle.checked = true;
                 updateTextContent('hi');
             }
-            // English is already loaded by default in the HTML
         });
     </script>
 </body>
