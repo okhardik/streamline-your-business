@@ -16,15 +16,18 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        html { scroll-behavior: auto !important; }
+        /* THE SCROLLBAR FIX: Force hide overflow on the root elements. */
+        html, body {
+            overflow: hidden;
+            background-color: var(--dark-bg);
+        }
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: var(--dark-bg);
             color: var(--text-light);
             overscroll-behavior: none;
-            scrollbar-width: none;
+            scrollbar-width: none; /* Firefox */
         }
-        body::-webkit-scrollbar { display: none; }
+        body::-webkit-scrollbar { display: none; } /* Chrome, Safari, Edge */
 
         #main-canvas {
             position: fixed; top: 0; left: 0;
@@ -33,6 +36,9 @@
         }
         .scroll-container {
             position: relative; z-index: 2;
+            /* Allow this container to be scrolled by Lenis */
+            overflow: visible;
+            height: 100vh;
         }
         .content-section {
             width: 100%; height: 100vh;
@@ -42,6 +48,7 @@
         }
         .text-content { text-align: center; max-width: 900px; }
         h1 { font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; }
+        h1 .line { display: inline-block; } /* For text animation */
         h2 { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; color: var(--text-dark); }
         p { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--text-muted); margin-top: 15px; }
 
@@ -50,13 +57,35 @@
             gap: 30px; width: 100%; max-width: 1100px; margin-top: 50px;
         }
         .service-card {
+            position: relative; /* For the glowing border */
             background: rgba(255,255,255,0.75); border: 1px solid #dee2e6;
             border-radius: 16px; padding: 30px;
             text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             will-change: transform, opacity;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        /* WOW FACTOR: Interactive glowing border on hover */
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--primary-color), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .service-card:hover::before { opacity: 1; }
+        
         .service-card h3 { font-size: 1.5rem; color: var(--primary-color); font-weight: 700; margin-bottom: 10px; }
         .service-card p { font-size: 1rem; color: #495057; line-height: 1.6; margin-top: 0; }
         
@@ -71,30 +100,11 @@
         }
         #cta-button:hover {
             transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 0 45px 5px var(--primary-glow);
+            box-shadow: 0 0 50px 8px var(--primary-glow);
         }
         
-        /* Language Toggle CSS (unchanged, but formatted) */
-        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; }
-        #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; }
-        .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20, 25, 40, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
-        .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; }
-        .lang-en { color: var(--text-light); }
-        .lang-hi { color: var(--text-muted); }
-        .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); }
-        #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); }
-        #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); }
-        .is-light .toggle-label { background-color: rgba(255, 255, 255, 0.8); border-color: rgba(0, 0, 0, 0.1); }
-
-        /* Scroll Hint CSS (unchanged) */
-        #scroll-hint { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; width: 24px; height: 40px; border: 2px solid #fff; border-radius: 20px; opacity: 0.7; transition: opacity 0.5s; }
-        #scroll-hint::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 4px; height: 8px; background: #fff; border-radius: 4px; animation: scroll-anim 2s infinite; }
-        @keyframes scroll-anim { 0% { transform: translate(-50%, 0); opacity: 1; } 50% { transform: translate(-50%, 10px); opacity: 1; } 100% { transform: translate(-50%, 20px); opacity: 0; } }
-        
-        #shockwave-overlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 1px; height: 1px; background-color: transparent; border-radius: 50%; z-index: 999; pointer-events: none; }
-        
-        @media (max-width: 900px) { #solution-cards { grid-template-columns: 1fr; } }
+        /* --- Unchanged CSS for Toggle & Scroll Hint --- */
+        .language-toggle { position: fixed; top: 20px; right: 20px; z-index: 100; } #lang-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; } .toggle-label { display: flex; align-items: center; justify-content: space-between; width: 80px; height: 40px; background-color: rgba(20, 25, 40, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 0 12px; cursor: pointer; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); } .lang-text { font-size: 0.9rem; font-weight: 700; z-index: 2; transition: color 0.3s ease; } .lang-en { color: var(--text-light); } .lang-hi { color: var(--text-muted); } .toggle-thumb { position: absolute; top: 3px; left: 4px; width: 32px; height: 32px; background-color: var(--primary-color); border-radius: 50%; z-index: 1; transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); } #lang-toggle:checked + .toggle-label .toggle-thumb { transform: translateX(38px); } #lang-toggle:checked + .toggle-label .lang-en { color: var(--text-muted); } #lang-toggle:checked + .toggle-label .lang-hi { color: var(--text-light); } .is-light .toggle-label { background-color: rgba(255, 255, 255, 0.8); border-color: rgba(0, 0, 0, 0.1); } #scroll-hint { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; width: 24px; height: 40px; border: 2px solid #fff; border-radius: 20px; opacity: 0.7; transition: opacity 0.5s; } #scroll-hint::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 4px; height: 8px; background: #fff; border-radius: 4px; animation: scroll-anim 2s infinite; } @keyframes scroll-anim { 0% { transform: translate(-50%, 0); opacity: 1; } 50% { transform: translate(-50%, 10px); opacity: 1; } 100% { transform: translate(-50%, 20px); opacity: 0; } } #shockwave-overlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 1px; height: 1px; background-color: transparent; border-radius: 50%; z-index: 999; pointer-events: none; } @media (max-width: 900px) { #solution-cards { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -106,17 +116,18 @@
         <label for="lang-toggle" class="toggle-label"><span class="toggle-thumb"></span><span class="lang-text lang-en">EN</span><span class="lang-text lang-hi">HI</span></label>
     </div>
 
+    <!-- The single scrollable element for Lenis -->
     <div class="scroll-container">
         <section class="content-section" id="intro-section">
             <div class="text-content">
-                <h1 id="intro-title">Your workflow is noise.<br>We find the signal.</h1>
+                <h1 id="intro-title"><span class="line">Your workflow is noise.</span><br><span class="line">We find the signal.</span></h1>
             </div>
         </section>
         <section class="content-section" id="solution-section">
             <div class="text-content">
                 <h2 id="solution-title">The Signal. Amplified.</h2>
                 <div id="solution-cards">
-                    <div class="service-card"><h3 id="card-title-1">🚀 Message Automation</h3><p id="card-desc-1">Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</p></div>
+                     <div class="service-card"><h3 id="card-title-1">🚀 Message Automation</h3><p id="card-desc-1">Automated WhatsApp, SMS, and email sequences that engage clients, follow up on leads, and never miss a beat.</p></div>
                     <div class="service-card"><h3 id="card-title-2">⚙️ Process Streamlining</h3><p id="card-desc-2">We transform your manual, repetitive tasks into a flawless, self-running system.</p></div>
                     <div class="service-card"><h3 id="card-title-3">🛠️ Bespoke Setup & Support</h3><p id="card-desc-3">A white-glove service where we compose, implement, and fine-tune your entire workflow.</p></div>
                 </div>
@@ -132,116 +143,44 @@
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
+    <script src="https://unpkg.com/split-type"></script>
+
     <script>
         // --- 1. SETUP & CONFIGURATION ---
-        const dom = {
-            canvas: document.getElementById('main-canvas'),
-            shockwave: document.getElementById('shockwave-overlay'),
-            scrollHint: document.getElementById('scroll-hint'),
-            langToggle: document.getElementById('lang-toggle'),
-            langToggleContainer: document.querySelector('.language-toggle'),
-            body: document.body,
-            introSection: document.getElementById('intro-section'),
-            solutionSection: document.getElementById('solution-section'),
-            ctaSection: document.getElementById('cta-section'),
-            solutionTitle: document.getElementById('solution-title'),
-            serviceCards: document.querySelectorAll('.service-card')
-        };
+        const dom = { canvas: document.getElementById('main-canvas'), shockwave: document.getElementById('shockwave-overlay'), scrollHint: document.getElementById('scroll-hint'), langToggle: document.getElementById('lang-toggle'), langToggleContainer: document.querySelector('.language-toggle'), body: document.body, introSection: document.getElementById('intro-section'), solutionSection: document.getElementById('solution-section'), ctaSection: document.getElementById('cta-section'), solutionTitle: document.getElementById('solution-title'), serviceCards: document.querySelectorAll('.service-card') };
         gsap.registerPlugin(ScrollTrigger);
-        const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.9, smoothWheel: true });
+        const lenis = new Lenis({ wrapper: document.querySelector('.scroll-container'), content: document.body, lerp: 0.08, wheelMultiplier: 0.9, smoothWheel: true });
+        
+        // --- 2. PERFORMANCE-FIRST PARTICLE SYSTEM ---
+        const ctx = dom.canvas.getContext('2d'); let particles = []; let camera = { z: 1 }; const fov = 300;
+        const isMobile = window.innerWidth < 768;
+        const particleLayers = [
+            { count: isMobile ? 200 : 400, speed: 0.5, size: 0.5, color: 'rgba(255, 255, 255, 0.4)' },
+            { count: isMobile ? 100 : 250, speed: 1.0, size: 0.8, color: 'rgba(255, 255, 255, 0.7)' },
+            { count: isMobile ? 25 : 50, speed: 1.8, size: 1.2, color: 'rgba(255, 255, 255, 0.9)' }
+        ];
+        class Particle { constructor(layer) { this.layer = layer; this.reset(); } reset() { this.x = (Math.random() - 0.5) * dom.canvas.width * 2; this.y = (Math.random() - 0.5) * dom.canvas.height * 2; this.z = Math.random() * 2000; } project() { const z = this.z - camera.z; if (z < 1) return null; const scale = fov / z; const x2d = this.x * scale + dom.canvas.width / 2; const y2d = this.y * scale + dom.canvas.height / 2; return { x: x2d, y: y2d, scale: scale }; } draw() { const p = this.project(); if (p && p.x > 0 && p.x < dom.canvas.width && p.y > 0 && p.y < dom.canvas.height) { ctx.fillStyle = this.layer.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.scale * this.layer.size, 0, Math.PI * 2); ctx.fill(); } } update() { this.z -= this.layer.speed; if (this.z < camera.z) this.z = 2000; } }
+        function initParticles() { particles = []; particleLayers.forEach(layer => { for (let i = 0; i < layer.count; i++) particles.push(new Particle(layer)); }); }
+        function renderCanvas() { const dpr = Math.min(window.devicePixelRatio, 2); dom.canvas.width = window.innerWidth * dpr; dom.canvas.height = window.innerHeight * dpr; ctx.scale(dpr, dpr); ctx.clearRect(0, 0, window.innerWidth, window.innerHeight); particles.sort((a, b) => b.z - a.z); particles.forEach(p => { p.update(); p.draw(); }); }
+        window.addEventListener('resize', initParticles); initParticles();
+
+        // --- 3. UNIFIED ANIMATION & SCROLL LOOP ---
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); renderCanvas(); });
+        gsap.ticker.lagSmoothing(0);
         lenis.on('scroll', ScrollTrigger.update);
 
-        // --- 2. HIGH-FIDELITY PARTICLE SYSTEM (MULTI-LAYERED) ---
-        const ctx = dom.canvas.getContext('2d');
-        let particles = [];
-        let camera = { z: 1 };
-        const fov = 300;
-        const particleLayers = [
-            { count: 700, speed: 0.5, size: 0.5, color: 'rgba(255, 255, 255, 0.4)' }, // Far
-            { count: 500, speed: 1.0, size: 0.8, color: 'rgba(255, 255, 255, 0.7)' }, // Mid
-            { count: 100, speed: 1.8, size: 1.2, color: 'rgba(255, 255, 255, 0.9)' }  // Near
-        ];
-
-        class Particle {
-            constructor(layer) {
-                this.layer = layer;
-                this.reset();
-            }
-            reset() {
-                this.x = (Math.random() - 0.5) * dom.canvas.width * 2;
-                this.y = (Math.random() - 0.5) * dom.canvas.height * 2;
-                this.z = Math.random() * 2000;
-            }
-            project() {
-                const z = this.z - camera.z;
-                if (z < 1) return null;
-                const scale = fov / z;
-                const x2d = this.x * scale + dom.canvas.width / 2;
-                const y2d = this.y * scale + dom.canvas.height / 2;
-                return { x: x2d, y: y2d, scale: scale };
-            }
-            draw() {
-                const p = this.project();
-                if (p && p.x > 0 && p.x < dom.canvas.width && p.y > 0 && p.y < dom.canvas.height) {
-                    ctx.fillStyle = this.layer.color;
-                    ctx.beginPath();
-                    // Sharp, crisp circle. No blur.
-                    ctx.arc(p.x, p.y, p.scale * this.layer.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-            update() {
-                this.z -= this.layer.speed; // Move particles based on layer speed
-                if (this.z < camera.z) this.z = 2000;
-            }
-        }
+        // WOW FACTOR: Staggered text intro
+        const introTitle = new SplitType('#intro-title', { types: 'lines' });
+        gsap.from(introTitle.lines, { y: 100, opacity: 0, stagger: 0.1, duration: 1, ease: 'power4.out', delay: 0.5 });
         
-        function initParticles() {
-            particles = [];
-            particleLayers.forEach(layer => {
-                for (let i = 0; i < layer.count; i++) {
-                    particles.push(new Particle(layer));
-                }
-            });
-        }
-
-        function renderCanvas() {
-            ctx.clearRect(0, 0, dom.canvas.width, dom.canvas.height);
-            particles.sort((a, b) => b.z - a.z); // Sort for 3D effect
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-        }
-
-        function resizeHandler() {
-            dom.canvas.width = window.innerWidth;
-            dom.canvas.height = window.innerHeight;
-            initParticles();
-        }
-        window.addEventListener('resize', resizeHandler);
-        resizeHandler();
-
-        // --- 3. UNIFIED ANIMATION LOOP ---
-        gsap.ticker.add((time) => {
-            lenis.raf(time * 1000);
-            renderCanvas();
-        });
-        gsap.ticker.lagSmoothing(0);
-        
-        // --- 4. REBUILT GSAP SCROLL TIMELINE (NO GAPS) ---
-        ScrollTrigger.create({
-            start: "top top", end: 99999,
-            onUpdate: self => self.scroll() > 10 && gsap.to(dom.scrollHint, { autoAlpha: 0 })
-        });
-
+        // --- 4. THE NO-GAP SCROLL TIMELINE ---
+        ScrollTrigger.create({ start: "top top", end: 99999, onUpdate: self => self.scroll() > 10 && gsap.to(dom.scrollHint, { autoAlpha: 0 }) });
         const mainTimeline = gsap.timeline({
             scrollTrigger: {
                 trigger: ".scroll-container",
                 pin: true,
                 scrub: 1.2,
-                end: "+=150%" // Tighter scroll duration
+                end: "+=100%" // THE FIX: Pin lasts for exactly one screen height of scrolling.
             }
         });
         
@@ -250,39 +189,16 @@
             .to(camera, { z: 1800, duration: 1, ease: "power2.in" }, 0)
             .to(dom.shockwave, { boxShadow: `0 0 0 100vmax var(--light-bg)`, duration: 0.4, ease: "power2.in" }, "<0.6")
             .set(dom.body, { backgroundColor: "var(--light-bg)", color: "var(--text-dark)" }, "<")
-            .set(dom.langToggleContainer, {
-                onStart: () => dom.langToggleContainer.classList.add('is-light'),
-                onReverseComplete: () => dom.langToggleContainer.classList.remove('is-light')
-            }, "<")
+            .set(dom.langToggleContainer, { onStart: () => dom.langToggleContainer.classList.add('is-light'), onReverseComplete: () => dom.langToggleContainer.classList.remove('is-light') }, "<")
             .set(dom.canvas, { display: "none" }, "<")
             .to(dom.shockwave, { opacity: 0, duration: 0.4 }, ">-0.2")
             .from(dom.solutionSection, { opacity: 0, duration: 0.1 }, "<")
             .from(dom.solutionTitle, { y: 50, opacity: 0, duration: 0.5, ease: "power2.out" })
-            .from(dom.serviceCards, { scale: 0.5, opacity: 0, stagger: 0.1, duration: 1, ease: "back.out(1.4)" }, "<0.2")
-            // -- CRITICAL CHANGE: NO EMPTY SPACE --
-            // The solution section now STAYS PUT. The CTA section scrolls OVER it.
-            // This creates a seamless transition driven by the user's scroll.
-            .from(dom.ctaSection, { y: "100%", duration: 1, ease: "power2.inOut" }, ">0.8");
+            .from(dom.serviceCards, { y: 50, scale: 0.9, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power2.out" }, "<0.2")
+            .from(dom.ctaSection, { y: "100%", duration: 1, ease: "power2.inOut" }, ">0.5");
 
-        // --- 5. LANGUAGE TOGGLE LOGIC (UNCHANGED) ---
-        const textContent = { /* ... text content ... */ };
-        // ... rest of the language logic from previous version ...
-        (function() {
-            const hiContent = { introTitle: "आपका वर्कफ़्लो शोर है।<br>हम सिग्नल ढूंढते हैं।", solutionTitle: "सिग्नल। प्रवर्धित।", cardTitle1: "🚀 मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।", cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "अपना सिग्नल बढ़ाएँ" };
-            const originalContent = { introTitle: dom.introSection.querySelector('h1').innerHTML, solutionTitle: dom.solutionTitle.innerHTML, cardTitle1: document.getElementById('card-title-1').innerHTML, cardDesc1: document.getElementById('card-desc-1').innerHTML, cardTitle2: document.getElementById('card-title-2').innerHTML, cardDesc2: document.getElementById('card-desc-2').innerHTML, cardTitle3: document.getElementById('card-title-3').innerHTML, cardDesc3: document.getElementById('card-desc-3').innerHTML, ctaButton: document.getElementById('cta-button').innerHTML };
-            
-            function updateLanguage() {
-                const lang = dom.langToggle.checked ? 'hi' : 'en';
-                const content = lang === 'hi' ? hiContent : originalContent;
-                Object.keys(content).forEach(key => {
-                    const elementId = key.replace(/[A-Z0-9]/g, (letter, index) => (index > 0 ? `-${letter.toLowerCase()}` : letter.toLowerCase()));
-                    const element = document.getElementById(elementId);
-                    if (element) element.innerHTML = content[key];
-                });
-            }
-            dom.langToggle.addEventListener('change', updateLanguage);
-        })();
-
+        // --- 5. LANGUAGE TOGGLE LOGIC ---
+        (function() { const hiContent = { introTitle: "<span class='line'>आपका वर्कफ़्लो शोर है।</span><br><span class='line'>हम सिग्नल ढूंढते हैं।</span>", solutionTitle: "सिग्नल। प्रवर्धित।", cardTitle1: "🚀 मैसेज ऑटोमेशन", cardDesc1: "ऑटोमेटेड WhatsApp, SMS और ईमेल जो ग्राहकों को जोड़ते हैं, लीड्स का फॉलो-अप करते हैं, और कभी कोई मौका नहीं चूकते।", cardTitle2: "⚙️ प्रोसेस स्ट्रीमलाइनिंग", cardDesc2: "हम आपके मैन्युअल, बार-बार होने वाले कामों को एक स्वचालित, बेहतरीन सिस्टम में बदलते हैं।", cardTitle3: "🛠️ विशेष सेटअप और सपोर्ट", cardDesc3: "एक व्हाइट-ग्लव सेवा जहाँ हम शुरू से अंत तक आपके पूरे वर्कफ़्लो को तैयार, लागू और बेहतर बनाते हैं।", ctaButton: "अपना सिग्नल बढ़ाएँ" }; const originalContent = { introTitle: dom.introSection.querySelector('h1').innerHTML, solutionTitle: dom.solutionTitle.innerHTML, cardTitle1: document.getElementById('card-title-1').innerHTML, cardDesc1: document.getElementById('card-desc-1').innerHTML, cardTitle2: document.getElementById('card-title-2').innerHTML, cardDesc2: document.getElementById('card-desc-2').innerHTML, cardTitle3: document.getElementById('card-title-3').innerHTML, cardDesc3: document.getElementById('card-desc-3').innerHTML, ctaButton: document.getElementById('cta-button').innerHTML }; function updateLanguage() { const lang = dom.langToggle.checked ? 'hi' : 'en'; const content = lang === 'hi' ? hiContent : originalContent; Object.keys(content).forEach(key => { const elementId = key.replace(/[A-Z0-9]/g, (letter, index) => (index > 0 ? `-${letter.toLowerCase()}` : letter.toLowerCase())); const element = document.getElementById(elementId); if (element) element.innerHTML = content[key]; }); } dom.langToggle.addEventListener('change', updateLanguage); })();
     </script>
 </body>
 </html>
