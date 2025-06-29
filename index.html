@@ -3,77 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Business Automation Solutions | Powered by Hardik</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <title>Automation by Hardik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1d1d1d, #000);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
+      font-family: 'Inter', sans-serif;
+      background-color: #0f0f0f;
+      color: #ffffff;
+      padding: 60px 20px;
     }
-    .container {
-      max-width: 600px;
-      background: #111;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    .wrapper {
+      max-width: 900px;
+      margin: auto;
+    }
+    .intro {
+      text-align: left;
+      margin-bottom: 60px;
+    }
+    .intro h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #00ffb3;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .intro p {
+      font-size: 1.3rem;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #ccc;
+    }
+    .section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 80px;
+      align-items: center;
+    }
+    .section:nth-child(even) {
+      grid-template-columns: 1fr 1fr;
+    }
+    .section h2 {
+      font-size: 2rem;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    .section p {
+      color: #aaa;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .cta {
       text-align: center;
     }
-    h1 {
-      font-size: 2.4rem;
-      margin-bottom: 20px;
-      color: #00ffb3;
-    }
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 25px;
-      line-height: 1.6;
-    }
-    .cta-button {
+    .cta a {
       background: #00ffb3;
       color: #000;
-      padding: 15px 30px;
-      font-size: 1rem;
-      font-weight: bold;
+      padding: 16px 36px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 1.1rem;
       text-decoration: none;
-      border-radius: 30px;
-      transition: all 0.3s ease;
-      display: inline-block;
+      transition: background 0.3s ease;
     }
-    .cta-button:hover {
+    .cta a:hover {
       background: #00e1a1;
-      transform: translateY(-2px);
     }
-    .tagline {
-      margin-top: 40px;
-      font-size: 0.95rem;
-      color: #aaa;
+    .footer {
+      margin-top: 80px;
+      font-size: 0.9rem;
+      text-align: center;
+      color: #666;
     }
-    .sparkle {
-      color: #ffd700;
+    @media (max-width: 768px) {
+      .section {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .intro {
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1><span class="sparkle">⚙️</span> Automate. Streamline. Scale.</h1>
-    <p>
-      Tired of repetitive manual work? We help businesses like yours<br>
-      automate operations using tools like Google Sheets, AppScript, WhatsApp bots,<br>
-      and API integrations — with zero tech headaches.
-    </p>
-    <a class="cta-button" href="https://wa.me/919210037310" target="_blank">🚀 Talk to Us on WhatsApp</a>
-    <div class="tagline">Your process deserves a smarter brain — let’s build it together.</div>
+  <div class="wrapper">
+    <div class="intro">
+      <h1>Let Automation Do The Heavy Lifting</h1>
+      <p>
+        We design simple, powerful automations for businesses that want to move fast and stay lean. From Google Sheets and AppScript to WhatsApp bots and APIs — we turn your manual mess into a smooth system.
+      </p>
+    </div>
+
+    <div class="section">
+      <div>
+        <h2>🧠 Smarter Workflows</h2>
+        <p>Automate invoice generation, lead follow-ups, onboarding flows, and repetitive reports using tools you're already familiar with.</p>
+      </div>
+      <div>
+        <h2>🤖 WhatsApp Automations</h2>
+        <p>Trigger WhatsApp messages from Sheets, handle conversations with clients, send reminders — all from your own number.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div>
+        <h2>📊 Real-Time Dashboards</h2>
+        <p>Get a clear view of your operations. Track tasks, payments, clients, or any KPI without lifting a finger.</p>
+      </div>
+      <div>
+        <h2>🔗 API Integrations</h2>
+        <p>Connect your tools — CRMs, payment gateways, ERPs — with ease. We stitch it all together so you don’t have to.</p>
+      </div>
+    </div>
+
+    <div class="cta">
+      <a href="https://wa.me/919210037310" target="_blank">🚀 Let's Build Your System</a>
+    </div>
+
+    <div class="footer">
+      © 2025 Powered by Hardik — Smarter Systems for Smarter Teams
+    </div>
   </div>
 </body>
 </html>
